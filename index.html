@@ -11,106 +11,139 @@
   --tx:#2E2350;--mt:#6F6392;--dm:#A79BC4;
 }
 *{box-sizing:border-box}
+html,body{overflow-x:hidden;max-width:100%}
 body{margin:0;background:
   radial-gradient(1100px 560px at 88% -12%,#F0E8FF,transparent),
   radial-gradient(900px 520px at -8% -4%,#F7EEFF,transparent),
-  radial-gradient(800px 480px at 50% 108%,#F2ECFF,transparent),
   linear-gradient(180deg,#FBF8FF,#FAF7FE 45%,#FBF6FF);
   color:var(--tx);font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;
-  font-size:15px;line-height:1.7;-webkit-font-smoothing:antialiased}
-.wrap{max-width:1280px;margin:0 auto;padding:38px 24px 100px}
+  font-size:19px;line-height:1.65;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1500px;margin:0 auto;padding:30px 24px 100px}
 header{display:flex;align-items:flex-start;justify-content:space-between;gap:24px;flex-wrap:wrap;
-  padding:30px 34px;border-radius:20px;border:1px solid var(--line);
+  padding:24px 28px;border-radius:18px;border:1px solid var(--line);
   background:linear-gradient(135deg,#FFFFFF,#F7F0FF 55%,#FDF8FF);position:relative;overflow:hidden;
-  box-shadow:0 6px 24px rgba(109,74,255,.07)}
-header:after{content:"";position:absolute;right:-70px;top:-70px;width:300px;height:300px;border-radius:50%;
-  background:radial-gradient(circle,#A855F71e,transparent 68%);pointer-events:none}
-h1{margin:0 0 8px;font-size:34px;letter-spacing:.5px;color:#3B2A9E;font-weight:800}
-.sub{margin:0;color:var(--mt);font-size:16px}
-.badge{display:inline-flex;align-items:center;gap:8px;margin-top:14px;padding:7px 16px;border-radius:999px;
-  border:1px solid #D2BEF5;color:#5B35C9;background:#F6EFFF;font-size:13px;letter-spacing:.4px}
-.dot{width:8px;height:8px;border-radius:50%;background:var(--cy);box-shadow:0 0 9px var(--cy);animation:p 2s infinite}
+  box-shadow:0 6px 22px rgba(109,74,255,.07)}
+header:after{content:"";position:absolute;right:-70px;top:-70px;width:280px;height:280px;border-radius:50%;
+  background:radial-gradient(circle,#A855F71a,transparent 68%);pointer-events:none}
+h1{margin:0 0 6px;font-size:35px;letter-spacing:.3px;color:#3B2A9E;font-weight:800;line-height:1.3}
+.sub{margin:0;color:var(--mt);font-size:18px}
+.badge{display:inline-flex;align-items:center;gap:8px;margin-top:12px;padding:7px 16px;border-radius:999px;
+  border:1px solid #D2BEF5;color:#5B35C9;background:#F6EFFF;font-size:16px}
+.dot{width:9px;height:9px;border-radius:50%;background:var(--cy);animation:p 2s infinite}
 @keyframes p{50%{opacity:.35}}
-.snap{font-size:12.5px;color:var(--mt);margin-top:8px;text-align:right;min-width:240px}
-.snap b{font-size:14.5px}
+.snap{font-size:16px;color:var(--mt);text-align:right;min-width:250px;line-height:1.8}
+.snap b{font-size:18px}
 
-.tabs{display:flex;gap:10px;margin:26px 0 22px;flex-wrap:wrap}
-.tab{padding:12px 22px;border-radius:12px;border:1px solid var(--line);background:#F6EFFF;color:var(--mt);
-  cursor:pointer;font-size:15px;font-weight:700;transition:.18s;font-family:inherit}
-.tab:hover{border-color:#C2A8F7;color:var(--tx)}
-.tab.on{background:linear-gradient(135deg,#FFFFFF,#F6EFFF 70%,#FBF6FF);color:#4B2FBF;border-color:#A98BFF;
-  box-shadow:0 2px 12px rgba(109,74,255,.16)}
-.panel{display:none;animation:fi .22s ease}
+/* 导航（当前 ×0.8） */
+.layout{display:flex;gap:24px;align-items:flex-start;margin-top:24px}
+.layout>*{min-width:0}
+.sidenav{flex:0 0 300px;position:sticky;top:16px;background:#FFFFFF;border:1px solid var(--line);
+  border-radius:16px;padding:10px;max-height:calc(100vh - 32px);overflow:auto;
+  box-shadow:0 4px 16px rgba(109,74,255,.06)}
+.main{flex:1;min-width:0;max-width:100%}
+.navg{display:flex;align-items:center;justify-content:space-between;gap:8px;
+  padding:18px 13px 8px;font-weight:800;font-size:18.5px;color:#3B2A9E;letter-spacing:.3px}
+.navg:first-child{padding-top:6px}
+.navg small{font-weight:600;color:var(--dm);font-size:15px;letter-spacing:.8px}
+.tab{display:flex;align-items:center;gap:12px;width:100%;text-align:left;margin:2px 0;
+  padding:13px 15px;border-radius:12px;border:1px solid transparent;background:transparent;
+  color:var(--tx);cursor:pointer;font-size:21.5px;font-weight:600;transition:.15s;font-family:inherit}
+.tab:hover{background:#F6EFFF;color:#4B2FBF}
+.tab.on{background:linear-gradient(135deg,#6D4AFF,#8B5CFF);color:#fff;font-weight:700;
+  box-shadow:0 4px 16px rgba(109,74,255,.28)}
+@media(max-width:1100px){
+  .layout{display:block}
+  .sidenav{position:static;max-height:none;display:flex;flex-wrap:wrap;gap:6px;margin-bottom:18px;padding:8px}
+  .navg{flex:1 0 100%;padding:12px 8px 4px;font-size:16px}
+  .tab{width:auto;flex:0 0 auto;padding:10px 14px;font-size:17px;border:1px solid var(--line);background:#F6EFFF}
+  .tab.on{border-color:transparent}
+}
+.panel{display:none;animation:fi .2s ease}
 .panel.on{display:block}
-@keyframes fi{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+@keyframes fi{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
 
+/* 主体内容（当前 ×0.9） */
 .grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);gap:22px}
+.grid>*{min-width:0}
 @media(max-width:900px){.grid{grid-template-columns:1fr}}
-.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:24px 26px;
-  box-shadow:0 2px 10px rgba(109,74,255,.05)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:24px 27px;
+  box-shadow:0 3px 12px rgba(109,74,255,.05);min-width:0;max-width:100%;overflow-wrap:anywhere}
 .card.hl{border-color:#B99BF544;background:linear-gradient(160deg,#FFFFFF,#F8F1FF 70%,#FCF7FF)}
-h2{font-size:18px;margin:0 0 16px;color:#3B2A9E;display:flex;align-items:center;gap:10px;font-weight:800}
-h2 .bar{width:5px;height:17px;border-radius:2px;background:linear-gradient(180deg,var(--cy),var(--pp))}
-h3{font-size:14.5px;color:var(--mt);margin:20px 0 10px;font-weight:700;letter-spacing:.3px}
+h2{font-size:21px;margin:0 0 16px;color:#3B2A9E;display:flex;align-items:center;gap:11px;font-weight:800;flex-wrap:wrap}
+h2 .bar{width:5px;height:20px;border-radius:3px;background:linear-gradient(180deg,var(--cy),var(--pp));flex:0 0 auto}
+h3{font-size:18px;color:var(--mt);margin:22px 0 11px;font-weight:700}
 h3:first-child{margin-top:0}
-.field{margin-bottom:16px}
-label{display:block;font-size:13.5px;color:var(--mt);margin-bottom:7px;font-weight:600}
-label .tip{color:var(--dm);font-weight:400;margin-left:6px;font-size:12px}
-.inp{display:flex;align-items:center;background:#F9F5FF;border:1px solid #D9CBF5;border-radius:10px;padding:0 15px;transition:.15s}
-.inp:focus-within{border-color:var(--cy);box-shadow:0 0 0 3px rgba(109,74,255,.13)}
-.inp input{flex:1;background:none;border:0;outline:0;color:var(--tx);font-size:18px;font-weight:700;
-  padding:12px 0;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;min-width:0}
-.inp .unit{color:var(--mt);font-size:13px;margin-left:8px;white-space:nowrap}
-.row2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-.big{font-size:40px;font-weight:800;letter-spacing:-.5px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;
-  line-height:1.15;word-break:break-all;color:#3B2A9E}
-.kv{display:flex;justify-content:space-between;align-items:baseline;padding:10px 0;border-bottom:1px dashed #ECDDF9;font-size:15px}
+.field{margin-bottom:18px;min-width:0;max-width:100%}
+label{display:block;font-size:17px;color:var(--mt);margin-bottom:7px;font-weight:600;overflow-wrap:anywhere}
+label .tip{color:var(--dm);font-weight:400;margin-left:7px;font-size:15px}
+.inp{display:flex;align-items:center;background:#F9F5FF;border:1px solid #D9CBF5;border-radius:11px;padding:0 16px;transition:.15s;min-width:0;max-width:100%}
+.inp:focus-within{border-color:var(--cy);box-shadow:0 0 0 3px rgba(109,74,255,.12)}
+.inp input{flex:1;background:none;border:0;outline:0;color:var(--tx);font-size:21px;font-weight:700;
+  padding:12px 0;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;min-width:0;width:100%}
+.inp .unit{color:var(--mt);font-size:16px;margin-left:8px;white-space:nowrap;flex:0 0 auto}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:16px;min-width:0}
+.row2>*{min-width:0}
+@media(max-width:700px){.row2{grid-template-columns:1fr}}
+.big{font-size:40px;font-weight:800;letter-spacing:-.4px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;
+  line-height:1.2;word-break:break-all;color:#3B2A9E}
+.kv{display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap;
+  padding:10px 0;border-bottom:1px dashed #ECDDF9;font-size:18px;min-width:0}
 .kv:last-child{border:0}
-.kv .k{color:var(--mt);font-size:14px}
-.kv .v{font-weight:700;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;text-align:right;font-size:15px}
+.kv .k{color:var(--mt);font-size:17.5px;min-width:0;overflow-wrap:anywhere}
+.kv .v{font-weight:700;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;text-align:right;font-size:18px;
+  min-width:0;max-width:100%;word-break:break-all;overflow-wrap:anywhere}
 .cy{color:var(--cy)}.pp{color:var(--pp)}.gd{color:var(--gd)}.rd{color:var(--rd)}.gn{color:var(--gn)}
-.note{border-radius:12px;padding:14px 17px;margin:14px 0;font-size:14px;line-height:1.7}
-.note.i{background:#F7F1FF;border:1px solid #D8C4F7;color:#4B3A75}
+.note{border-radius:13px;padding:15px 19px;margin:15px 0;font-size:17.5px;line-height:1.7;overflow-wrap:anywhere}
+.note.i{background:#F5F7FE;border:1px solid #D9E0F3;color:#4B3A75}
 .note.w{background:#FDF0EE;border:1px solid #F2C0B8;color:#9B3A2C}
 .note.o{background:#EEF8F1;border:1px solid #BFE3C9;color:#236B3C}
 .note b{color:#3B2A9E}
-.formula{background:#F8F3FF;border:1px solid #D9CBF5;border-left:4px solid var(--pp);border-radius:10px;
-  padding:14px 17px;margin:14px 0;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:14px;
-  color:#4B3A75;overflow-x:auto;white-space:pre-wrap;line-height:1.85}
-table{width:100%;border-collapse:collapse;font-size:14.5px;margin-top:6px}
-th,td{padding:11px 12px;border-bottom:1px solid #EADCF8;text-align:left}
-th{color:var(--mt);font-size:13px;font-weight:700;letter-spacing:.3px}
-td.num,th.num{text-align:right;font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+.formula{background:#F8F3FF;border:1px solid #D9CBF5;border-left:4px solid var(--pp);border-radius:11px;
+  padding:15px 19px;margin:15px 0;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:17px;
+  color:#4B3A75;overflow-x:auto;white-space:pre-wrap;line-height:1.85;max-width:100%}
+.tablewrap{overflow-x:auto;max-width:100%}
+table{width:100%;border-collapse:collapse;font-size:17.5px;margin-top:5px;max-width:100%}
+th,td{padding:11px 13px;border-bottom:1px solid #EADCF8;text-align:left}
+th{color:var(--mt);font-size:16px;font-weight:700;white-space:nowrap}
+td.num,th.num{text-align:right;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;white-space:nowrap}
 tr:hover td{background:#F8F2FF}
-.chips{display:flex;gap:9px;flex-wrap:wrap;margin-top:10px}
-.chip{padding:8px 15px;border-radius:999px;background:#F5EEFF;border:1px solid #D9CBF5;font-size:13px;
-  color:var(--mt);cursor:pointer;transition:.15s;font-family:inherit}
+.chips{display:flex;gap:9px;flex-wrap:wrap;margin-top:11px}
+.chip{padding:8px 16px;border-radius:999px;background:#F5EEFF;border:1px solid #D9CBF5;font-size:17px;
+  color:var(--mt);cursor:pointer;transition:.15s;font-family:inherit;max-width:100%;white-space:normal;text-align:left}
 .chip:hover{border-color:#C2A8F7;color:var(--tx)}
-.chip.on{background:linear-gradient(135deg,#6D4AFF,#A855F7);border-color:#A855F7;color:#fff}
+.chip.on{background:linear-gradient(135deg,#6D4AFF,#A855F7);border-color:#7C5CFF;color:#fff}
 .chart{width:100%;height:auto;display:block}
-.legend{display:flex;gap:18px;flex-wrap:wrap;font-size:13px;color:var(--mt);margin-top:10px}
-.legend span{display:flex;align-items:center;gap:7px}
-.legend i{width:12px;height:4px;border-radius:2px;display:inline-block}
-.bar3{display:flex;height:30px;border-radius:8px;overflow:hidden;margin:12px 0;border:1px solid var(--line)}
-.bar3 div{display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff;white-space:nowrap}
-.ladder{margin-top:8px}
-.lv{display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px dashed #ECDDF9}
+.legend{display:flex;gap:19px;flex-wrap:wrap;font-size:17px;color:var(--mt);margin-top:11px}
+.legend span{display:flex;align-items:center;gap:8px}
+.legend i{width:14px;height:4px;border-radius:2px;display:inline-block}
+.bar3{display:flex;height:34px;border-radius:9px;overflow:hidden;margin:14px 0;border:1px solid var(--line)}
+.bar3 div{display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:700;color:#fff;white-space:nowrap;min-width:0}
+.ladder{margin-top:9px}
+.lv{display:flex;align-items:center;gap:13px;padding:11px 0;border-bottom:1px dashed #ECDDF9;min-width:0;flex-wrap:wrap}
 .lv:last-child{border:0}
-.lv .tag{flex:0 0 38px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;
-  font-size:13px;font-weight:800;font-family:ui-monospace,monospace;background:#F5EEFF;border:1px solid #D9CBF5;color:var(--dm)}
+.lv .tag{flex:0 0 46px;height:34px;border-radius:9px;display:flex;align-items:center;justify-content:center;
+  font-size:16px;font-weight:800;font-family:ui-monospace,monospace;background:#F5EEFF;border:1px solid #D9CBF5;color:var(--dm)}
 .lv.ok .tag{background:linear-gradient(135deg,#6D4AFF,#A855F7);color:#fff;border:0}
-.lv .need{flex:1;font-size:13px;color:var(--mt)}
-.lv .fill{flex:0 0 120px;height:7px;border-radius:4px;background:#EADCF8;overflow:hidden}
+.lv .need{flex:1 1 160px;font-size:17px;color:var(--mt);min-width:0}
+.lv .fill{flex:0 0 135px;height:8px;border-radius:4px;background:#EADCF8;overflow:hidden}
 .lv .fill i{display:block;height:100%;border-radius:4px;background:linear-gradient(90deg,var(--cy),var(--pp));transition:width .3s}
-.lv .pc{flex:0 0 58px;text-align:right;font-size:13px;font-family:ui-monospace,monospace;color:var(--mt)}
-.btn{padding:11px 20px;border-radius:10px;border:1px solid #6D4AFF;background:linear-gradient(135deg,#6D4AFF,#8B5CFF);color:#fff;
-  cursor:pointer;font-family:inherit;font-size:14px;font-weight:800;transition:.15s}
+.lv .pc{flex:0 0 66px;text-align:right;font-size:16px;font-family:ui-monospace,monospace;color:var(--mt)}
+.btn{padding:12px 21px;border-radius:11px;border:1px solid #6D4AFF;background:linear-gradient(135deg,#6D4AFF,#8B5CFF);color:#fff;
+  cursor:pointer;font-family:inherit;font-size:18px;font-weight:700;transition:.15s;max-width:100%}
 .btn:hover{background:linear-gradient(135deg,#5B3CE6,#7C4CF0);border-color:#5B3CE6}
 .btn.gray{border-color:#D9CBF5;background:#F6EFFF;color:var(--mt)}
 .btn.gray:hover{background:#F0E6FF;color:var(--tx)}
-.mini{margin-left:6px;padding:2px 8px;border-radius:6px;border:1px solid #D9CBF5;background:#F5EEFF;color:var(--mt);font-size:11.5px;font-family:inherit;cursor:pointer;vertical-align:middle;transition:.15s}
+.mini{margin-left:6px;padding:3px 9px;border-radius:7px;border:1px solid #D9CBF5;background:#F5EEFF;color:var(--mt);font-size:15px;font-family:inherit;cursor:pointer;vertical-align:middle;transition:.15s}
 .mini:hover{border-color:var(--cy);color:var(--cy)}
-footer{margin-top:48px;padding-top:22px;border-top:1px solid var(--line);color:var(--dm);font-size:12.5px;line-height:1.9}
+[style*="grid-template-columns"]{min-width:0;max-width:100%}
+[style*="grid-template-columns"]>*{min-width:0}
+[style*="display:flex"]>*{min-width:0}
+[style*="display:grid"]{min-width:0;max-width:100%}
+@media(max-width:760px){
+  [style*="grid-template-columns:1fr 1fr 1fr"]{grid-template-columns:1fr!important}
+  [style*="grid-template-columns:repeat(3"]{grid-template-columns:1fr!important}
+}
+footer{margin-top:38px;padding-top:19px;border-top:1px solid var(--line);color:var(--dm);font-size:16px;line-height:1.9}
 footer a{color:var(--mt)}
 </style>
 </head>
@@ -123,8 +156,8 @@ footer a{color:var(--mt)}
     <p class="sub">HELIX 双螺旋收益测算：左螺旋（个人算力）＋ 右螺旋（社区动态池：增长 30% · 网络 40% · 共识 30%）</p>
     <div class="badge"><span class="dot"></span>现在是第 <b id="dayBadge">58</b> 天 · 第 <b id="epochBadge">9</b> 纪元<span id="epochBlocks" style="display:inline-flex;gap:3px;margin-left:9px;align-items:center"></span></div>
     <div style="margin-top:12px;display:flex;gap:12px;align-items:center;flex-wrap:wrap">
-      <button class="btn" id="btnTopRefresh" style="padding:8px 18px;font-size:12.5px">⟳ 刷新实时数据</button>
-      <span id="refreshStatus" style="font-size:12.5px;color:var(--dm)">点按钮刷新；页面保持打开时自动刷新（每天 8 次）</span>
+      <button class="btn" id="btnTopRefresh" style="padding:8px 18px;font-size:17px">⟳ 刷新实时数据</button>
+      <span id="refreshStatus" style="font-size:17px;color:var(--dm)">打开页面自动刷新 · 之后每 10 分钟自动刷新一次 · 也可手动点</span>
     </div>
   </div>
   <div class="snap">
@@ -134,21 +167,32 @@ footer a{color:var(--mt)}
   </div>
 </header>
 
-<div class="tabs">
-  <button class="tab on" data-p="p1">① 收益测算（左螺旋）</button>
-  <button class="tab" data-p="p6">② 右螺旋收益（社区动态）</button>
-  <button class="tab" data-p="p2">③ 全网排放全景</button>
-  <button class="tab" data-p="p3">④ P 等级测算</button>
-  <button class="tab" data-p="p4">⑤ 回本测算</button>
-  <button class="tab" data-p="p5">⑥ 参数与来源</button>
-  <button class="tab" data-p="p7">⑦ 合约查询</button>
-  <button class="tab" data-p="p8">⑧ 钱包资产</button>
-  <button class="tab" data-p="p9">⑨ 资金监控</button>
-  <button class="tab" data-p="p10">⑩ AiLGNS 观测台</button>
-  <button class="tab" data-p="p11">⑪ 小工具</button>
-  <button class="tab" data-p="p12">⑫ 三个池是什么</button>
-  <button class="tab" data-p="p13">⑬ 卖出冲击</button>
-</div>
+<div class="layout">
+  <aside class="sidenav">
+    <div class="navg"><span>基础导航</span><small>OVERVIEW</small></div>
+    <button class="tab" data-p="p5">📊 参数与来源</button>
+    <button class="tab" data-p="p2">📈 全网排放全景</button>
+
+    <div class="navg"><span>左螺旋</span><small>算力 · 排放</small></div>
+    <button class="tab on" data-p="p1">⚡ 收益测算</button>
+    <button class="tab" data-p="p4">🔄 回本测算</button>
+    <button class="tab" data-p="p3">🏅 P 等级测算</button>
+
+    <div class="navg"><span>右螺旋</span><small>社区动态</small></div>
+    <button class="tab" data-p="p6">🌀 右螺旋收益</button>
+    <button class="tab" data-p="p12">🧩 三个池是什么</button>
+
+    <div class="navg"><span>交易与流动性</span><small>MARKET</small></div>
+    <button class="tab" data-p="p13">📉 卖出冲击</button>
+    <button class="tab" data-p="p10">🔭 AiLGNS 观测台</button>
+
+    <div class="navg"><span>工具与查询</span><small>TOOLS</small></div>
+    <button class="tab" data-p="p7">🔍 合约查询</button>
+    <button class="tab" data-p="p8">💼 钱包资产</button>
+    <button class="tab" data-p="p9">🏦 资金监控</button>
+    <button class="tab" data-p="p11">🧰 小工具</button>
+  </aside>
+  <div class="main">
 
 <!-- ============ TAB 1 收益测算 ============ -->
 <section class="panel on" id="p1">
@@ -191,18 +235,18 @@ footer a{color:var(--mt)}
       <div class="note i">
         <b>左螺旋规则（2026-11-24 官方实盘验证）：</b><br/>
         投入 26,300 DAI → 算力 65,750（×2.5）；首日分得 0.21098 枚 ≈ 183.8 DAI = 本金的 <b>0.7%</b>；<br/>
-        同时算力减少 183.73 = 65,750 × <b>0.28%</b>。<br/>
-        即：<b>每日收益 = 当日算力 × 0.28%</b>（首日 = 本金 × 0.7%），<b>算力每天扣当天值的 0.28%</b>（×0.9972 复利式衰减）。
+        同时算力减少 183.73 = 65,750 × <b>0.2795%</b>（实测）。<br/>
+        即：<b>每日收益 = 当日算力 × 0.28%</b>（首日 = 本金 × 0.7%），<b>算力每天扣当天值的 0.2795%</b>（×0.997205，已用 D57–D59 三天实盘验证）。
         本页只用这个模型，不使用全网算力、当日实际排放与稀释。
       </div>
 
       <h3 style="margin-top:16px">复投设置</h3>
       <div class="field" style="display:flex;align-items:center;gap:14px;flex-wrap:wrap">
-        <label style="display:flex;align-items:center;gap:8px;margin:0;font-size:13px;color:var(--tx);cursor:pointer;font-weight:600">
+        <label style="display:flex;align-items:center;gap:8px;margin:0;font-size:17.5px;color:var(--tx);cursor:pointer;font-weight:600">
           <input type="checkbox" id="inReinvest" style="width:16px;height:16px;accent-color:#6D4AFF"/> 领的币卖了 DAI 后复投
         </label>
-        <label style="display:flex;align-items:center;gap:6px;margin:0;font-size:12px;color:var(--mt);font-weight:600">复投天数
-          <span class="inp" style="width:120px;padding:0 10px"><input id="inReDays" type="number" value="30" min="1" step="1" style="font-size:14px;padding:8px 0"/><span class="unit">天</span></span>
+        <label style="display:flex;align-items:center;gap:6px;margin:0;font-size:16px;color:var(--mt);font-weight:600">复投天数
+          <span class="inp" style="width:120px;padding:0 10px"><input id="inReDays" type="number" value="30" min="1" step="1" style="font-size:19px;padding:8px 0"/><span class="unit">天</span></span>
         </label>
       </div>
       <div class="note i" style="margin-top:2px">
@@ -213,14 +257,14 @@ footer a{color:var(--mt)}
 
     <div class="card hl">
       <h2><span class="bar"></span>每日收益（0.7% / 0.28% 模型）</h2>
-      <div style="font-size:12.5px;color:var(--mt);margin-bottom:2px">你的算力 Power</div>
+      <div style="font-size:17px;color:var(--mt);margin-bottom:2px">你的算力 Power</div>
       <div class="big cy" id="outPower">—</div>
 
       <div style="background:#FFFFFF;border:1px solid #D9CBF5;border-radius:12px;padding:14px 16px;margin:14px 0">
         <div class="kv"><span class="k">每日收益率（首日 = 本金 × 0.7%）</span><span class="v gd" id="outRate">—</span></div>
         <div class="kv"><span class="k">当日收益（DAI）= 算力 × 0.28%</span><span class="v gd" id="outDai">—</span></div>
         <div class="kv"><span class="k">当日币数 = 收益 ÷ 币价</span><span class="v gd" id="outToday">—</span></div>
-        <div class="kv"><span class="k">算力日衰减 = 当天算力 × 0.28%</span><span class="v" id="outDecay">—</span></div>
+        <div class="kv"><span class="k">算力日衰减 = 当天算力 × 0.2795%</span><span class="v" id="outDecay">—</span></div>
       </div>
 
       <div style="background:#FFFFFF;border:1px solid #D9CBF5;border-radius:12px;padding:14px 16px;margin-bottom:14px">
@@ -234,14 +278,14 @@ footer a{color:var(--mt)}
       <div id="reBox" style="display:none;background:#FFFFFF;border:1px solid #6D4AFF66;border-radius:12px;padding:14px 16px;margin-bottom:14px">
         <div class="kv"><span class="k">复投后第 <b id="reLblN">30</b> 天算力</span><span class="v cy" id="rePowerN">—</span></div>
         <div class="kv"><span class="k">复投注资累计（净 DAI）</span><span class="v" id="reInjected">—</span></div>
-        <div class="kv"><span class="k"><b>到期卖出所得（现金 DAI）</b></span><span class="v gd big" style="font-size:20px" id="reCash">—</span></div>
+        <div class="kv"><span class="k"><b>到期卖出所得（现金 DAI）</b></span><span class="v gd big" style="font-size:27px" id="reCash">—</span></div>
         <div class="kv"><span class="k">期末算力（参考，不计入收益）</span><span class="v" id="rePowerEnd">—</span></div>
       </div>
 
       <div class="formula" id="fml">—</div>
 
       <div class="note o">
-        <b>生命周期上限：</b>算力总量 = 你的初始算力（DAI 计价）= <b>250% 本金</b>；按 0.28%/天 复利衰减，
+        <b>生命周期上限：</b>算力总量 = 你的初始算力（DAI 计价）= <b>250% 本金</b>；按 0.2795%/天 复利衰减，
         累计收益会收敛到该上限后停止（不会无限收益）。
       </div>
     </div>
@@ -250,11 +294,11 @@ footer a{color:var(--mt)}
   <div class="card" style="margin-top:18px">
     <h2><span class="bar"></span>按地址查官方数据（个人算力 / 网络算力）</h2>
     <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
-      <div class="inp" style="flex:1;min-width:320px"><input id="qAddr" value="0x21262b87c1739086008bb858c4ecea6059e12845" style="font-size:13px"/></div>
+      <div class="inp" style="flex:1;min-width:320px"><input id="qAddr" placeholder="输入钱包地址 0x..." style="font-size:17.5px"/></div>
       <button class="btn" id="btnQuery">查询官方 API</button>
       <button class="btn gray" id="btnRefresh">刷新官方数据</button>
     </div>
-    <div id="qResult" style="font-size:12.5px;color:var(--mt);margin-top:12px">输入地址后点「查询官方 API」：读取官方登记的个人算力、网络算力（团队生效算力）、P 等级评估、绑定关系与奖励累计（需网络可达 awakehelix.io，跨域受限时请直接在官方 DApp 查询）。</div>
+    <div id="qResult" style="font-size:17px;color:var(--mt);margin-top:12px">输入地址后点「查询官方 API」：读取官方登记的个人算力、网络算力（团队生效算力）、P 等级评估、绑定关系与奖励累计（需网络可达 awakehelix.io，跨域受限时请直接在官方 DApp 查询）。</div>
   </div>
 </section>
 
@@ -267,10 +311,10 @@ footer a{color:var(--mt)}
       输入钱包地址即可查询：该地址当天的个人算力 / 网络算力 / 占比、三个池的权重与奖励，最后汇总<b>今日右螺旋收益</b>。
     </div>
     <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:14px">
-      <div class="inp" style="flex:1;min-width:320px"><input id="r6Addr" value="0x21262b87c1739086008bb858c4ecea6059e12845" style="font-size:13px"/></div>
+      <div class="inp" style="flex:1;min-width:320px"><input id="r6Addr" placeholder="输入钱包地址 0x..." style="font-size:17.5px"/></div>
       <button class="btn" id="btnRight">查询右螺旋数据</button>
     </div>
-    <div id="r6Result" style="margin-top:16px;font-size:13px;color:var(--mt)">输入地址后点「查询右螺旋数据」：读取官方个人算力、网络算力、P 等级与动态奖励记录（需网络可达 awakehelix.io；跨域受限时请在官方 DApp 查询）。</div>
+    <div id="r6Result" style="margin-top:16px;font-size:17.5px;color:var(--mt)">输入地址后点「查询右螺旋数据」：读取官方个人算力、网络算力、P 等级与动态奖励记录（需网络可达 awakehelix.io；跨域受限时请在官方 DApp 查询）。</div>
   </div>
 
   <!-- P 级成员名单（链上扫描 · 每人数据） -->
@@ -289,9 +333,9 @@ footer a{color:var(--mt)}
       <button class="chip" data-lv="P4">P4</button>
     </div>
     <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:10px;align-items:center">
-      <div class="inp" style="flex:1;min-width:260px"><input id="pSearch" placeholder="按地址搜索…" style="font-size:13px"/></div>
-      <button class="btn gray" id="btnPReload" style="font-size:12px">⟳ 重新加载名单</button>
-      <span id="pStatus" style="font-size:12.5px;color:var(--dm)"></span>
+      <div class="inp" style="flex:1;min-width:260px"><input id="pSearch" placeholder="按地址搜索…" style="font-size:17.5px"/></div>
+      <button class="btn gray" id="btnPReload" style="font-size:16px">⟳ 重新加载名单</button>
+      <span id="pStatus" style="font-size:17px;color:var(--dm)"></span>
     </div>
     <div style="overflow:auto;margin-top:10px;max-height:520px">
       <table id="pMemberTbl" style="min-width:1060px">
@@ -390,9 +434,9 @@ footer a{color:var(--mt)}
     </div>
     <div class="card hl">
       <h2><span class="bar"></span>你能到哪一级</h2>
-      <div style="font-size:12.5px;color:var(--mt)">当前等级</div>
+      <div style="font-size:17px;color:var(--mt)">当前等级</div>
       <div class="big pp" id="lvNow" style="margin-bottom:4px">—</div>
-      <div style="font-size:12.5px;color:var(--mt)" id="lvNext">—</div>
+      <div style="font-size:17px;color:var(--mt)" id="lvNext">—</div>
       <h3 style="margin-top:20px">逐级对照</h3>
       <div class="ladder" id="ladder"></div>
       <div class="note i" style="margin-top:16px">
@@ -403,7 +447,7 @@ footer a{color:var(--mt)}
   </div>
   <div class="card" style="margin-top:18px">
     <h2><span class="bar"></span>还差多少？（按当前输入）</h2>
-    <div id="gapBox" style="font-size:13px;color:var(--mt)">—</div>
+    <div id="gapBox" style="font-size:17.5px;color:var(--mt)">—</div>
   </div>
 </section>
 
@@ -428,7 +472,7 @@ footer a{color:var(--mt)}
         </div>
       </div>
       <div class="note i">
-        按左螺旋模型：<b>每日收益 = 当日算力 × 0.28%</b>（首日 = 本金 × 0.7%），<b>算力每天扣当天值的 0.28%</b>。
+        按左螺旋模型：<b>每日收益 = 当日算力 × 0.28%</b>（首日 = 本金 × 0.7%），<b>算力每天扣当天值的 0.2795%</b>。
         回本天数 = 累计净收益达到本金的那一天；累计收益上限 = 初始算力（DAI 计价）= 250% 本金。
         不使用全网算力、实际排放与稀释假设。
       </div>
@@ -438,7 +482,7 @@ footer a{color:var(--mt)}
     </div>
     <div class="card hl">
       <h2><span class="bar"></span>结果</h2>
-      <div style="font-size:12.5px;color:var(--mt)">回本所需天数（0.7%/0.28% 模型）</div>
+      <div style="font-size:17px;color:var(--mt)">回本所需天数（0.7%/0.28% 模型）</div>
       <div class="big gd" id="rBe" style="margin-bottom:12px">—</div>
       <div class="kv"><span class="k">第 1 天收益（净）</span><span class="v cy" id="rDay1">—</span></div>
       <div class="kv"><span class="k">30 天累计（净）</span><span class="v" id="rM1">—</span></div>
@@ -452,7 +496,7 @@ footer a{color:var(--mt)}
           <tr><th>策略</th><th class="num">复投天数</th><th class="num">回本总天数</th><th class="num">回本时算力</th></tr>
           <tbody id="rBeTable"></tbody>
         </table>
-        <div style="font-size:12.5px;color:var(--dm);margin-top:6px">
+        <div style="font-size:17px;color:var(--dm);margin-top:6px">
           复投期间收益全部换成算力（无现金）；复投结束后开始累计现金，现金累计达到本金即算回本。「回本总天数」= 复投天数 + 之后收现金天数。
         </div>
       </div>
@@ -532,7 +576,7 @@ footer a{color:var(--mt)}
     <div class="formula">＜左螺旋 · 0.7% / 0.28% 模型＞
 ① 个人算力   Power      = 买入 DAI × 2.5（+ 销毁 LGNS × 2）
 ② 每日收益   earn(n)    = Power(n) × 0.28%（DAI 计价；首日 = 本金 × 0.7%）
-③ 算力衰减   Power(n+1) = Power(n) × (1 − 0.28%)
+③ 算力衰减   Power(n+1) = Power(n) × (1 − 0.2795%)
 ④ 当日币数   token(n)   = earn(n) ÷ 结算价
 ⑤ 净到手     net        = Σ earn(n) × (1 − 激活费 − 卖出费) = × 94.5%
 ⑥ 生命周期上限 = 初始算力（DAI 计价）= 250% 本金，发完即止
@@ -560,12 +604,12 @@ footer a{color:var(--mt)}
       也可直接输入任意合约 / 钱包地址。支持 ERC-20（名称/符号/精度/总量）、LP 池、钱包。
     </div>
     <div class="row2">
-      <div class="field"><label>搜索合约 / 地址</label><div class="inp"><input id="c7q" placeholder="输入名称或地址…" style="font-size:15px"/></div></div>
-      <div class="field"><label>分组</label><div class="inp" style="padding:0 8px"><select id="c7g" style="width:100%;padding:11px 4px;background:transparent;border:0;color:var(--tx);font-size:14px;font-family:inherit"></select></div></div>
+      <div class="field"><label>搜索合约 / 地址</label><div class="inp"><input id="c7q" placeholder="输入名称或地址…" style="font-size:20px"/></div></div>
+      <div class="field"><label>分组</label><div class="inp" style="padding:0 8px"><select id="c7g" style="width:100%;padding:11px 4px;background:transparent;border:0;color:var(--tx);font-size:19px;font-family:inherit"></select></div></div>
     </div>
     <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:6px;align-items:center">
-      <div class="inp" style="flex:1;min-width:300px"><input id="c7addr" placeholder="或直接输入任意合约 / 钱包地址" style="font-size:14px"/></div>
-      <div class="inp" style="width:160px;padding:0 8px"><select id="c7chain" style="width:100%;padding:11px 4px;background:transparent;border:0;color:var(--tx);font-size:14px;font-family:inherit"><option value="anubis">A链 Anubis</option><option value="polygon">马蹄链 Polygon</option></select></div>
+      <div class="inp" style="flex:1;min-width:300px"><input id="c7addr" placeholder="或直接输入任意合约 / 钱包地址" style="font-size:19px"/></div>
+      <div class="inp" style="width:160px;padding:0 8px"><select id="c7chain" style="width:100%;padding:11px 4px;background:transparent;border:0;color:var(--tx);font-size:19px;font-family:inherit"><option value="anubis">A链 Anubis</option><option value="polygon">马蹄链 Polygon</option></select></div>
       <button class="btn" id="c7go">查询地址</button>
     </div>
     <div style="max-height:320px;overflow:auto;margin-top:12px;border:1px solid var(--line);border-radius:12px">
@@ -583,7 +627,7 @@ footer a{color:var(--mt)}
       输入钱包地址，查询两条链的原生币 + 已知代币 + NFT + AiLGNS 五个流动性池 LP 份额（含底层两币换算）。
     </div>
     <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
-      <div class="inp" style="flex:1;min-width:320px"><input id="c8addr" value="0x5E75B9a6b56E41fEc6C7CB78b7BBe24c03282d82" style="font-size:14px"/></div>
+      <div class="inp" style="flex:1;min-width:320px"><input id="c8addr" placeholder="输入钱包地址 0x..." style="font-size:19px"/></div>
       <button class="btn" id="c8go">查询资产</button>
     </div>
     <div id="c8res" class="note i" style="margin-top:12px">输入地址后点「查询资产」</div>
@@ -600,7 +644,7 @@ footer a{color:var(--mt)}
     <div class="chips" id="c9groups"></div>
     <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:12px">
       <button class="btn" id="c9go">一键巡检</button>
-      <span id="c9status" style="font-size:12px;color:var(--dm)"></span>
+      <span id="c9status" style="font-size:16px;color:var(--dm)"></span>
     </div>
     <div id="c9res" class="note i" style="margin-top:10px">点「一键巡检」开始</div>
   </div>
@@ -615,7 +659,7 @@ footer a{color:var(--mt)}
     </div>
     <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:10px">
       <button class="btn" id="c10go">刷新全部</button>
-      <span id="c10status" style="font-size:12px;color:var(--dm)"></span>
+      <span id="c10status" style="font-size:16px;color:var(--dm)"></span>
     </div>
     <div id="c10res">点「刷新全部」加载</div>
   </div>
@@ -628,13 +672,13 @@ footer a{color:var(--mt)}
       <h2><span class="bar"></span>单位换算</h2>
       <div class="field"><label>数量</label><div class="inp"><input id="c11v" type="number" value="1" step="any"/></div></div>
       <div class="field"><label>乘以 10 的几次方（链上精度）</label>
-        <div class="inp" style="padding:0 8px"><select id="c11n" style="width:100%;padding:11px 4px;background:transparent;border:0;color:var(--tx);font-size:14px;font-family:inherit"></select></div>
+        <div class="inp" style="padding:0 8px"><select id="c11n" style="width:100%;padding:11px 4px;background:transparent;border:0;color:var(--tx);font-size:19px;font-family:inherit"></select></div>
       </div>
       <div id="c11out" class="formula">—</div>
     </div>
     <div class="card">
       <h2><span class="bar"></span>十六进制 ↔ 十进制</h2>
-      <div class="field"><label>输入（0x… 或十进制数字）</label><div class="inp"><input id="c11h" placeholder="0x1a 或 26" style="font-size:14px"/></div></div>
+      <div class="field"><label>输入（0x… 或十进制数字）</label><div class="inp"><input id="c11h" placeholder="0x1a 或 26" style="font-size:19px"/></div></div>
       <div id="c11hout" class="formula">—</div>
     </div>
   </div>
@@ -761,8 +805,8 @@ footer a{color:var(--mt)}
         </tr>
         <tr>
           <td><b>看谁</b></td>
-          <td>带来这笔新增的<b>关系链</b><br/><span style="font-size:12.5px;color:var(--mt)">一级 50 / 二级 30 / 节点 20</span></td>
-          <td>有网络的人<br/><span style="font-size:12.5px;color:var(--mt)">上级 / 等级节点</span></td>
+          <td>带来这笔新增的<b>关系链</b><br/><span style="font-size:17px;color:var(--mt)">一级 50 / 二级 30 / 节点 20</span></td>
+          <td>有网络的人<br/><span style="font-size:17px;color:var(--mt)">上级 / 等级节点</span></td>
           <td>按<b>等级人数比例</b>切</td>
         </tr>
         <tr>
@@ -779,7 +823,7 @@ footer a{color:var(--mt)}
         </tr>
       </table>
     </div>
-    <div style="font-size:12.5px;color:var(--dm);margin-top:8px">
+    <div style="font-size:17px;color:var(--dm);margin-top:8px">
       配色与「② 右螺旋收益」页一致：增长池 · 金 ｜ 网络池 · 青 ｜ 共识池 · 紫。
     </div>
   </div>
@@ -801,62 +845,7 @@ footer a{color:var(--mt)}
       <tr><td><b>卖出（不限量）</b></td><td>无额度上限</td><td>随时可卖，但有下面六层保护</td></tr>
     </table>
 
-    <h3 style="color:var(--rd)">① LSP：把「潜在卖压」拆成「每日释放速度」</h3>
-    <div class="note i">
-      <b>LSP（Liquidity Split Protocol，流动性拆分协议）</b>：按市场自然释放比例 r，自适应决定多少排放直接进 Turbine（对应真实买入），
-      多少进 LSP Vault（内部结算权益，不是自由可转的 AiLGNS）。<b>它控制的是"进入市场的速度"，不是你已获得的经济权益。</b>
-    </div>
-    <table>
-      <tr><th>市场自然释放比例 r</th><th class="num">r &lt; 10%</th><th class="num">10–20%</th><th class="num">20–30%</th><th class="num">30–40%</th><th class="num">40–50%</th><th class="num">&gt; 50%</th></tr>
-      <tr><td>LSP 拆分比例</td><td class="num pp">50%</td><td class="num">40%</td><td class="num">30%</td><td class="num">20%</td><td class="num">10%</td><td class="num">0%</td></tr>
-    </table>
-    <div style="font-size:12.5px;color:var(--mt);margin-top:8px">
-      市场承载能力越弱 → LSP 介入越多（卖得越慢）；市场自己就能消化 → LSP 退出（r &gt; 50% 时降为 0%）。
-      LSP 比例按每日结算周期确定，当日内锁定。
-    </div>
-
-    <h3 style="color:var(--rd)">② 卖出执行：TWAP + 五池路由 + 滑点控制</h3>
-    <div class="grid" style="gap:14px">
-      <div class="note o" style="margin:0">
-        <b>时间加权（TWAP）</b><br/>
-        卖出需求按每日结算批次汇总后分散到不同时间段，不做一次性抛售。
-      </div>
-      <div class="note o" style="margin:0">
-        <b>小额分批 + 深度控制</b><br/>
-        按实时市场深度拆单；标准执行周期 24 小时，市场不足可延至 48 小时，未成交顺延下一批次。
-      </div>
-      <div class="note o" style="margin:0">
-        <b>多池动态路由</b><br/>
-        不集中在主池卖，按流动性/深度/成交量/滑点/风险分配：<br/>
-        AiLGNS/DAI 主池 · /LGNS · /gLGNS · /USDT · /A<br/>
-        <span style="color:var(--rd)"><b>注意：目前只有主池 + LGNS 池开放交易，其余 3 池（gLGNS/USDT/A）尚未开放</b></span>
-      </div>
-      <div class="note o" style="margin:0">
-        <b>滑点控制</b><br/>
-        超过协议安全范围时降低、暂停或延后执行——可以延迟成交，但不为了完成时间目标制造集中卖压。
-      </div>
-    </div>
-
-    <h3 style="color:var(--rd)">③ 费用 + 双向对冲</h3>
-    <div class="grid" style="gap:14px">
-      <div class="note i" style="margin:0">
-        <b>费用</b>：LSP 释放同样承担 <b>2.5% 激活费 + 3% 卖出费</b>，
-        理论净结算约 <b>94.5%</b>（不含滑点与执行成本）。
-      </div>
-      <div class="note i" style="margin:0">
-        <b>Turbine 买盘对冲</b>：Turbine 激活的排放需要 <b>1:1 真实市场买入</b>，
-        与 LSP 卖出形成双向流量（ILB = Turbine买入 ÷ LSP卖出，ILB=1 时双向平衡）。
-      </div>
-    </div>
-
-    <h3 style="color:var(--rd)">④ 库存反馈：卖得掉不等于无压力</h3>
-    <div class="note w">
-      如果 LSP 库存持续堆积、结算时间延长、市场深度下降 → 协议会<b>反向收缩上游排放</b>
-      （收紧 Community Actual Emission，必要时可降至 0）。
-      所以真正要盯的不是"现在卖了多少"，而是"库存要几天才能消化完"。
-    </div>
-
-                            <h3 style="color:var(--rd)">⑤ 卖出冲击计算器</h3>
+    <h3 style="color:var(--rd)">① 卖出冲击计算器</h3>
     <div class="note i">
       输入你要卖的数量，直接出结果：<b>卖后币价变成多少、跌多少、到手多少</b>。币价与主池储备按<b>链上真实储备</b>实时折算
       （公式含 3% 卖出费 + RocketSwap 池内 0.3% 费）。<br/>
@@ -880,18 +869,73 @@ footer a{color:var(--mt)}
         <label class="chip" style="display:flex;align-items:center;gap:6px;margin:0"><input type="checkbox" id="p13p3" data-pool="AILGNS_USDT_PAIR" style="width:14px;height:14px;margin:0"/> AiLGNS/USDT</label>
         <label class="chip" style="display:flex;align-items:center;gap:6px;margin:0"><input type="checkbox" id="p13p4" data-pool="AILGNS_A_PAIR" style="width:14px;height:14px;margin:0"/> AiLGNS/A</label>
       </div>
-      <div style="overflow:auto;margin-top:8px"><table id="p13pooltbl" style="min-width:700px;font-size:13px"></table></div>
-      <div style="font-size:12px;color:var(--dm);margin-top:6px">
+      <div style="overflow:auto;margin-top:8px"><table id="p13pooltbl" style="min-width:700px;font-size:17.5px"></table></div>
+      <div style="font-size:16px;color:var(--dm);margin-top:6px">
         深度 = min(报价侧储备 × 报价币 DAI 价, AiLGNS 储备 × 主池价)；报价侧折算不足 AiLGNS 价值 50% 的池视为"无法承接卖出"，自动不计入。
         卫星池卖出拿到的是对应代币（LGNS/gLGNS/USDT/A），换回 DAI 还需再跳一次（成本未计入，结果偏乐观）。
       </div>
     </div>
     <div id="p13out" style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:10px"></div>
 
-    <h3 style="color:var(--rd)">⑥ 为什么是这个数？逐项拆解</h3>
+    <h3 style="color:var(--rd)">② 为什么是这个数？逐项拆解</h3>
     <div class="note i" style="margin-bottom:8px">卖出 <b id="p13qlbl">1000</b> 枚时，每一层保护分别把冲击降了多少：</div>
     <div id="p13why" class="note o">计算中…</div>
-<h3 style="color:var(--rd)">⑦ 结论：为什么大额卖出不等于一次性砸盘</h3>
+<h3 style="color:var(--rd)">③ LSP：把「潜在卖压」拆成「每日释放速度」</h3>
+    <div class="note i">
+      <b>LSP（Liquidity Split Protocol，流动性拆分协议）</b>：按市场自然释放比例 r，自适应决定多少排放直接进 Turbine（对应真实买入），
+      多少进 LSP Vault（内部结算权益，不是自由可转的 AiLGNS）。<b>它控制的是"进入市场的速度"，不是你已获得的经济权益。</b>
+    </div>
+    <table>
+      <tr><th>市场自然释放比例 r</th><th class="num">r &lt; 10%</th><th class="num">10–20%</th><th class="num">20–30%</th><th class="num">30–40%</th><th class="num">40–50%</th><th class="num">&gt; 50%</th></tr>
+      <tr><td>LSP 拆分比例</td><td class="num pp">50%</td><td class="num">40%</td><td class="num">30%</td><td class="num">20%</td><td class="num">10%</td><td class="num">0%</td></tr>
+    </table>
+    <div style="font-size:17px;color:var(--mt);margin-top:8px">
+      市场承载能力越弱 → LSP 介入越多（卖得越慢）；市场自己就能消化 → LSP 退出（r &gt; 50% 时降为 0%）。
+      LSP 比例按每日结算周期确定，当日内锁定。
+    </div>
+
+    <h3 style="color:var(--rd)">④ 卖出执行：TWAP + 多池路由 + 滑点控制</h3>
+    <div class="grid" style="gap:14px">
+      <div class="note o" style="margin:0">
+        <b>时间加权（TWAP）</b><br/>
+        卖出需求按每日结算批次汇总后分散到不同时间段，不做一次性抛售。
+      </div>
+      <div class="note o" style="margin:0">
+        <b>小额分批 + 深度控制</b><br/>
+        按实时市场深度拆单；标准执行周期 24 小时，市场不足可延至 48 小时，未成交顺延下一批次。
+      </div>
+      <div class="note o" style="margin:0">
+        <b>多池动态路由</b><br/>
+        不集中在主池卖，按流动性/深度/成交量/滑点/风险分配：<br/>
+        AiLGNS/DAI 主池 · /LGNS · /gLGNS · /USDT · /A<br/>
+        <span style="color:var(--rd)"><b>注意：目前只有主池 + LGNS 池开放交易，其余 3 池（gLGNS/USDT/A）尚未开放</b></span>
+      </div>
+      <div class="note o" style="margin:0">
+        <b>滑点控制</b><br/>
+        超过协议安全范围时降低、暂停或延后执行——可以延迟成交，但不为了完成时间目标制造集中卖压。
+      </div>
+    </div>
+
+    <h3 style="color:var(--rd)">⑤ 费用 + 双向对冲</h3>
+    <div class="grid" style="gap:14px">
+      <div class="note i" style="margin:0">
+        <b>费用</b>：LSP 释放同样承担 <b>2.5% 激活费 + 3% 卖出费</b>，
+        理论净结算约 <b>94.5%</b>（不含滑点与执行成本）。
+      </div>
+      <div class="note i" style="margin:0">
+        <b>Turbine 买盘对冲</b>：Turbine 激活的排放需要 <b>1:1 真实市场买入</b>，
+        与 LSP 卖出形成双向流量（ILB = Turbine买入 ÷ LSP卖出，ILB=1 时双向平衡）。
+      </div>
+    </div>
+
+    <h3 style="color:var(--rd)">⑥ 库存反馈：卖得掉不等于无压力</h3>
+    <div class="note w">
+      如果 LSP 库存持续堆积、结算时间延长、市场深度下降 → 协议会<b>反向收缩上游排放</b>
+      （收紧 Community Actual Emission，必要时可降至 0）。
+      所以真正要盯的不是"现在卖了多少"，而是"库存要几天才能消化完"。
+    </div>
+
+                            <h3 style="color:var(--rd)">⑦ 结论：为什么大额卖出不等于一次性砸盘</h3>
     <div class="note o">
       1. <b>卖出被拆成时间</b>：LSP 按每日批次 + TWAP 分批执行，一天只释放市场能承受的量；<br/>
       2. <b>卖出被拆成池子</b>：五个官方池按深度动态路由，单池冲击被摊薄；<br/>
@@ -905,6 +949,8 @@ footer a{color:var(--mt)}
     </div>
   </div>
 </section>
+</div>
+</div>
 <footer>
   数据来源：<a href="https://awakehelix.io/" target="_blank" rel="noopener">AWAKE HELIX 官方 DApp / API</a> ·
   <a href="https://dixonwei.github.io/ailgns-monitor/" target="_blank" rel="noopener">阿郎老师的 AiLGNS 观测站</a>（链上直读，非官方）·
@@ -1088,7 +1134,15 @@ async function refreshTop(silent) {
   }
 }
 if ($('btnTopRefresh')) $('btnTopRefresh').onclick = () => refreshTop(false);
-setInterval(() => refreshTop(true), 3 * 3600 * 1000);
+// 自动刷新：打开页面即拉一次；之后每 10 分钟一次；切回标签页时（超过 5 分钟）补拉
+let lastRefreshAt = 0;
+const origRefresh = refreshTop;
+refreshTop = async function (silent) { const r = await origRefresh(silent); lastRefreshAt = Date.now(); return r; };
+setTimeout(() => { refreshTop(true); }, 300);
+setInterval(() => { if (!document.hidden) refreshTop(true); }, 10 * 60 * 1000);
+document.addEventListener('visibilitychange', () => {
+  if (!document.hidden && Date.now() - lastRefreshAt > 5 * 60 * 1000) refreshTop(true);
+});
 
 // ---------- Tab 切换 ----------
 document.querySelectorAll('.tab').forEach(t => {
@@ -1109,9 +1163,10 @@ document.querySelectorAll('.tab').forEach(t => {
 });
 
 // ---------- TAB1 左螺旋收益（0.7% / 0.28% 模型）----------
-// 实测基准：26,300 DAI → 65,750 Power；首日 0.21098 枚 ≈ 183.8 DAI（本金 0.7%）；算力 −183.73（0.28%）
-// 规则：每日收益 = 当日算力 × 0.28%；算力每天扣当天值的 0.28%（×0.9972）
-const DECAY = 0.0028;
+// 实测基准：26,300 DAI → 65,750 Power；首日 0.21098 枚 ≈ 183.8 DAI（本金 0.7%）；算力 −183.73（0.2795%）
+// 规则：每日收益 = 当日算力 × 0.28%；算力每天扣当天值的 0.2795%（×0.997205，D57–D59 实盘验证）
+const YIELD = 0.0028;          // 每日收益系数（实测 0.28%）
+const DECAY = 0.002795;        // 算力日衰减（实测 0.2795%，3 天实盘验证）
 function calcMain() {
   const dai = Math.max(0, num('inDai'));
   const lgns = Math.max(0, num('inLgns'));
@@ -1124,20 +1179,20 @@ function calcMain() {
   const totalDays = reinvest ? reDays + days : days;
 
   const power = dai * S.power.daiMultiplier + lgns * S.power.lgnsMultiplier;
-  const day1Dai = power * DECAY;
+  const day1Dai = power * YIELD;
   const day1Tok = day1Dai / price;
 
   // 逐日模拟：不复投基线（按持有天数）
   let curPower = power, cumDai = 0, cumTok = 0;
   for (let d = 1; d <= days; d++) {
-    const e = curPower * DECAY;
+    const e = curPower * YIELD;
     cumDai += e; cumTok += e / price;
     curPower = curPower * (1 - DECAY);
   }
   // 复投线：前 reDays 天复投，之后 days 天持有（现金）
   let pRe = power, cumDaiRe = 0, cumTokRe = 0, injected = 0, cash = 0, pAtN = 0;
   for (let d = 1; d <= totalDays; d++) {
-    const e2 = pRe * DECAY;
+    const e2 = pRe * YIELD;
     cumDaiRe += e2; cumTokRe += e2 / price;
     const net = e2 * (1 - feePct);
     if (d <= reDays) {
@@ -1172,7 +1227,7 @@ function calcMain() {
     $('fml').textContent =
       'Power     = ' + fmt(dai, 0) + ' × 2.5' + (lgns > 0 ? ' + ' + fmt(lgns, 0) + ' × 2.0' : '') + ' = ' + fmt(power, 2) + '\n' +
       '每日收益  = 当日算力 × 0.28% = ' + fmt(day1Dai, 2) + ' DAI（首日 = 本金 × 0.7%）\n' +
-      '算力衰减  = 每天扣当天值 × 0.28%：' + fmt(power, 2) + ' → ' + fmt(power * (1 - DECAY), 2) + ' → …\n' +
+      '算力衰减  = 每天扣当天值 × 0.2795%：' + fmt(power, 2) + ' → ' + fmt(power * (1 - DECAY), 2) + ' → …\n' +
       '当日币数  = ' + fmt(day1Dai, 2) + ' ÷ ' + fmt(price, 0) + ' = ' + fmt(day1Tok, 6) + ' 枚\n' +
       '持有 ' + days + ' 天累计 = ' + fmt(cumDai, 2) + ' DAI（' + fmt(cumTok, 4) + ' 枚）\n' +
       '净到手    = ' + fmt(cumDai, 2) + ' × (1 − ' + (feePct * 100).toFixed(1) + '%) = ' + fmt(netN, 2) + ' DAI';
@@ -1315,12 +1370,12 @@ function calcRoi() {
   const fee = Math.min(30, Math.max(0, num('rFee'))) / 100;
 
   const power = inDai * S.power.daiMultiplier;
-  const day1 = power * DECAY;                       // 首日毛收益（DAI）
+  const day1 = power * YIELD;                       // 首日毛收益（DAI）
   const day1Net = day1 * (1 - fee);
 
   let curPower = power, cum = 0, be = Infinity, day30 = 0, day90 = 0, day180 = 0, day365 = 0;
   for (let d = 1; d <= 3650; d++) {
-    cum += curPower * DECAY * (1 - fee);
+    cum += curPower * YIELD * (1 - fee);
     if (be === Infinity && cum >= inDai) be = d;
     if (d === 30) day30 = cum;
     if (d === 90) day90 = cum;
@@ -1339,7 +1394,7 @@ function calcRoi() {
   const pts = [];
   let c = 0, p = power;
   for (let d = 1; d <= 365; d += 5) {
-    for (let k = 0; k < 5; k++) { c += p * DECAY * (1 - fee); p = p * (1 - DECAY); }
+    for (let k = 0; k < 5; k++) { c += p * YIELD * (1 - fee); p = p * (1 - DECAY); }
     pts.push(c);
   }
   const W = 460, HT = 130, PL = 4, PT = 6, PB = 16;
@@ -1361,7 +1416,7 @@ function calcRoi() {
   function simReinvest(reDays) {
     let p = inDai * S.power.daiMultiplier, cash = 0, be = Infinity, pAtBe = 0;
     for (let d = 1; d <= 3650 + reDays; d++) {
-      const net = p * DECAY * (1 - fee);
+      const net = p * YIELD * (1 - fee);
       if (d <= reDays) {
         p = p * (1 - DECAY) + net * S.power.daiMultiplier;
       } else {
@@ -1459,10 +1514,10 @@ async function queryRight() {
             <div style="width:40%;background:#6D4AFF">网络 40%</div>
             <div style="width:30%;background:#A855F7">共识 30%</div>
           </div>
-          <div style="font-size:12.5px;color:var(--mt);margin-top:6px">
+          <div style="font-size:17px;color:var(--mt);margin-top:6px">
             增长池 ${fmt(pools.g, 2)} 枚 ｜ 网络池 ${fmt(pools.n, 2)} 枚 ｜ 共识池 ${fmt(pools.c, 2)} 枚（预算上限）
           </div>
-          <div style="font-size:12.5px;color:var(--dm);margin-top:6px">参考价 ${fmt(price, 2)} DAI/枚</div>
+          <div style="font-size:17px;color:var(--dm);margin-top:6px">参考价 ${fmt(price, 2)} DAI/枚</div>
         </div>
         <div class="card" style="background:#FFFFFF">
           <h3 style="margin-top:0">该钱包</h3>
@@ -1471,7 +1526,7 @@ async function queryRight() {
           <div class="kv"><span class="k">个人 + 网络合计</span><span class="v">${fmt(selfPower + teamPower, 2)}</span></div>
           <div class="kv"><span class="k">P 等级（D${lv && lv.day != null ? lv.day : '—'} 评估）</span><span class="v">${lv && lv.level != null ? 'P' + lv.level : '—'}</span></div>
           <div class="kv"><span class="k">直推 / 团队</span><span class="v">${cm ? (cm.direct || 0) : '—'} 人 / ${cm ? (cm.team || 0) : '—'} 人</span></div>
-          <div class="kv"><span class="k">推荐绑定</span><span class="v" style="font-size:12px">${cm && cm.bound ? '已绑定（' + (cm.boundAt || '').slice(0, 10) + '）' : '未绑定'}</span></div>
+          <div class="kv"><span class="k">推荐绑定</span><span class="v" style="font-size:16px">${cm && cm.bound ? '已绑定（' + (cm.boundAt || '').slice(0, 10) + '）' : '未绑定'}</span></div>
         </div>
       </div>
       <div class="card" style="background:#FFFFFF;margin-top:14px">
@@ -1487,8 +1542,8 @@ async function queryRight() {
         <div class="kv"><span class="k">累计动态奖励（增长 / 网络 / 共识）</span><span class="v">${cm && cm.rewardsCum ? fmt(Number(cm.rewardsCum.growth), 6) + ' / ' + fmt(Number(cm.rewardsCum.network), 6) + ' / ' + fmt(Number(cm.rewardsCum.consensus), 6) : '—'} 枚</span></div>
       </div>
       <div class="card hl" style="margin-top:14px">
-        <div class="kv"><span class="k" style="font-size:14px">今日右螺旋收益 · D${curDay}</span><span class="v pp big" style="font-size:26px">${isToday ? fmt(todayRight, 8) + ' 枚' : '0 枚'}</span></div>
-        <div style="font-size:12.5px;color:var(--dm);margin-top:4px">
+        <div class="kv"><span class="k" style="font-size:19px">今日右螺旋收益 · D${curDay}</span><span class="v pp big" style="font-size:35px">${isToday ? fmt(todayRight, 8) + ' 枚' : '0 枚'}</span></div>
+        <div style="font-size:17px;color:var(--dm);margin-top:4px">
           官方动态奖励按日结算并 T+1 公示${lastDay != null ? '（最近记录：第 ' + lastDay + ' 天）' : ''}。今日 D${curDay} 的奖励通常次日才出；
           ${last && !isToday ? '最新记录不是今日，因此今日记为 0，上表为该地址最近一次实测数据。' : ''}
           ${!last ? '该地址目前没有动态奖励记录，今日右螺旋收益为 0。' : ''}
@@ -1540,7 +1595,7 @@ function renderPList() {
   $('pMemberBody').innerHTML = list.map((x, i) => `
     <tr>
       <td>${i + 1}</td>
-      <td style="font-size:12px"><a href="#" data-addr="${x.address}" style="color:var(--cy);text-decoration:none">${x.address.slice(0, 6)}…${x.address.slice(-4)}</a><button class="mini" data-copy="${x.address}" title="复制完整地址">复制</button></td>
+      <td style="font-size:16px"><a href="#" data-addr="${x.address}" style="color:var(--cy);text-decoration:none">${x.address.slice(0, 6)}…${x.address.slice(-4)}</a><button class="mini" data-copy="${x.address}" title="复制完整地址">复制</button></td>
       <td class="num">${fmt(Number(x.lockValueDai) || 0, 0)}</td>
       <td class="num">${fmt(Number(x.zone1) || 0, 0)}</td>
       <td class="num">${fmt(Number(x.zone2) || 0, 0)}</td>
@@ -1637,7 +1692,7 @@ async function queryAddress() {
     const pct = v => (v != null && totalActive > 0) ? (v / totalActive * 100).toFixed(6) + '%' : '—';
     $('qResult').innerHTML = `
       <div style="background:#FFFFFF;border:1px solid #D9CBF5;border-radius:12px;padding:12px 16px;margin-top:10px">
-        <div class="kv"><span class="k">地址</span><span class="v" style="font-size:12px">${addr}</span></div>
+        <div class="kv"><span class="k">地址</span><span class="v" style="font-size:16px">${addr}</span></div>
         <div class="kv"><span class="k">个人算力 selfPower（左螺旋）</span><span class="v cy">${selfPower != null ? fmt(selfPower, 2) : '—'} · 占全网 ${pct(selfPower)}</span></div>
         <div class="kv"><span class="k">网络算力 teamActivePower（右螺旋）</span><span class="v pp">${teamPower != null ? fmt(teamPower, 2) : '—'} · 占全网 ${pct(teamPower)}</span></div>
         <div class="kv"><span class="k">个人 + 网络合计</span><span class="v">${(selfPower != null || teamPower != null) ? fmt((selfPower || 0) + (teamPower || 0), 2) : '—'}</span></div>
@@ -1649,7 +1704,7 @@ async function queryAddress() {
         <div class="kv"><span class="k">累计动态奖励（增长/网络/共识）</span><span class="v">${cm && cm.rewardsCum ? fmt(Number(cm.rewardsCum.growth), 2) + ' / ' + fmt(Number(cm.rewardsCum.network), 2) + ' / ' + fmt(Number(cm.rewardsCum.consensus), 2) : '—'}</span></div>
         ${todayEarn != null ? `<div class="kv"><span class="k">按左螺旋公式的今日所得（实际排放 × 占比）</span><span class="v gd">${fmt(todayEarn, 8)} 枚</span></div>` : ''}
       </div>
-      <div style="font-size:12.5px;color:var(--dm);margin-top:6px">
+      <div style="font-size:17px;color:var(--dm);margin-top:6px">
         注：①「个人算力」取官方 level API 的 selfPower（含算力生命周期结算，可能与你按「买入 DAI × 2.5」口算的值不同）；
         ②「网络算力」取 community API 的 teamActivePower（团队生效算力）；
         ③ 左螺旋用个人算力占比，右螺旋（社区动态池）用网络算力/等级/小区算力权重计算，见「② 右螺旋收益」页。
@@ -1695,7 +1750,7 @@ async function refreshOfficial() {
       notes.push(`官方实时价 ${fmt(S.official.priceLive, 2)} DAI`);
     }
     $('qResult').innerHTML = '<span class="gn">✓ 官方数据已刷新：</span>' + notes.join(' · ') +
-      '<div style="font-size:12.5px;color:var(--dm);margin-top:6px">提示：①页输入框里手动填最新「当日实际排放」与「全网活跃算力」即可按最新数据重算。</div>';
+      '<div style="font-size:17px;color:var(--dm);margin-top:6px">提示：①页输入框里手动填最新「当日实际排放」与「全网活跃算力」即可按最新数据重算。</div>';
   } catch (e) {
     $('qResult').innerHTML = '<span class="rd">刷新失败：浏览器跨域限制或网络不可达，仍显示内置快照（2026-11-23 核对）。</span>';
   }
@@ -1769,7 +1824,7 @@ function c7filter() {
       rows.push({ name: it.name, address: it.address, kind: it.kind, chain: gr.chain });
     });
   });
-  $('c7list').innerHTML = rows.map((r, i) => '<tr data-i="' + i + '" style="cursor:pointer"><td>' + r.name + '</td><td style="font-size:12px">' + r.address + '</td><td>' + (KIND_CN[r.kind] || r.kind) + '</td><td>' + CHAIN_CN(r.chain) + '</td></tr>').join('');
+  $('c7list').innerHTML = rows.map((r, i) => '<tr data-i="' + i + '" style="cursor:pointer"><td>' + r.name + '</td><td style="font-size:16px">' + r.address + '</td><td>' + (KIND_CN[r.kind] || r.kind) + '</td><td>' + CHAIN_CN(r.chain) + '</td></tr>').join('');
   document.querySelectorAll('#c7list tr').forEach(tr => {
     tr.onclick = () => { const r = rows[+tr.dataset.i]; c7query(r.chain, r.address, r.name); };
   });
@@ -1838,7 +1893,7 @@ async function c8query() {
     rows.push(['A链', 'LP 份额', p.name, fmtUnits(lp, 18) + extra, p.address]);
   }
   out.innerHTML = '<div style="overflow:auto"><table style="min-width:860px"><tr><th>链</th><th>类型</th><th>资产</th><th class="num">余额</th><th>合约</th></tr>' +
-    rows.map(r => '<tr><td>' + r[0] + '</td><td>' + r[1] + '</td><td>' + r[2] + '</td><td class="num">' + r[3] + '</td><td style="font-size:12px">' + (r[4] || '') + '</td></tr>').join('') + '</table></div>';
+    rows.map(r => '<tr><td>' + r[0] + '</td><td>' + r[1] + '</td><td>' + r[2] + '</td><td class="num">' + r[3] + '</td><td style="font-size:16px">' + (r[4] || '') + '</td></tr>').join('') + '</table></div>';
 }
 if ($('c8go')) $('c8go').onclick = c8query;
 
@@ -1871,7 +1926,7 @@ async function c9scan() {
     for (const it of t.items) {
       let bal = '—';
       try { bal = fmtUnits(hexBig(await rpcCall(t.chain, 'eth_getBalance', [it.address, 'latest'])), 18); } catch (e) { bal = '失败'; }
-      rows.push('<tr><td>' + it.name + '</td><td style="font-size:12px">' + it.address + '</td><td class="num">' + bal + '</td></tr>');
+      rows.push('<tr><td>' + it.name + '</td><td style="font-size:16px">' + it.address + '</td><td class="num">' + bal + '</td></tr>');
       done++; if (st) st.textContent = '巡检中 ' + done + '/' + total;
     }
     blocks.push('<h3 style="margin:16px 0 6px">' + t.title + '</h3><div style="overflow:auto"><table><tr><th>名称</th><th>地址</th><th class="num">原生余额</th></tr>' + rows.join('') + '</table></div>');
@@ -1913,7 +1968,7 @@ async function obsRefresh() {
         '<div style="overflow:auto"><table style="min-width:860px"><tr><th>池子</th><th class="num">TVL (USD)</th><th class="num">24h 成交量</th><th class="num">24h 手续费</th><th class="num">价格</th><th class="num">健康度</th><th class="num">权重</th></tr>' +
         pools.map(p => '<tr><td>' + (POOL_NAME[p.key] || p.key) + '</td><td class="num">' + fmt(Number(p.tvlUsd), 0) + '</td><td class="num">' + fmt(Number(p.volume24hUsd), 0) + '</td><td class="num">' + fmt(Number(p.fees24hUsd), 2) + '</td><td class="num">' + (p.price ? fmt(Number(p.price), 2) : '—') + '</td><td class="num">' + fmtInt(p.healthScore) + '</td><td class="num">' + (p.weightBps ? (Number(p.weightBps) / 100).toFixed(1) + '%' : '—') + '</td></tr>').join('') +
         '</table></div>' +
-        '<div style="font-size:12.5px;color:var(--dm);margin-top:8px">数据来源：awakehelix.io/api/v1/pools（官方流动性页）· 健康度/权重为合约状态机字段<br/><b style="color:var(--rd)">注意：目前只有 2 个池开放交易（主池 AiLGNS/DAI + AiLGNS/LGNS），其余 3 池尚未开放</b></div></div>';
+        '<div style="font-size:17px;color:var(--dm);margin-top:8px">数据来源：awakehelix.io/api/v1/pools（官方流动性页）· 健康度/权重为合约状态机字段<br/><b style="color:var(--rd)">注意：目前只有 2 个池开放交易（主池 AiLGNS/DAI + AiLGNS/LGNS），其余 3 池尚未开放</b></div></div>';
     }
     out.innerHTML =
       '<div class="grid">' +
@@ -2075,10 +2130,10 @@ function p13calc() {
   const kv = (k, v, cls) => '<div class="kv" style="border:0;padding:5px 0"><span class="k">' + k + '</span><span class="v ' + (cls || '') + '">' + v + '</span></div>';
   const card = (title, sub, big, rowsHtml, extra) =>
     '<div class="card hl" style="box-shadow:none;margin:0;padding:18px 20px">' +
-    '<div style="font-size:12.5px;color:var(--mt);font-weight:700">' + title + '</div>' +
-    '<div class="big" style="font-size:32px;margin:4px 0">' + big + '</div>' +
-    '<div style="font-size:12px;color:var(--dm);margin-bottom:6px">' + sub + '</div>' +
-    rowsHtml + '<div style="font-size:12px;color:var(--dm);margin-top:6px">' + extra + '</div></div>';
+    '<div style="font-size:17px;color:var(--mt);font-weight:700">' + title + '</div>' +
+    '<div class="big" style="font-size:40px;margin:4px 0">' + big + '</div>' +
+    '<div style="font-size:16px;color:var(--dm);margin-bottom:6px">' + sub + '</div>' +
+    rowsHtml + '<div style="font-size:16px;color:var(--dm);margin-top:6px">' + extra + '</div></div>';
 
   if ($('p13out')) $('p13out').innerHTML =
     card('直接砸进主池（理论最坏）', '一次性全卖 · 只走主池',
@@ -2109,7 +2164,7 @@ function p13calc() {
     '5️⃣ <b>日常买盘对冲</b>：每天约 40 万 DAI 的 Turbine/自然买盘主要用于对冲日常排放卖压，不会额外拉升你的卖价（想要乐观情形可在上面填额外净买盘）；<br/>' +
     '6️⃣ <b>滑点刹车</b>：超过协议安全范围就降低/暂停/延后（可延至 48 小时、未成交顺延）——大单<b>不会被一次性成交</b>，而是被拆到很多天。' +
     '</div>' +
-    '<div style="margin-top:8px;font-size:13px">结论：卖 <b>' + fmt(qty, 0) + '</b> 枚，一次性砸主池是 <b>' + chg1.toFixed(2) + '%</b>；分批后单日只有 <b>' + (dayImp * 100).toFixed(2) + '%</b>，累计 ' + n + ' 天后总冲击 <b>' + (chg2 >= 0 ? '+' : '') + chg2.toFixed(2) + '%</b>。</div>';
+    '<div style="margin-top:8px;font-size:17.5px">结论：卖 <b>' + fmt(qty, 0) + '</b> 枚，一次性砸主池是 <b>' + chg1.toFixed(2) + '%</b>；分批后单日只有 <b>' + (dayImp * 100).toFixed(2) + '%</b>，累计 ' + n + ' 天后总冲击 <b>' + (chg2 >= 0 ? '+' : '') + chg2.toFixed(2) + '%</b>。</div>';
 }
 async function loadP13Data() {
   const res = await Promise.all(P13_PAIRS.map(async p => {
@@ -2159,6 +2214,12 @@ function p13init() {
     loadP13Data().then(p13calc).catch(p13calc);
   } else { p13calc(); }
 }
+// 表格防溢出：自动包一层横向滚动容器
+document.querySelectorAll('.main table').forEach(function (tb) {
+  if (tb.parentElement && tb.parentElement.classList.contains('tablewrap')) return;
+  var w = document.createElement('div'); w.className = 'tablewrap';
+  tb.parentNode.insertBefore(w, tb); w.appendChild(tb);
+});
 // ---------- 初始化 ----------
 calcMain();
 calcLevel();
