@@ -1,0 +1,2382 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>小盛 丨 一天算八次 · HELIX 双螺旋收益计算器</title>
+<style>
+:root{
+  --bg:#FAF7FE;--bg2:#FFFFFF;--card:#FDFBFF;--card2:#F6EFFF;--line:#D9CBF5;
+  --cy:#6D4AFF;--pp:#A855F7;--gd:#C08A00;--rd:#D9534F;--gn:#2E9E5B;
+  --tx:#2E2350;--mt:#6F6392;--dm:#A79BC4;
+}
+*{box-sizing:border-box}
+html,body{overflow-x:hidden;max-width:100%}
+body{margin:0;background:
+  radial-gradient(1100px 560px at 88% -12%,#F0E8FF,transparent),
+  radial-gradient(900px 520px at -8% -4%,#F7EEFF,transparent),
+  linear-gradient(180deg,#FBF8FF,#FAF7FE 45%,#FBF6FF);
+  color:var(--tx);font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;
+  font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1460px;margin:0 auto;padding:26px 22px 90px}
+header{display:flex;align-items:flex-start;justify-content:space-between;gap:22px;flex-wrap:wrap;
+  padding:20px 24px;border-radius:16px;border:1px solid var(--line);
+  background:linear-gradient(135deg,#FFFFFF,#F7F0FF 55%,#FDF8FF);position:relative;overflow:hidden;
+  box-shadow:0 5px 20px rgba(109,74,255,.07)}
+header:after{content:"";position:absolute;right:-70px;top:-70px;width:260px;height:260px;border-radius:50%;
+  background:radial-gradient(circle,#A855F71a,transparent 68%);pointer-events:none}
+h1{margin:0 0 5px;font-size:30px;letter-spacing:.3px;color:#3B2A9E;font-weight:700;line-height:1.3}
+.sub{margin:0;color:var(--mt);font-size:15.5px}
+.badge{display:inline-flex;align-items:center;gap:7px;margin-top:10px;padding:6px 14px;border-radius:999px;
+  border:1px solid #D2BEF5;color:#5B35C9;background:#F6EFFF;font-size:14px}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--cy);animation:p 2s infinite}
+@keyframes p{50%{opacity:.35}}
+.snap{font-size:14px;color:var(--mt);text-align:right;min-width:220px;line-height:1.8}
+.snap b{font-size:15.5px}
+
+/* 导航（×0.8，细体） */
+.layout{display:flex;gap:20px;align-items:flex-start;margin-top:20px}
+.layout>*{min-width:0}
+.sidenav{flex:0 0 244px;position:sticky;top:14px;background:#FFFFFF;border:1px solid var(--line);
+  border-radius:14px;padding:8px;max-height:calc(100vh - 28px);overflow:auto;
+  box-shadow:0 4px 14px rgba(109,74,255,.05)}
+.main{flex:1;min-width:0;max-width:100%}
+.navg{display:flex;align-items:center;justify-content:space-between;gap:6px;
+  padding:14px 10px 6px;font-weight:600;font-size:15px;color:#5B35C9;letter-spacing:.3px}
+.navg:first-child{padding-top:5px}
+.navg small{font-weight:400;color:var(--dm);font-size:12px;letter-spacing:.8px}
+.tab{display:flex;align-items:center;gap:9px;width:100%;text-align:left;margin:1px 0;
+  padding:11px 13px;border-radius:10px;border:1px solid transparent;background:transparent;
+  color:var(--tx);cursor:pointer;font-size:17px;font-weight:400;transition:.15s;font-family:inherit}
+.tab:hover{background:#F6EFFF;color:#4B2FBF}
+.tab.on{background:linear-gradient(135deg,#6D4AFF,#8B5CFF);color:#fff;font-weight:600;
+  box-shadow:0 3px 14px rgba(109,74,255,.26)}
+@media(max-width:1100px){
+  .layout{display:block}
+  .sidenav{position:static;max-height:none;display:flex;flex-wrap:wrap;gap:5px;margin-bottom:16px;padding:7px}
+  .navg{flex:1 0 100%;padding:10px 7px 3px;font-size:13px}
+  .tab{width:auto;flex:0 0 auto;padding:8px 12px;font-size:13.5px;border:1px solid var(--line);background:#F6EFFF}
+  .tab.on{border-color:transparent}
+}
+.panel{display:none;animation:fi .2s ease}
+.panel.on{display:block}
+@keyframes fi{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+
+/* 主体内容（×0.85） */
+.grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);gap:19px}
+.grid>*{min-width:0}
+@media(max-width:900px){.grid{grid-template-columns:1fr}}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px 23px;
+  box-shadow:0 3px 10px rgba(109,74,255,.05);min-width:0;max-width:100%;overflow-wrap:anywhere}
+.card.hl{border-color:#B99BF544;background:linear-gradient(160deg,#FFFFFF,#F8F1FF 70%,#FCF7FF)}
+h2{font-size:18px;margin:0 0 14px;color:#3B2A9E;display:flex;align-items:center;gap:9px;font-weight:700;flex-wrap:wrap}
+h2 .bar{width:4px;height:17px;border-radius:2px;background:linear-gradient(180deg,var(--cy),var(--pp));flex:0 0 auto}
+h3{font-size:15.5px;color:var(--mt);margin:19px 0 9px;font-weight:600}
+h3:first-child{margin-top:0}
+.field{margin-bottom:15px;min-width:0;max-width:100%}
+label{display:block;font-size:14.5px;color:var(--mt);margin-bottom:6px;font-weight:500;overflow-wrap:anywhere}
+label .tip{color:var(--dm);font-weight:400;margin-left:6px;font-size:13px}
+.inp{display:flex;align-items:center;background:#F9F5FF;border:1px solid #D9CBF5;border-radius:10px;padding:0 14px;transition:.15s;min-width:0;max-width:100%}
+.inp:focus-within{border-color:var(--cy);box-shadow:0 0 0 3px rgba(109,74,255,.12)}
+.inp input{flex:1;background:none;border:0;outline:0;color:var(--tx);font-size:18px;font-weight:600;
+  padding:10px 0;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;min-width:0;width:100%}
+.inp .unit{color:var(--mt);font-size:14px;margin-left:7px;white-space:nowrap;flex:0 0 auto}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:14px;min-width:0}
+.row2>*{min-width:0}
+@media(max-width:700px){.row2{grid-template-columns:1fr}}
+.big{font-size:34px;font-weight:700;letter-spacing:-.3px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;
+  line-height:1.2;word-break:break-all;color:#3B2A9E}
+.kv{display:flex;justify-content:space-between;align-items:baseline;gap:9px;flex-wrap:wrap;
+  padding:9px 0;border-bottom:1px dashed #ECDDF9;font-size:15.5px;min-width:0}
+.kv:last-child{border:0}
+.kv .k{color:var(--mt);font-size:15px;min-width:0;overflow-wrap:anywhere}
+.kv .v{font-weight:600;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;text-align:right;font-size:15.5px;
+  min-width:0;max-width:100%;word-break:break-all;overflow-wrap:anywhere}
+.cy{color:var(--cy)}.pp{color:var(--pp)}.gd{color:var(--gd)}.rd{color:var(--rd)}.gn{color:var(--gn)}
+.note{border-radius:11px;padding:13px 16px;margin:13px 0;font-size:15px;line-height:1.65;overflow-wrap:anywhere}
+.note.i{background:#F5F7FE;border:1px solid #D9E0F3;color:#4B3A75}
+.note.w{background:#FDF0EE;border:1px solid #F2C0B8;color:#9B3A2C}
+.note.o{background:#EEF8F1;border:1px solid #BFE3C9;color:#236B3C}
+.note b{color:#3B2A9E}
+.formula{background:#F8F3FF;border:1px solid #D9CBF5;border-left:4px solid var(--pp);border-radius:10px;
+  padding:13px 16px;margin:13px 0;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:14.5px;
+  color:#4B3A75;overflow-x:auto;white-space:pre-wrap;line-height:1.8;max-width:100%}
+.tablewrap{overflow-x:auto;max-width:100%}
+table{width:100%;border-collapse:collapse;font-size:15px;margin-top:4px;max-width:100%}
+th,td{padding:9px 11px;border-bottom:1px solid #EADCF8;text-align:left}
+th{color:var(--mt);font-size:14px;font-weight:600;white-space:nowrap}
+td.num,th.num{text-align:right;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;white-space:nowrap}
+tr:hover td{background:#F8F2FF}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:9px}
+.chip{padding:7px 14px;border-radius:999px;background:#F5EEFF;border:1px solid #D9CBF5;font-size:14.5px;
+  color:var(--mt);cursor:pointer;transition:.15s;font-family:inherit;max-width:100%;white-space:normal;text-align:left;font-weight:400}
+.chip:hover{border-color:#C2A8F7;color:var(--tx)}
+.chip.on{background:linear-gradient(135deg,#6D4AFF,#A855F7);border-color:#7C5CFF;color:#fff}
+.chart{width:100%;height:auto;display:block}
+.legend{display:flex;gap:16px;flex-wrap:wrap;font-size:14.5px;color:var(--mt);margin-top:9px}
+.legend span{display:flex;align-items:center;gap:7px}
+.legend i{width:12px;height:4px;border-radius:2px;display:inline-block}
+.bar3{display:flex;height:29px;border-radius:8px;overflow:hidden;margin:12px 0;border:1px solid var(--line)}
+.bar3 div{display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;color:#fff;white-space:nowrap;min-width:0}
+.ladder{margin-top:8px}
+.lv{display:flex;align-items:center;gap:11px;padding:9px 0;border-bottom:1px dashed #ECDDF9;min-width:0;flex-wrap:wrap}
+.lv:last-child{border:0}
+.lv .tag{flex:0 0 40px;height:29px;border-radius:8px;display:flex;align-items:center;justify-content:center;
+  font-size:14px;font-weight:700;font-family:ui-monospace,monospace;background:#F5EEFF;border:1px solid #D9CBF5;color:var(--dm)}
+.lv.ok .tag{background:linear-gradient(135deg,#6D4AFF,#A855F7);color:#fff;border:0}
+.lv .need{flex:1 1 150px;font-size:14.5px;color:var(--mt);min-width:0}
+.lv .fill{flex:0 0 115px;height:7px;border-radius:4px;background:#EADCF8;overflow:hidden}
+.lv .fill i{display:block;height:100%;border-radius:4px;background:linear-gradient(90deg,var(--cy),var(--pp));transition:width .3s}
+.lv .pc{flex:0 0 58px;text-align:right;font-size:14px;font-family:ui-monospace,monospace;color:var(--mt)}
+.btn{padding:10px 18px;border-radius:10px;border:1px solid #6D4AFF;background:linear-gradient(135deg,#6D4AFF,#8B5CFF);color:#fff;
+  cursor:pointer;font-family:inherit;font-size:15.5px;font-weight:600;transition:.15s;max-width:100%}
+.btn:hover{background:linear-gradient(135deg,#5B3CE6,#7C4CF0);border-color:#5B3CE6}
+.btn.gray{border-color:#D9CBF5;background:#F6EFFF;color:var(--mt)}
+.btn.gray:hover{background:#F0E6FF;color:var(--tx)}
+.mini{margin-left:5px;padding:2px 8px;border-radius:6px;border:1px solid #D9CBF5;background:#F5EEFF;color:var(--mt);font-size:13px;font-family:inherit;cursor:pointer;vertical-align:middle;transition:.15s}
+.mini:hover{border-color:var(--cy);color:var(--cy)}
+footer{margin-top:34px;padding-top:17px;border-top:1px solid var(--line);color:var(--dm);font-size:14px;line-height:1.9}
+footer a{color:var(--mt)}
+
+/* 防溢出补充 */
+[style*="grid-template-columns"]{min-width:0;max-width:100%}
+[style*="grid-template-columns"]>*{min-width:0}
+[style*="display:flex"]>*{min-width:0}
+[style*="display:grid"]{min-width:0;max-width:100%}
+@media(max-width:760px){
+  [style*="grid-template-columns:1fr 1fr 1fr"]{grid-template-columns:1fr!important}
+}
+
+/* 手机竖屏预览模式 */
+body.mobile-view .wrap{max-width:430px;margin:0 auto;padding:14px 12px 70px;
+  border-left:1px solid var(--line);border-right:1px solid var(--line);min-height:100vh;
+  box-shadow:0 0 40px rgba(109,74,255,.10)}
+body.mobile-view .layout{display:block}
+body.mobile-view .sidenav{position:static;max-height:none;display:flex;flex-wrap:wrap;gap:5px;margin-bottom:14px;padding:7px}
+body.mobile-view .navg{flex:1 0 100%;padding:9px 6px 3px;font-size:13px}
+body.mobile-view .tab{width:auto;flex:0 0 auto;padding:7px 11px;font-size:13px;border:1px solid var(--line);background:#F6EFFF}
+body.mobile-view .tab.on{border-color:transparent}
+body.mobile-view .grid{grid-template-columns:1fr}
+body.mobile-view .row2{grid-template-columns:1fr}
+body.mobile-view h1{font-size:22px}
+body.mobile-view .sub{font-size:13.5px}
+body.mobile-view .snap{text-align:left;min-width:0}
+body.mobile-view .big{font-size:29px}
+body.mobile-view .card{padding:16px 16px}
+body.mobile-view .kv{font-size:14px}
+body.mobile-view [style*="grid-template-columns:1fr 1fr 1fr"]{grid-template-columns:1fr!important}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <div>
+    <h1>小盛 丨 一天算八次</h1>
+    <p class="sub">HELIX 双螺旋收益测算：左螺旋（个人算力）＋ 右螺旋（社区动态池：增长 30% · 网络 40% · 共识 30%）</p>
+    <div class="badge"><span class="dot"></span>现在是第 <b id="dayBadge">58</b> 天 · 第 <b id="epochBadge">9</b> 纪元<span id="epochBlocks" style="display:inline-flex;gap:3px;margin-left:9px;align-items:center"></span></div>
+    <div style="margin-top:12px;display:flex;gap:12px;align-items:center;flex-wrap:wrap">
+      <button class="btn" id="btnTopRefresh" style="padding:8px 18px;font-size:17px">⟳ 刷新实时数据</button>
+      <button class="btn gray" id="btnViewMode" style="padding:8px 16px;font-size:13px">📱 手机版预览</button>
+      <span id="refreshStatus" style="font-size:17px;color:var(--dm)">打开页面自动刷新 · 之后每 10 分钟自动刷新一次 · 也可手动点</span>
+    </div>
+  </div>
+  <div class="snap">
+    全网活跃算力 <b class="cy" id="hActive">—</b><br/>
+    当日实际排放 <b class="gd" id="hActual">—</b> 枚<br/>
+    参考价 <b class="pp" id="hPrice">—</b> DAI/枚
+  </div>
+</header>
+
+<div class="layout">
+  <aside class="sidenav">
+    <div class="navg"><span>基础导航</span><small>OVERVIEW</small></div>
+    <button class="tab" data-p="p5">📊 参数与来源</button>
+    <button class="tab" data-p="p2">📈 全网排放全景</button>
+
+    <div class="navg"><span>左螺旋</span><small>算力 · 排放</small></div>
+    <button class="tab on" data-p="p1">⚡ 收益测算</button>
+    <button class="tab" data-p="p4">🔄 回本测算</button>
+    <button class="tab" data-p="p3">🏅 P 等级测算</button>
+
+    <div class="navg"><span>右螺旋</span><small>社区动态</small></div>
+    <button class="tab" data-p="p6">🌀 右螺旋收益</button>
+    <button class="tab" data-p="p12">🧩 三个池是什么</button>
+
+    <div class="navg"><span>交易与流动性</span><small>MARKET</small></div>
+    <button class="tab" data-p="p13">📉 卖出冲击</button>
+    <button class="tab" data-p="p10">🔭 AiLGNS 观测台</button>
+
+    <div class="navg"><span>工具与查询</span><small>TOOLS</small></div>
+    <button class="tab" data-p="p7">🔍 合约查询</button>
+    <button class="tab" data-p="p8">💼 钱包资产</button>
+    <button class="tab" data-p="p9">🏦 资金监控</button>
+    <button class="tab" data-p="p11">🧰 小工具</button>
+  </aside>
+  <div class="main">
+
+<!-- ============ TAB 1 收益测算 ============ -->
+<section class="panel on" id="p1">
+  <div class="grid">
+    <div class="card">
+      <h2><span class="bar"></span>输入</h2>
+
+      <h3>投入</h3>
+      <div class="field">
+        <label>买入算力的 DAI<span class="tip">1 DAI → 2.5 个人算力（链上 powerRateBps=25000）</span></label>
+        <div class="inp"><input id="inDai" type="number" value="10000" min="0" step="100"/><span class="unit">DAI</span></div>
+      </div>
+      <div class="field">
+        <label>销毁 LGNS 换算力<span class="tip">1 LGNS → 2 算力，可留空</span></label>
+        <div class="inp"><input id="inLgns" type="number" value="0" min="0" step="100"/><span class="unit">LGNS</span></div>
+      </div>
+
+      <h3>结算参数</h3>
+      <div class="row2">
+        <div class="field">
+          <label>币价假设</label>
+          <div class="inp"><input id="inPrice" type="number" value="845" min="0" step="10"/><span class="unit">DAI</span></div>
+        </div>
+        <div class="field">
+          <label style="color:#B71C1C;font-weight:700">持有天数</label>
+          <div class="inp"><input id="inDays" type="number" value="30" min="1" step="1" style="color:#2E9E5B"/><span class="unit">天</span></div>
+        </div>
+      </div>
+      <div class="row2">
+        <div class="field">
+          <label>激活费 + 卖出费</label>
+          <div class="inp"><input id="inFee" type="number" value="5.5" min="0" max="30" step="0.1"/><span class="unit">%（默认 2.5+3）</span></div>
+        </div>
+        <div class="field">
+          <label>全网活跃算力<span class="tip">仅展示参考，不参与计算</span></label>
+          <div class="inp" style="opacity:.7"><input id="inActive" type="number" value="305722454" min="1" step="1000" readonly/><span class="unit">Power</span></div>
+        </div>
+      </div>
+
+      <h3 style="margin-top:16px">复投设置</h3>
+      <div class="field" style="display:flex;align-items:center;gap:14px;flex-wrap:wrap">
+        <label style="display:flex;align-items:center;gap:8px;margin:0;font-size:17.5px;color:var(--tx);cursor:pointer;font-weight:600">
+          <input type="checkbox" id="inReinvest" style="width:16px;height:16px;accent-color:#6D4AFF"/> 领的币卖了 DAI 后复投
+        </label>
+        <label style="display:flex;align-items:center;gap:6px;margin:0;font-size:16px;color:var(--mt);font-weight:600">复投天数
+          <span class="inp" style="width:120px;padding:0 10px"><input id="inReDays" type="number" value="30" min="1" step="1" style="font-size:16px;padding:8px 0"/><span class="unit">天</span></span>
+        </label>
+      </div>
+    </div>
+
+    <div class="card hl">
+      <h2><span class="bar"></span>每日收益</h2>
+      <div style="font-size:17px;color:var(--mt);margin-bottom:2px">你的算力 Power</div>
+      <div class="big cy" id="outPower">—</div>
+
+      <div style="background:#FFFFFF;border:1px solid #D9CBF5;border-radius:12px;padding:14px 16px;margin:14px 0">
+        <div class="kv"><span class="k">每日收益率（首日 = 本金 × 0.7%）</span><span class="v gd" id="outRate">—</span></div>
+        <div class="kv"><span class="k">当日收益（DAI）= 算力 × 0.28%</span><span class="v gd" id="outDai">—</span></div>
+        <div class="kv"><span class="k">当日币数 = 收益 ÷ 币价</span><span class="v gd" id="outToday">—</span></div>
+        </div>
+
+      <div style="background:#FFFFFF;border:1px solid #D9CBF5;border-radius:12px;padding:14px 16px;margin-bottom:14px">
+        <div class="kv"><span class="k">持有 <b id="lblDays">30</b> 天累计（币数）</span><span class="v" id="outTokN">—</span></div>
+        <div class="kv"><span class="k">累计收益（未扣费）</span><span class="v" id="outValN">—</span></div>
+        <div class="kv"><span class="k" id="lblNet" style="font-size:17px;color:#E53935;font-weight:600">实际得到</span><span class="v" id="outNet" style="font-size:18px;color:#E53935">—</span></div>
+        <div class="kv"><span class="k">相当于本金的</span><span class="v pp" id="outPct">—</span></div>
+        <div class="kv"><span class="k">算力剩余 / 生命周期总额度</span><span class="v" id="outLife">—</span></div>
+      </div>
+
+      <div id="reBox" style="display:none;background:#FFFFFF;border:1px solid #6D4AFF66;border-radius:12px;padding:14px 16px;margin-bottom:14px">
+        <div class="kv"><span class="k">复投后第 <b id="reLblN">30</b> 天算力</span><span class="v cy" id="rePowerN">—</span></div>
+        <div class="kv"><span class="k">复投注资累计（净 DAI）</span><span class="v" id="reInjected">—</span></div>
+        <div class="kv"><span class="k"><b>到期卖出所得（现金 DAI）</b></span><span class="v gd big" style="font-size:23px" id="reCash">—</span></div>
+        <div class="kv"><span class="k">期末算力（参考，不计入收益）</span><span class="v" id="rePowerEnd">—</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:18px">
+    <h2><span class="bar"></span>按地址查官方数据（个人算力 / 网络算力）</h2>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+      <div class="inp" style="flex:1;min-width:320px"><input id="qAddr" placeholder="输入钱包地址 0x..." style="font-size:17.5px"/></div>
+      <button class="btn" id="btnQuery">查询官方 API</button>
+      <button class="btn gray" id="btnRefresh">刷新官方数据</button>
+    </div>
+    <div id="qResult" style="font-size:17px;color:var(--mt);margin-top:12px">输入地址后点「查询官方 API」：读取官方登记的个人算力、网络算力（团队生效算力）、P 等级评估、绑定关系与奖励累计（需网络可达 awakehelix.io，跨域受限时请直接在官方 DApp 查询）。</div>
+  </div>
+</section>
+
+<!-- ============ TAB 6 右螺旋收益（地址查询） ============ -->
+<section class="panel" id="p6">
+  <div class="card">
+    <h2><span class="bar"></span>右螺旋收益 · 按钱包地址查询</h2>
+    <div class="note i" style="margin-top:0">
+      右螺旋 = <b>社区动态排放池</b>（占 Community 日内分配的 50%），内部按 <b>增长 30% · 网络 40% · 共识 30%</b> 分配。
+      输入钱包地址即可查询：该地址当天的个人算力 / 网络算力 / 占比、三个池的权重与奖励，最后汇总<b>今日右螺旋收益</b>。
+    </div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:14px">
+      <div class="inp" style="flex:1;min-width:320px"><input id="r6Addr" placeholder="输入钱包地址 0x..." style="font-size:17.5px"/></div>
+      <button class="btn" id="btnRight">查询右螺旋数据</button>
+    </div>
+    <div id="r6Result" style="margin-top:16px;font-size:17.5px;color:var(--mt)">输入地址后点「查询右螺旋数据」：读取官方个人算力、网络算力、P 等级与动态奖励记录（需网络可达 awakehelix.io；跨域受限时请在官方 DApp 查询）。</div>
+  </div>
+
+  <!-- P 级成员名单（链上扫描 · 每人数据） -->
+  <div class="card" style="margin-top:18px">
+    <h2><span class="bar"></span>P 级成员名单（链上扫描 · 每人数据）</h2>
+    <div class="note i" style="margin-top:0">
+      名单由链上事件扫描生成（PowerRecorded 真实 DAI 累计 + 推荐树三线业绩 + 当前锁仓价值），按官方门槛推算 P 级：
+      <b id="pCounts">加载中…</b>。官方口径（D57 评估）：P1 232 · P2 62 · P3 15 · P4 3（评估 524,737 地址）。
+      <br/>列说明：ve = 锁仓价值（DAI）· 大区/二区/三区 = 三条最大直推线业绩 · 直推 = 一级下级数 · 团队算力 = 团队 DAI 业绩；
+      点<b>地址</b>可查该地址的官方动态数据（增长/网络算力、奖励累计）。
+    </div>
+    <div class="chips" id="pLevelTabs" style="margin-top:10px">
+      <button class="chip on" data-lv="P1">P1</button>
+      <button class="chip" data-lv="P2">P2</button>
+      <button class="chip" data-lv="P3">P3</button>
+      <button class="chip" data-lv="P4">P4</button>
+    </div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:10px;align-items:center">
+      <div class="inp" style="flex:1;min-width:260px"><input id="pSearch" placeholder="按地址搜索…" style="font-size:17.5px"/></div>
+      <button class="btn gray" id="btnPReload" style="font-size:16px">⟳ 重新加载名单</button>
+      <span id="pStatus" style="font-size:17px;color:var(--dm)"></span>
+    </div>
+    <div style="overflow:auto;margin-top:10px;max-height:520px">
+      <table id="pMemberTbl" style="min-width:1060px">
+        <tr><th>#</th><th>地址</th><th class="num">ve(DAI)</th><th class="num">大区</th><th class="num">二区</th><th class="num">三区</th><th class="num">直推</th><th class="num">团队算力</th><th class="num">增长算力</th><th class="num">网络算力</th><th class="num">动态奖励累计</th></tr>
+        <tbody id="pMemberBody"><tr><td colspan="11" style="color:var(--dm)">名单加载中…</td></tr></tbody>
+      </table>
+    </div>
+    <div class="note w" style="margin-top:10px">
+      名单为链上估算（官方三区划分未公开，按最大 3 条直推线估算），与官方 DApp 认定可能略有差异；官方没有全量名单接口。
+      数据更新：观测站每天自动扫描一次，本表每次打开页面自动拉取最新版本。
+    </div>
+  </div>
+</section>
+
+<!-- ============ TAB 2 排放全景 ============ -->
+<section class="panel" id="p2">
+  <div class="grid">
+    <div class="card">
+      <h2><span class="bar"></span>三层口径：配额 → 执行预算 → 实际排放</h2>
+      <div class="kv"><span class="k">每日配额 base（57 天未变）</span><span class="v gd">31,500</span></div>
+      <div class="kv"><span class="k">D57 执行预算（系数 45%）</span><span class="v">14,175</span></div>
+      <div class="kv"><span class="k">D57 实际排放（官方口径）</span><span class="v rd">881.14</span></div>
+      <div class="kv"><span class="k">D58 执行系数（今日）</span><span class="v cy" id="f57">50%</span></div>
+      <div class="kv"><span class="k">D58 执行预算（=31,500×50%）</span><span class="v">15,750</span></div>
+      <div class="note i" style="margin-top:14px">
+        执行系数<b>每天由协议按市场状态动态结算</b>（官方字段 DailyFactorFinalized，风险等级 2），不是固定值。
+        D1=100% → 一路降到 <b>D26–D54 连续 29 天 30%</b> → D55=35% → D56=40% → D57=45% → <b>D58=50%</b>。
+      </div>
+      <div id="chartSettle"></div>
+      <div class="legend">
+        <span><i style="background:var(--gd)"></i>每日配额 31,500</span>
+        <span><i style="background:var(--cy)"></i>执行预算（= 配额 × 系数）</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2><span class="bar"></span>57 天累计：钱都去哪了</h2>
+      <div class="kv"><span class="k">配额累计</span><span class="v">1,795,500</span></div>
+      <div class="kv"><span class="k">执行预算累计（46.3%）</span><span class="v">831,165.3</span></div>
+      <div class="kv"><span class="k">实际排放累计（2.2%）</span><span class="v rd">39,967.3</span></div>
+      <div class="kv"><span class="k">压制量累计（74.8%）</span><span class="v gd">1,343,286.9</span></div>
+      <div class="kv"><span class="k">动态未分配累计（23.0%）</span><span class="v">412,245.8</span></div>
+      <div class="bar3">
+        <div style="width:2.2%;background:#D9534F" title="实际排放 2.2%">2.2%</div>
+        <div style="width:23.0%;background:#A855F7" title="动态未分配 23.0%">23.0%</div>
+        <div style="width:74.8%;background:#C08A00" title="压制量 74.8%">74.8%</div>
+      </div>
+      <div class="legend">
+        <span><i style="background:var(--rd)"></i>实际排放 39,967.3</span>
+        <span><i style="background:var(--pp)"></i>动态未分配 412,245.8</span>
+        <span><i style="background:var(--gd)"></i>压制量 1,343,286.9</span>
+      </div>
+      <div class="note w" style="margin-top:14px">
+        <b>动态三池</b>：56 天动态预算约 408,495，真正批准分到地址的只有 <b>3,337 枚（不足 1%）</b>。
+        未发放部分按白皮书 8.14：<b>50% 转 DAO 组织激励储备 + 50% 转保险储备池</b>，不再返回 Community。
+      </div>
+      <div class="note i">
+        压制量 = 系数压制 + 静态预算未激活；实际排放 = 静态实际激活 + 动态批准。
+        三者相加 = 配额，官方 API 可逐日复核。
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ TAB 3 P 等级 ============ -->
+<section class="panel" id="p3">
+  <div class="card" style="margin-bottom:18px">
+    <h2><span class="bar"></span>查这个钱包：底下有几条区线、各有多少 DAI</h2>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+      <div class="inp" style="flex:1;min-width:300px"><input id="p3Addr" placeholder="输入钱包地址 0x..."/></div>
+      <button class="btn" id="p3Query">查询区线</button>
+    </div>
+    <div id="p3Res" class="note i" style="margin-top:12px">输入地址后点「查询区线」：读取官方 level / community 接口，展示前 3 大区（气泡）与其余直推线（小号数字）。</div>
+  </div>
+  <div class="grid">
+    <div class="card">
+      <h2><span class="bar"></span>P 等级：三把锁同时开</h2>
+      <div class="note i" style="margin-top:0">
+        P1–P5 靠<b>钱</b>（三区业绩 + 自我锁仓），P6–P7 靠<b>人</b>（三区各培养出一个高等级）。
+      </div>
+      <h3>锁 1 · 三区业绩（每个区单独达标，不能加总代替）</h3>
+      <div class="row2" style="grid-template-columns:1fr 1fr 1fr">
+        <div class="field"><label>第一区</label><div class="inp"><input id="z1" type="number" value="60000" min="0" step="10000"/></div></div>
+        <div class="field"><label>第二区</label><div class="inp"><input id="z2" type="number" value="60000" min="0" step="10000"/></div></div>
+        <div class="field"><label>第三区</label><div class="inp"><input id="z3" type="number" value="60000" min="0" step="10000"/></div></div>
+      </div>
+      <h3>锁 2 · 自我锁仓（AiLGNS）</h3>
+      <div class="field">
+        <label>锁仓数量<span class="tip">按当前币价折算「锁仓价值」</span></label>
+        <div class="inp"><input id="veLock" type="number" value="3" min="0" step="1"/><span class="unit">枚</span></div>
+        <div class="chips">
+          <button class="chip" data-lock="1.15">够 P1</button>
+          <button class="chip" data-lock="3.43">够 P2</button>
+          <button class="chip" data-lock="5.71">够 P3</button>
+          <button class="chip" data-lock="9.14">够 P4</button>
+          <button class="chip" data-lock="11.42">够 P5</button>
+        </div>
+      </div>
+      <h3>锁 3 · 下线（P6/P7 用）</h3>
+      <div class="row2">
+        <div class="field"><label>三区各有几名 P5</label><div class="inp"><input id="c5" type="number" value="0" min="0" step="1"/></div></div>
+        <div class="field"><label>三区各有几名 P6</label><div class="inp"><input id="c6" type="number" value="0" min="0" step="1"/></div></div>
+      </div>
+    </div>
+    <div class="card hl">
+      <h2><span class="bar"></span>你能到哪一级</h2>
+      <div style="font-size:17px;color:var(--mt)">当前等级</div>
+      <div class="big pp" id="lvNow" style="margin-bottom:4px">—</div>
+      <div style="font-size:17px;color:var(--mt)" id="lvNext">—</div>
+      <h3 style="margin-top:20px">逐级对照</h3>
+      <div class="ladder" id="ladder"></div>
+      <div class="note i" style="margin-top:16px">
+        官方对全网 <b>524,737</b> 个地址评估（D57）：P1–P4 分别为 <b>232 / 62 / 15 / 3</b> 人，P5–P7 为 <b>0 人</b>。
+        三个区的划分口径官方未公开，链上只能按最大 3 条直推线估算（215/59/14/3），以官方 DApp 为准。
+      </div>
+    </div>
+  </div>
+  <div class="card" style="margin-top:18px">
+    <h2><span class="bar"></span>还差多少？（按当前输入）</h2>
+    <div id="gapBox" style="font-size:17.5px;color:var(--mt)">—</div>
+  </div>
+</section>
+
+<!-- ============ TAB 4 回本 ============ -->
+<section class="panel" id="p4">
+  <div class="grid">
+    <div class="card">
+      <h2><span class="bar"></span>回本测算</h2>
+      <h3>投入与假设</h3>
+      <div class="field">
+        <label>投入 DAI</label>
+        <div class="inp"><input id="rIn" type="number" value="10000" min="0" step="1000"/><span class="unit">DAI</span></div>
+      </div>
+      <div class="row2">
+        <div class="field">
+          <label>币价假设</label>
+          <div class="inp"><input id="rPrice" type="number" value="845" min="0" step="10"/></div>
+        </div>
+        <div class="field">
+          <label>扣费合计（2.5%+3%）</label>
+          <div class="inp"><input id="rFee" type="number" value="5.5" min="0" max="30" step="0.1"/><span class="unit">%</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="card hl">
+      <h2><span class="bar"></span>结果</h2>
+      <div style="font-size:17px;color:var(--mt)">回本所需天数（0.7%/0.28% 模型）</div>
+      <div class="big gd" id="rBe" style="margin-bottom:12px">—</div>
+      <div class="kv"><span class="k">第 1 天收益（净）</span><span class="v cy" id="rDay1">—</span></div>
+      <div class="kv"><span class="k">30 天累计（净）</span><span class="v" id="rM1">—</span></div>
+      <div class="kv"><span class="k">90 天累计（净）</span><span class="v" id="rM3">—</span></div>
+      <div class="kv"><span class="k">180 天累计（净）</span><span class="v" id="rM6">—</span></div>
+      <div class="kv"><span class="k">12 个月累计（净）</span><span class="v" id="rM12">—</span></div>
+      <div id="chartRoi" style="margin-top:18px"></div>
+      <div style="margin-top:16px">
+        <h3 style="margin:0 0 8px">先复投再收现金的回本对比（本金 <b id="rBeIn">10,000</b> DAI）</h3>
+        <table>
+          <tr><th>策略</th><th class="num">复投天数</th><th class="num">回本总天数</th><th class="num">回本时算力</th></tr>
+          <tbody id="rBeTable"></tbody>
+        </table>
+        <div style="font-size:17px;color:var(--dm);margin-top:6px">
+          复投期间收益全部换成算力（无现金）；复投结束后开始累计现金，现金累计达到本金即算回本。「回本总天数」= 复投天数 + 之后收现金天数。
+        </div>
+      </div>
+      <div class="note w" style="margin-top:16px">
+        <b>务必理解：</b>累计收益收敛于 250% 本金（算力发完即止），且算力逐日衰减，
+        所以越往后日收益越低；币价按假设固定，实际会变。
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ TAB 5 参数与来源 ============ -->
+<section class="panel" id="p5">
+  <div class="grid">
+    <div class="card">
+      <h2><span class="bar"></span>链上实测参数（已复核）</h2>
+      <table>
+        <tr><th>参数</th><th class="num">数值</th><th>来源</th></tr>
+        <tr><td>DAI → 算力倍率</td><td class="num cy">× 2.5</td><td>合约 powerRateBps = 25000</td></tr>
+        <tr><td>LGNS → 算力倍率</td><td class="num pp">× 2.0</td><td>实测 20万 LGNS → 40万 Power</td></tr>
+        <tr><td>每日配额 base</td><td class="num gd">31,500</td><td>= 220,500 ÷ 7（白皮书启动期）</td></tr>
+        <tr><td>执行系数（D58）</td><td class="num">50%</td><td>官方 DailyFactorFinalized（每日动态结算）</td></tr>
+        <tr><td>静态 / 动态分配</td><td class="num">50% / 50%</td><td>白皮书第八章</td></tr>
+        <tr><td>买算力日上限</td><td class="num">2,000,000 DAI</td><td>官方 DApp 当日额度（动态参数）</td></tr>
+        <tr><td>LGNS 销毁日上限</td><td class="num">200,000 LGNS</td><td>= 400,000 Power</td></tr>
+        <tr><td>激活费</td><td class="num rd">2.5%</td><td>白皮书第九章</td></tr>
+        <tr><td>卖出费</td><td class="num rd">3.0%</td><td>白皮书第十章（基础费率，含保护费 ≤28%）</td></tr>
+        <tr><td>参考价</td><td class="num gd">874.22</td><td>官方实时参考价（pools API，2026-11-25）</td></tr>
+        <tr><td>全网活跃算力（快照）</td><td class="num cy">275,121,296</td><td>合约 activePower（03:05 UTC）</td></tr>
+        <tr><td>全网活跃算力（官方最新）</td><td class="num cy">305,722,454</td><td>官方 /api/v1/power（D58）</td></tr>
+        <tr><td>总供应</td><td class="num">209,998,257</td><td>合约 totalSupply（上限 210,000,000）</td></tr>
+        <tr><td>协议储备</td><td class="num">106,264,931</td><td>合约 DAI 余额（D57 结算时点）</td></tr>
+        <tr><td>主池</td><td class="num">36,584.5 AiLGNS / 3,195.6万 DAI</td><td>pair getReserves</td></tr>
+        <tr><td>涡轮 Turbine</td><td class="num">234,995 DAI</td><td>合约余额</td></tr>
+        <tr><td>手续费归集</td><td class="num">423,327 DAI</td><td>合约余额</td></tr>
+        <tr><td>累计买入 DAI</td><td class="num">101,342,662</td><td>110,313 笔 DAI Transfer</td></tr>
+      </table>
+    </div>
+
+    <div class="card">
+      <h2><span class="bar"></span>白皮书 vs 链上（关键对照）</h2>
+      <table>
+        <tr><th>项目</th><th>白皮书（设计）</th><th>链上 / 官方（实际）</th></tr>
+        <tr><td>算力倍率</td><td>7.2 示例：1 DAI → 1 Power（1:1）</td><td>DAI ×2.5、LGNS ×2（治理参数）</td></tr>
+        <tr><td>执行系数</td><td>三层门控动态测算</td><td>每日动态结算：100% → 30%（D26–54 连续 29 天）→ 35% → 40% → 45%（D57）→ 50%（D58）</td></tr>
+        <tr><td>实际排放</td><td>Actual ≤ Cap</td><td>56 天仅 38,984.2（占配额 2.2%）</td></tr>
+        <tr><td>未释放预算</td><td>8.14：50% 转 DAO 储备 + 50% 转保险池</td><td>压制量 1,319,755.5 + 动态未分配 405,260</td></tr>
+        <tr><td>P 等级三区</td><td>三个独立区域</td><td>官方后台划分未公开，链上按最大 3 条直推线估算</td></tr>
+        <tr><td>结算时点</td><td>00:00 SGT（UTC+8）每日结算</td><td>链上结算事件每日 16:00 UTC ✓</td></tr>
+        <tr><td>Power 生命周期</td><td>Power ≠ 固定债务，到期退出</td><td>activePower ≠ recordedPower ✓</td></tr>
+      </table>
+
+      <h2 style="margin-top:22px"><span class="bar"></span>社区排放五阶段（520 纪元）</h2>
+      <table>
+        <tr><th>阶段</th><th class="num">纪元</th><th class="num">每纪元上限</th><th class="num">每天上限</th><th class="num">占比</th></tr>
+        <tbody id="phaseTbl"></tbody>
+      </table>
+
+      <h2 style="margin-top:22px"><span class="bar"></span>LSP 拆分表（白皮书第十章）</h2>
+      <table>
+        <tr><th>市场自然释放比例 r</th><th class="num">LSP 拆分比例</th></tr>
+        <tr><td>r &lt; 10%</td><td class="num">50%</td></tr>
+        <tr><td>10% ≤ r &lt; 20%</td><td class="num">40%</td></tr>
+        <tr><td>20% ≤ r &lt; 30%</td><td class="num">30%</td></tr>
+        <tr><td>30% ≤ r &lt; 40%</td><td class="num">20%</td></tr>
+        <tr><td>40% ≤ r ≤ 50%</td><td class="num rd">10%</td></tr>
+        <tr><td>r &gt; 50%</td><td class="num gn">0%</td></tr>
+      </table>
+      <div class="note o">
+        LSP 依据「市场自然释放率 r」，与每日「执行系数」是两个不同指标；r 官方未公布。
+      </div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:18px">
+    <h2><span class="bar"></span>计算器用的公式</h2>
+    <div class="formula">＜左螺旋 · 0.7% / 0.28% 模型＞
+① 个人算力   Power      = 买入 DAI × 2.5（+ 销毁 LGNS × 2）
+② 每日收益   earn(n)    = Power(n) × 0.28%（DAI 计价；首日 = 本金 × 0.7%）
+③ 算力衰减   Power(n+1) = Power(n) × (1 − 0.2795%)
+④ 当日币数   token(n)   = earn(n) ÷ 结算价
+⑤ 净到手     net        = Σ earn(n) × (1 − 激活费 − 卖出费) = × 94.5%
+⑥ 生命周期上限 = 初始算力（DAI 计价）= 250% 本金，发完即止
+
+＜右螺旋 · 社区动态池＞
+⑦ 动态池     dynamic = 执行预算 × 50%
+⑧ 三池拆分   growth 30% / network 40% / consensus 30%
+⑨ 增长池可分配 = min(增长池, 增长池 × 增长系数, 新增业绩 × 30% ÷ 结算价)
+⑩ 网络池份额   = 网络池 × 你的网络权重占比
+⑪ 共识池份额   = 共识池 × 等级比例(P1 5% … P7 22%) × (你的小区算力 ÷ 同等级总和)</div>
+    <div class="note w">
+      <b>本计算器不做的事：</b>不预测币价、不预测实际排放、不预测未来算力。
+      实际排放与执行系数以官方 emission 页当日数据为准；右螺旋为按海报规则的<b>上限口径推演</b>，
+      官方评分算法未公布，所有无法验证的变量都按官方已公开口径处理，宁可低估。
+    </div>
+  </div>
+</section>
+
+<!-- ============ TAB 7 合约查询 ============ -->
+<section class="panel" id="p7">
+  <div class="card">
+    <h2><span class="bar"></span>合约查询 · 内置合约库（189 条）</h2>
+    <div class="note i" style="margin-top:0">
+      内置 17 组合约（P链官方明细 / A链实测 / 螺旋分组），点击条目自动查询链上信息；
+      也可直接输入任意合约 / 钱包地址。支持 ERC-20（名称/符号/精度/总量）、LP 池、钱包。
+    </div>
+    <div class="row2">
+      <div class="field"><label>搜索合约 / 地址</label><div class="inp"><input id="c7q" placeholder="输入名称或地址…" style="font-size:17px"/></div></div>
+      <div class="field"><label>分组</label><div class="inp" style="padding:0 8px"><select id="c7g" style="width:100%;padding:11px 4px;background:transparent;border:0;color:var(--tx);font-size:16px;font-family:inherit"></select></div></div>
+    </div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:6px;align-items:center">
+      <div class="inp" style="flex:1;min-width:300px"><input id="c7addr" placeholder="或直接输入任意合约 / 钱包地址" style="font-size:16px"/></div>
+      <div class="inp" style="width:160px;padding:0 8px"><select id="c7chain" style="width:100%;padding:11px 4px;background:transparent;border:0;color:var(--tx);font-size:16px;font-family:inherit"><option value="anubis">A链 Anubis</option><option value="polygon">马蹄链 Polygon</option></select></div>
+      <button class="btn" id="c7go">查询地址</button>
+    </div>
+    <div style="max-height:320px;overflow:auto;margin-top:12px;border:1px solid var(--line);border-radius:12px">
+      <table style="margin:0"><thead><tr><th>名称</th><th>地址</th><th>类型</th><th>链</th></tr></thead><tbody id="c7list"></tbody></table>
+    </div>
+    <div id="c7res" class="note i" style="margin-top:10px">点合约列表条目或输入地址后查询</div>
+  </div>
+</section>
+
+<!-- ============ TAB 8 钱包资产 ============ -->
+<section class="panel" id="p8">
+  <div class="card">
+    <h2><span class="bar"></span>钱包资产 · 双链查询</h2>
+    <div class="note i" style="margin-top:0">
+      输入钱包地址，查询两条链的原生币 + 已知代币 + NFT + AiLGNS 五个流动性池 LP 份额（含底层两币换算）。
+    </div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+      <div class="inp" style="flex:1;min-width:320px"><input id="c8addr" placeholder="输入钱包地址 0x..." style="font-size:16px"/></div>
+      <button class="btn" id="c8go">查询资产</button>
+    </div>
+    <div id="c8res" class="note i" style="margin-top:12px">输入地址后点「查询资产」</div>
+  </div>
+</section>
+
+<!-- ============ TAB 9 资金监控台 ============ -->
+<section class="panel" id="p9">
+  <div class="card">
+    <h2><span class="bar"></span>资金监控台 · 底池/金库余额巡检</h2>
+    <div class="note i" style="margin-top:0">
+      选择分组后一键巡检各地址链上原生余额（A链原生币即 DAI）。数据来自内置资料库，查询走公共 RPC。
+    </div>
+    <div class="chips" id="c9groups"></div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:12px">
+      <button class="btn" id="c9go">一键巡检</button>
+      <span id="c9status" style="font-size:16px;color:var(--dm)"></span>
+    </div>
+    <div id="c9res" class="note i" style="margin-top:10px">点「一键巡检」开始</div>
+  </div>
+</section>
+
+<!-- ============ TAB 10 AiLGNS 观测台 ============ -->
+<section class="panel" id="p10">
+  <div class="card">
+    <h2><span class="bar"></span>AiLGNS 观测台 · 今日概览</h2>
+    <div class="note i" style="margin-top:0">
+      今日社区结算、P 等级分布、实时算力参与、资金位置与协议参数（官方接口约 30 分钟新鲜度）。
+    </div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:10px">
+      <button class="btn" id="c10go">刷新全部</button>
+      <span id="c10status" style="font-size:16px;color:var(--dm)"></span>
+    </div>
+    <div id="c10res">点「刷新全部」加载</div>
+  </div>
+</section>
+
+<!-- ============ TAB 11 小工具 ============ -->
+<section class="panel" id="p11">
+  <div class="grid">
+    <div class="card">
+      <h2><span class="bar"></span>单位换算</h2>
+      <div class="field"><label>数量</label><div class="inp"><input id="c11v" type="number" value="1" step="any"/></div></div>
+      <div class="field"><label>乘以 10 的几次方（链上精度）</label>
+        <div class="inp" style="padding:0 8px"><select id="c11n" style="width:100%;padding:11px 4px;background:transparent;border:0;color:var(--tx);font-size:16px;font-family:inherit"></select></div>
+      </div>
+      <div id="c11out" class="formula">—</div>
+    </div>
+    <div class="card">
+      <h2><span class="bar"></span>十六进制 ↔ 十进制</h2>
+      <div class="field"><label>输入（0x… 或十进制数字）</label><div class="inp"><input id="c11h" placeholder="0x1a 或 26" style="font-size:16px"/></div></div>
+      <div id="c11hout" class="formula">—</div>
+    </div>
+  </div>
+  <div class="card" style="margin-top:18px">
+    <h2><span class="bar"></span>常用网站（21 个）</h2>
+    <div id="c11links" style="display:flex;gap:10px;flex-wrap:wrap"></div>
+  </div>
+</section>
+<!-- ============ TAB 12 三个池是什么 ============ -->
+<section class="panel" id="p12">
+  <div class="card">
+    <h2><span class="bar"></span>三个池是什么 · 右螺旋（社区动态池）拆解</h2>
+    <div class="note i" style="margin-top:0">
+      右螺旋 = <b>社区动态池</b> = 每日执行预算的 <b>50%</b>。这 50% 内部再拆成三个池：
+      <b>增长 30% · 网络 40% · 共识 30%</b>。本页只讲结构和规则，不参与任何计算；
+      实际每天发多少、你拿了多少，见下方「实际发放」与「去哪里查」。
+    </div>
+
+    <div class="formula">每日执行预算 = 31,500 × 执行系数（D58 = 50% → 15,750 枚）
+├─ 50% 个人算力池（左螺旋）    ← 按个人算力占比分
+└─ 50% 社区动态池（右螺旋）    ← 本页三池
+     ├─ 增长池 30%   ← 新业绩
+     ├─ 网络池 40%   ← 网络传导
+     └─ 共识池 30%   ← 等级 / 长期共识</div>
+
+    <div class="note w">
+      <b>关键：预算 ≠ 实际发放。</b>三池预算只是纸面上限，真正发多少由协议每日审批（DynamicRootSubmitted）决定。
+      D56 实测：动态池预算 6,300 枚，实际只批了 <b>101.97 枚（1.62%）</b>。
+    </div>
+
+    <h3 style="color:var(--rd)">① 增长池（30%）—— 奖励「新业绩」</h3>
+    <div class="grid" style="gap:14px">
+      <div>
+        <div class="kv"><span class="k">考核对象</span><span class="v">前一算力日「新增有效业绩」（新增进场的 DAI）</span></div>
+        <div class="kv"><span class="k">增长系数</span><span class="v">每满 50,000 DAI 新增业绩 +1%，最高 100%</span></div>
+      </div>
+      <div>
+        <div class="kv"><span class="k">可分配上限</span><span class="v">min(增长池预算 × 增长系数, 新增业绩 × 30% ÷ 结算价)</span></div>
+        <div class="kv"><span class="k">关系深度分配</span><span class="v">一级关系 50% · 二级关系 30% · 最近有效节点 20%</span></div>
+      </div>
+    </div>
+    <div class="note o" style="margin-top:8px">
+      <b>本质：</b>新增业绩越多、系数越高、能分到的上限越高；
+      分的时候按关系深度（一级一半、二级三成、节点两成），不按等级。
+    </div>
+
+    <h3 style="color:var(--rd)">② 网络池（40%）—— 奖励「网络结构与传导」</h3>
+    <div class="kv"><span class="k">考核对象</span><span class="v">合格网络的新增与传导贡献（这条线带来的增量、层级往下传导）</span></div>
+    <div class="kv"><span class="k">权重公式</span><span class="v">网络权重 = 等级系数 × 合格网络新增贡献</span></div>
+    <div class="note i" style="margin-top:8px">等级系数（逐级减半）：</div>
+    <table>
+      <tr><th>等级</th><th class="num">P1</th><th class="num">P2</th><th class="num">P3</th><th class="num">P4</th><th class="num">P5</th><th class="num">P6</th><th class="num">P7</th></tr>
+      <tr><td>系数</td><td class="num pp">100%</td><td class="num">50%</td><td class="num">25%</td><td class="num">12.5%</td><td class="num">6.25%</td><td class="num">3.125%</td><td class="num">1.5625%</td></tr>
+    </table>
+    <div class="note o" style="margin-top:10px">
+      <b>本质：</b>给「做大团队、往下传导业绩的人」的贡献分成。系数是算权重用的，不是你直接拿的收益率；
+      等级越高系数越低，说明高等级在同样业绩下反而<b style="color:#B03A2E">分的更少</b>。
+    </div>
+
+    <h3 style="color:var(--rd)">③ 共识池（30%）—— 奖励「等级结构 + 长期共识」</h3>
+    <div class="kv"><span class="k">考核对象</span><span class="v">组织结构、等级、持续贡献（无新增时按公告参数执行）</span></div>
+    <div class="note i" style="margin-top:8px">按等级比例切分：</div>
+    <table>
+      <tr><th>等级</th><th class="num">P1</th><th class="num">P2</th><th class="num">P3</th><th class="num">P4</th><th class="num">P5</th><th class="num">P6</th><th class="num">P7</th></tr>
+      <tr><td>比例</td><td class="num pp">5%</td><td class="num">8%</td><td class="num">12%</td><td class="num">15%</td><td class="num">18%</td><td class="num">20%</td><td class="num">22%</td></tr>
+    </table>
+    <div class="formula" style="margin-top:10px">你的共识池份额 = 共识池 × 该等级比例 × (你的合格小区算力 ÷ 同等级合格小区算力总和)</div>
+    <div class="note o" style="margin-top:6px">
+      <b>本质：</b>给「等级高、结构健康、长期在线」的人——等级越高分得越多；同等级内再按「小区算力」加权，
+      结构（三个区）越健康，同级里拿得越多。
+    </div>
+
+    <h3>实际发放（D56 实测，链上 DynamicRootSubmitted 事件）</h3>
+    <table>
+      <tr><th>项目</th><th class="num">数值</th><th>说明</th></tr>
+      <tr><td>动态池预算（执行预算 12,600 × 50%）</td><td class="num">6,300 枚</td><td>纸面上限</td></tr>
+      <tr><td><b>实际批准发放</b></td><td class="num rd"><b>101.97 枚</b></td><td>只占预算 <b>1.62%</b></td></tr>
+      <tr><td>其中：增长池</td><td class="num">16.43 枚</td><td>16.1%</td></tr>
+      <tr><td>其中：网络池</td><td class="num">29.81 枚</td><td>29.2%</td></tr>
+      <tr><td>其中：共识池</td><td class="num">55.74 枚</td><td>54.7%</td></tr>
+      <tr><td>56 天累计（动态池）</td><td class="num rd">3,337 枚</td><td>预算约 408,495 枚，实际 0.82%</td></tr>
+    </table>
+
+    <h3>去哪里查实际数据（三处，可互相复核）</h3>
+    <div class="note i">
+      <b>1️⃣ 官方 API · 每日三池批准量</b><br/>
+      <code>https://awakehelix.io/api/v1/emission</code> → <code>recentDays[]</code> 里每天有
+      <code>growthApproved / networkApproved / consensusApproved / dynamicApproved / dynamicUnallocated</code>，
+      就是那天三个池真正批出去多少枚。
+    </div>
+    <div class="note i">
+      <b>2️⃣ 官方 API · 某个钱包的动态奖励</b><br/>
+      <code>https://awakehelix.io/api/v1/community/0x你的地址</code> → <code>latest</code> 里
+      <code>growthPower / networkPower / consensusPower</code>（你在三个池的<b>权重</b>）、
+      <code>rewardGrowth / rewardNetwork / rewardConsensus</code>（你<b>实际拿到</b>的枚数）；
+      <code>rewardsCum</code> 为累计奖励。
+    </div>
+    <div class="note i">
+      <b>3️⃣ 链上事件 · 最权威</b><br/>
+      Anubis 浏览器查社区金库 <code>0x3DEea5f638cA0dFb03A0873CF4c0b90BA50E1aA2</code> 的
+      <code>DynamicRootSubmitted</code> 事件（topic <code>0xce1281bb…</code>），每条含
+      总量 / 增长 / 网络 / 共识 / 无接收人 / 根哈希 —— 每日三池真实分配的原始数据。
+    </div>
+    <div class="note o">
+      <b>本计算器里：</b>「② 右螺旋收益」输入地址可查该地址的增长/网络/共识实际奖励；
+      「P 级成员名单」的「增长算力 / 网络算力」两列即官方 <code>latest.growthPower / teamActivePower</code>；
+      「⑩ AiLGNS 观测台」看今日结算与算力参与总览。
+    </div>
+
+    <h3 style="color:var(--rd);margin-top:26px">三池对照表</h3>
+    <div style="overflow:auto;border:1px solid var(--line);border-radius:14px;box-shadow:0 2px 12px #C9B6F01a">
+      <table style="margin:0;min-width:760px">
+        <tr style="background:#F5EEFF">
+          <th style="width:110px">对比项</th>
+          <th style="color:var(--gd)">增长池（30%）</th>
+          <th style="color:var(--cy)">网络池（40%）</th>
+          <th style="color:var(--pp)">共识池（30%）</th>
+        </tr>
+        <tr>
+          <td><b>分什么</b></td>
+          <td>当天<b>新增业绩</b></td>
+          <td><b>网络整体</b>的业绩传导</td>
+          <td>等级结构 + 长期共识</td>
+        </tr>
+        <tr>
+          <td><b>看谁</b></td>
+          <td>带来这笔新增的<b>关系链</b><br/><span style="font-size:17px;color:var(--mt)">一级 50 / 二级 30 / 节点 20</span></td>
+          <td>有网络的人<br/><span style="font-size:17px;color:var(--mt)">上级 / 等级节点</span></td>
+          <td>按<b>等级人数比例</b>切</td>
+        </tr>
+        <tr>
+          <td><b>看等级吗</b></td>
+          <td><span class="rd"><b>不看</b></span></td>
+          <td>看（等级系数加权）</td>
+          <td>看（等级比例 + 小区算力）</td>
+        </tr>
+        <tr>
+          <td><b>性质</b></td>
+          <td><b>一次性</b></td>
+          <td>持续性网络分成</td>
+          <td>结构 / 长期性</td>
+        </tr>
+      </table>
+    </div>
+    <div style="font-size:17px;color:var(--dm);margin-top:8px">
+      配色与「② 右螺旋收益」页一致：增长池 · 金 ｜ 网络池 · 青 ｜ 共识池 · 紫。
+    </div>
+  </div>
+</section>
+<!-- ============ TAB 13 卖出冲击 ============ -->
+<section class="panel" id="p13">
+  <div class="card">
+    <h2><span class="bar"></span>卖出冲击 · AiLGNS 大额卖出对价格的影响</h2>
+    <div class="note i" style="margin-top:0">
+      Helix 的规则是 <b>「限买不限卖」</b>：买入端有硬性额度上限（当日买满就停），
+      卖出端<b>没有额度上限</b>，但有六层保护机制——大额卖出不会被一次性砸进市场，
+      而是被拆成「每日释放速度」，按市场真实承载能力分批、分池、限滑点执行。
+    </div>
+
+    <table>
+      <tr><th>方向</th><th>规则</th><th>说明</th></tr>
+      <tr><td><b>买入（限）</b></td><td>买算力日上限 2,000,000 DAI</td><td>当日额度用完即停，防止资金集中涌入</td></tr>
+      <tr><td><b>买入（限）</b></td><td>LGNS 销毁日上限 200,000 LGNS</td><td>= 400,000 Power</td></tr>
+      <tr><td><b>卖出（不限量）</b></td><td>无额度上限</td><td>随时可卖，但有下面六层保护</td></tr>
+    </table>
+
+    <h3 style="color:var(--rd)">① 卖出冲击计算器</h3>
+    <div class="note i">
+      输入你要卖的数量，直接出结果：<b>卖后币价变成多少、跌多少、到手多少</b>。币价与主池储备按<b>链上真实储备</b>实时折算
+      （公式含 3% 卖出费 + RocketSwap 池内 0.3% 费）。<br/>
+      多池分流按<b>链上报价侧储备折算的 DAI 深度</b>加权：报价侧不足（池子严重失衡）或算不出价格的池<b>自动不计入</b>——
+      对应白皮书"深度不足 / 价格异常的池降低甚至暂停路由"。
+    </div>
+    <div class="row2">
+      <div class="field"><label>卖出数量（AiLGNS 枚）</label><div class="inp"><input id="p13qty" type="number" value="1000" min="0" step="10"/><span class="unit">枚</span></div></div>
+      <div class="field"><label>当前币价（DAI/枚，链上自动）</label><div class="inp"><input id="p13price" type="number" value="875.52" min="0.01" step="0.01"/></div></div>
+    </div>
+    <div class="row2">
+      <div class="field"><label>卖出费率</label><div class="inp"><input id="p13fee" type="number" value="3" min="0" max="30" step="0.1"/><span class="unit">%</span></div></div>
+      <div class="field"><label>LSP 分批天数</label><div class="inp"><input id="p13days" type="number" value="7" min="1" max="365" step="1"/><span class="unit">天</span></div></div>
+    </div>
+    <div class="field"><label>额外净买盘（DAI/天，默认 0）<span class="tip">日常买盘已用于对冲日常排放，不会额外拉升你的卖价</span></label><div class="inp"><input id="p13buy" type="number" value="0" min="0" step="10000"/><span class="unit">DAI/天</span></div></div>
+    <div class="field"><label>多池分流 · 勾选参与路由的池子<span class="tip">已开放的先勾上；以后开放新池直接勾选即可（深度按链上储备自动重算）</span></label>
+      <div class="chips" id="p13pools" style="margin-top:4px">
+        <label class="chip on" style="display:flex;align-items:center;gap:6px;margin:0"><input type="checkbox" id="p13p0" data-pool="AILGNS_DAI_PAIR" checked disabled style="width:14px;height:14px;margin:0"/> 主池 AiLGNS/DAI</label>
+        <label class="chip on" style="display:flex;align-items:center;gap:6px;margin:0"><input type="checkbox" id="p13p1" data-pool="AILGNS_LGNS_PAIR" checked style="width:14px;height:14px;margin:0"/> AiLGNS/LGNS</label>
+        <label class="chip" style="display:flex;align-items:center;gap:6px;margin:0"><input type="checkbox" id="p13p2" data-pool="AILGNS_GLGNS_PAIR" style="width:14px;height:14px;margin:0"/> AiLGNS/gLGNS</label>
+        <label class="chip" style="display:flex;align-items:center;gap:6px;margin:0"><input type="checkbox" id="p13p3" data-pool="AILGNS_USDT_PAIR" style="width:14px;height:14px;margin:0"/> AiLGNS/USDT</label>
+        <label class="chip" style="display:flex;align-items:center;gap:6px;margin:0"><input type="checkbox" id="p13p4" data-pool="AILGNS_A_PAIR" style="width:14px;height:14px;margin:0"/> AiLGNS/A</label>
+      </div>
+      <div style="overflow:auto;margin-top:8px"><table id="p13pooltbl" style="min-width:700px;font-size:17.5px"></table></div>
+      <div style="font-size:16px;color:var(--dm);margin-top:6px">
+        深度 = min(报价侧储备 × 报价币 DAI 价, AiLGNS 储备 × 主池价)；报价侧折算不足 AiLGNS 价值 50% 的池视为"无法承接卖出"，自动不计入。
+        卫星池卖出拿到的是对应代币（LGNS/gLGNS/USDT/A），换回 DAI 还需再跳一次（成本未计入，结果偏乐观）。
+      </div>
+    </div>
+    <div id="p13out" style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:10px"></div>
+
+    <h3 style="color:var(--rd)">② 为什么是这个数？逐项拆解</h3>
+    <div class="note i" style="margin-bottom:8px">卖出 <b id="p13qlbl">1000</b> 枚时，每一层保护分别把冲击降了多少：</div>
+    <div id="p13why" class="note o">计算中…</div>
+<h3 style="color:var(--rd)">③ LSP：把「潜在卖压」拆成「每日释放速度」</h3>
+    <div class="note i">
+      <b>LSP（Liquidity Split Protocol，流动性拆分协议）</b>：按市场自然释放比例 r，自适应决定多少排放直接进 Turbine（对应真实买入），
+      多少进 LSP Vault（内部结算权益，不是自由可转的 AiLGNS）。<b>它控制的是"进入市场的速度"，不是你已获得的经济权益。</b>
+    </div>
+    <table>
+      <tr><th>市场自然释放比例 r</th><th class="num">r &lt; 10%</th><th class="num">10–20%</th><th class="num">20–30%</th><th class="num">30–40%</th><th class="num">40–50%</th><th class="num">&gt; 50%</th></tr>
+      <tr><td>LSP 拆分比例</td><td class="num pp">50%</td><td class="num">40%</td><td class="num">30%</td><td class="num">20%</td><td class="num">10%</td><td class="num">0%</td></tr>
+    </table>
+    <div style="font-size:17px;color:var(--mt);margin-top:8px">
+      市场承载能力越弱 → LSP 介入越多（卖得越慢）；市场自己就能消化 → LSP 退出（r &gt; 50% 时降为 0%）。
+      LSP 比例按每日结算周期确定，当日内锁定。
+    </div>
+
+    <h3 style="color:var(--rd)">④ 卖出执行：TWAP + 多池路由 + 滑点控制</h3>
+    <div class="grid" style="gap:14px">
+      <div class="note o" style="margin:0">
+        <b>时间加权（TWAP）</b><br/>
+        卖出需求按每日结算批次汇总后分散到不同时间段，不做一次性抛售。
+      </div>
+      <div class="note o" style="margin:0">
+        <b>小额分批 + 深度控制</b><br/>
+        按实时市场深度拆单；标准执行周期 24 小时，市场不足可延至 48 小时，未成交顺延下一批次。
+      </div>
+      <div class="note o" style="margin:0">
+        <b>多池动态路由</b><br/>
+        不集中在主池卖，按流动性/深度/成交量/滑点/风险分配：<br/>
+        AiLGNS/DAI 主池 · /LGNS · /gLGNS · /USDT · /A<br/>
+        <span style="color:var(--rd)"><b>注意：目前只有主池 + LGNS 池开放交易，其余 3 池（gLGNS/USDT/A）尚未开放</b></span>
+      </div>
+      <div class="note o" style="margin:0">
+        <b>滑点控制</b><br/>
+        超过协议安全范围时降低、暂停或延后执行——可以延迟成交，但不为了完成时间目标制造集中卖压。
+      </div>
+    </div>
+
+    <h3 style="color:var(--rd)">⑤ 费用 + 双向对冲</h3>
+    <div class="grid" style="gap:14px">
+      <div class="note i" style="margin:0">
+        <b>费用</b>：LSP 释放同样承担 <b>2.5% 激活费 + 3% 卖出费</b>，
+        理论净结算约 <b>94.5%</b>（不含滑点与执行成本）。
+      </div>
+      <div class="note i" style="margin:0">
+        <b>Turbine 买盘对冲</b>：Turbine 激活的排放需要 <b>1:1 真实市场买入</b>，
+        与 LSP 卖出形成双向流量（ILB = Turbine买入 ÷ LSP卖出，ILB=1 时双向平衡）。
+      </div>
+    </div>
+
+    <h3 style="color:var(--rd)">⑥ 库存反馈：卖得掉不等于无压力</h3>
+    <div class="note w">
+      如果 LSP 库存持续堆积、结算时间延长、市场深度下降 → 协议会<b>反向收缩上游排放</b>
+      （收紧 Community Actual Emission，必要时可降至 0）。
+      所以真正要盯的不是"现在卖了多少"，而是"库存要几天才能消化完"。
+    </div>
+
+                            <h3 style="color:var(--rd)">⑦ 结论：为什么大额卖出不等于一次性砸盘</h3>
+    <div class="note o">
+      1. <b>卖出被拆成时间</b>：LSP 按每日批次 + TWAP 分批执行，一天只释放市场能承受的量；<br/>
+      2. <b>卖出被拆成池子</b>：五个官方池按深度动态路由，单池冲击被摊薄；<br/>
+      3. <b>买入端有对冲</b>：Turbine 激活排放需要 1:1 真实买入，与卖出流量形成双向对冲；<br/>
+      4. <b>滑点有刹车</b>：超过安全范围就降低/暂停/延后，不硬砸；<br/>
+      5. <b>压力有反馈</b>：库存堆积会反过来收紧上游排放，从源头减少新增卖压。
+    </div>
+    <div class="note w">
+      但要说清楚：保护机制控制的是<b>速度和路径</b>，不是"价格不会跌"。
+      若市场自然买盘长期不足，LSP 库存持续堆积，释放速度会变慢、周期拉长——<b>能卖，但可能卖得慢、卖得便宜</b>。
+    </div>
+  </div>
+</section>
+</div>
+</div>
+<footer>
+  数据来源：<a href="https://awakehelix.io/" target="_blank" rel="noopener">AWAKE HELIX 官方 DApp / API</a> ·
+  <a href="https://dixonwei.github.io/ailgns-monitor/" target="_blank" rel="noopener">阿郎老师的 AiLGNS 观测站</a>（链上直读，非官方）·
+  <a href="https://awake-helix.gitbook.io/whitepaper-cn" target="_blank" rel="noopener">AWAKE HELIX 白皮书</a> ·
+  <a href="https://browser.anubispace.org" target="_blank" rel="noopener">Anubis 区块浏览器</a><br/>
+  快照于区块 19,841,840（Day 57，2026-11-23 03:05 UTC）；官方 emission/power/overview/level API 数据核对于 2026-11-23。
+</footer>
+</div>
+
+<script id="snapshot">
+/* HELIX 计算器 v2 · 数据快照（链上日志 + 官方 API + 白皮书 三方复核，2026-11-23） */
+window.HELIX_SNAPSHOT = {
+  meta: {
+    day: 58, epoch: 9,
+    block: 19841840, blockTime: '2026-11-23T03:05:00Z',
+    verifiedAt: '2026-11-24T05:00Z',
+    verifiedBy: '结算日志(Blockscout) + 官方API(awakehelix.io) + 白皮书'
+  },
+  // ---- 链上实时状态（03:05 UTC 快照）----
+  live: {
+    activePower: 275121296.49550146,   // 全网活跃算力(DAI口径)
+    recordedPower: 302060131.7429252,
+    priceDAI: 845.2544903279767,       // 官方实时参考价
+    poolPriceDAI: 873.5213316829922,
+    poolAiLGNS: 36584.54814280486,
+    poolDAI: 31957383.21272344,
+    reserveDAI: 104960087.74289855,
+    totalSupply: 209998256.84322116,
+    emissionVault: 162443832.74290717,
+    insuranceVault: 11177797.832078487,
+    buyFee: 0.025,
+    sellFee: 0.03,
+    daiDailyCap: 2000000,
+    lgnsDailyCap: 200000,              // LGNS
+    lgnsDailyPowerCap: 400000
+  },
+  // ---- 官方 emission API（2026-11-24 核对）----
+  official: {
+    factorToday: { day: 58, factorBps: 5000, method: 'DailyFactorFinalized', riskLevel: 2 },
+    lastSettled: { day: 57, base: 31500, factorBps: 4500, budget: 14175, actual: 881.1393466043183 },
+    releasedCum: 39967.342681797234,
+    suppressedCum: 1343286.8888733914,
+    dynamicUnallocatedCum: 412245.7684,
+    dynamicApprovedCum: 3336.8816,
+    budgetCum: 831165.3,
+    // ---- 官方 power API ----
+    totalActivePowerOfficial: 305722454.08080726,
+    totalPowerOfficial: 306868341.78146987,
+    participants: 69959,
+    todayNewPower: 1145887.7006626066,
+    todayNewParticipants: 1355,
+    d57NewPower: 4319599.935290022,
+    d57Participants: 2714,
+    // ---- 官方 overview API ----
+    priceLive: 874.2160103166133,
+    priceD57Close: 872.5751502310392,
+    tvlUsd: 228919406.81524815,
+    protocolIncomeDaiLive: 102947865.87764421
+  },
+  // ---- 昨日（D56）算力参与 ----
+  participation: {
+    dai: { wallets: 2156, events: 2258, amount: 1374090.0018836544, power: 3435225.0047091357 },
+    lgns: { wallets: 400, amount: 200000, power: 400000, soldOutInSec: 1 }
+  },
+  // ---- 换算倍率 ----
+  power: { daiMultiplier: 2.5, lgnsMultiplier: 2.0, powerRateBps: 25000 },
+  // ---- 56天结算历史（day, base, 执行预算actual, factorBps）· 链上日志逐日解码 ----
+  history: [
+    [1,31500,31500,10000],[2,31500,18112.5,5750],[3,31500,18112.5,5750],[4,31500,18112.5,5750],[5,31500,18112.5,5750],[6,31500,19687.5,6250],[7,31500,18336.15,5821],[8,31500,14962.5,4750],[9,31500,14962.5,4750],[10,31500,16537.5,5250],[11,31500,18112.5,5750],[12,31500,19687.5,6250],[13,31500,20475,6500],[14,31500,20475,6500],[15,31500,20475,6500],[16,31500,20475,6500],[17,31500,20475,6500],[18,31500,20475,6500],[19,31500,22050,7000],[20,31500,23625,7500],[21,31500,25200,8000],[22,31500,25070.85,7959],[23,31500,24891.3,7902],[24,31500,24667.65,7831],[25,31500,24724.35,7849],[26,31500,9450,3000],[27,31500,9450,3000],[28,31500,9450,3000],[29,31500,9450,3000],[30,31500,9450,3000],[31,31500,9450,3000],[32,31500,9450,3000],[33,31500,9450,3000],[34,31500,9450,3000],[35,31500,9450,3000],[36,31500,9450,3000],[37,31500,9450,3000],[38,31500,9450,3000],[39,31500,9450,3000],[40,31500,9450,3000],[41,31500,9450,3000],[42,31500,9450,3000],[43,31500,9450,3000],[44,31500,9450,3000],[45,31500,9450,3000],[46,31500,9450,3000],[47,31500,9450,3000],[48,31500,9450,3000],[49,31500,9450,3000],[50,31500,9450,3000],[51,31500,9450,3000],[52,31500,9450,3000],[53,31500,9450,3000],[54,31500,9450,3000],[55,31500,11025,3500],[56,31500,12600,4000]
+  ],
+  // ---- 动态池 Root 每日实际批准量（链上日志逐日解码）----
+  dynamicRoots: [0,10.616344472646242,45.95461088547256,16.20384028754192,12.045163210344045,62.05754315347415,22.087917550487937,22.331759978801337,20.563375711159463,45.46234669871253,34.698,29.762412111,33.5559,29.404,30.0825,35.5232,50.7272,45.8336,45.7972,55.053,53.9289,54.3249,46.2711,0,0,51.6408,111.9972,47.7599,61.6072,65.3104,42.15565,49.8532,63.5003,65.1358,63.384,76.48636558490469,80.1625,82.1585,83.5618,85.0881,86.89692,87.36564,87.94164,88.36124,89.23524,90.90254,91.32524,94.74364,95.47474,96.31035432001703,97.08333055669846,97.98760066738603,98.6087,99.3628,101.2237,101.9717],
+  dynamicLatest: { growth: 16.4258, network: 29.8056, consensus: 55.7403, total: 101.9717 },
+  // ---- P 等级门槛（官方 API 已核对）----
+  levels: {
+    zoneUsd: [50000, 150000, 500000, 1500000, 4000000, null, null],
+    veUsd: [1000, 3000, 5000, 8000, 10000, 15000, 20000],
+    requiresChild: [null, null, null, null, null, 5, 6],
+    counts: { P1: 215, P2: 59, P3: 14, P4: 3, P5: 0, P6: 0, P7: 0 },
+    officialCounts: [0, 232, 62, 15, 3, 0, 0],
+    evaluated: 524737
+  },
+  // ---- 白皮书第八章：社区排放五阶段（520纪元）----
+  emissionPhases: [
+    { name: '启动期', epochs: 52,  pct: 0.07, budget: 11466000,  perEpochCap: 220500 },
+    { name: '加速期', epochs: 110, pct: 0.24, budget: 39312000,  perEpochCap: 357381.82 },
+    { name: '扩张期', epochs: 135, pct: 0.30, budget: 49140000,  perEpochCap: 364000 },
+    { name: '成熟期', epochs: 115, pct: 0.23, budget: 37674000,  perEpochCap: 327600 },
+    { name: '递减期', epochs: 108, pct: 0.16, budget: 26208000,  perEpochCap: 242666.67 }
+  ],
+  totalCommunityEmission: 163800000,
+  totalSupply: 210000000
+};
+</script>
+<script>
+(function(){
+'use strict';
+const S = window.HELIX_SNAPSHOT;
+const CHAIN_DATA = {"chains": {"anubis": {"id": 6714, "name": "Anubis", "short": "A链", "rpc_defaults": ["https://browser.anubispace.org/api/eth-rpc", "https://rpc.anubispace.org", "https://rpc2.anubispace.org"], "explorer": "https://browser.anubispace.org", "addr_url": "https://browser.anubispace.org/address/{addr}", "native": {"symbol": "DAI (gas)", "decimals": 18}, "block_sec": 1.0}, "polygon": {"id": 137, "name": "Polygon", "short": "马蹄链", "rpc_defaults": ["https://polygon-bor-rpc.publicnode.com", "https://1rpc.io/matic", "https://polygon.drpc.org"], "explorer": "https://polygonscan.com", "addr_url": "https://polygonscan.com/address/{addr}", "native": {"symbol": "POL", "decimals": 18}, "block_sec": 2.0}}, "groups": [{"title": "马蹄链 Polygon · 核心资产", "chain": "polygon", "items": [{"name": "DAI 代币", "address": "0x8f3cf7ad23cd3cadbd9735aff958023239c6a063", "kind": "token"}, {"name": "USDT（链上名 USDT0）", "address": "0xc2132D05D31c914a87C6611C10748AEb04B58e8F", "kind": "token"}, {"name": "USDC（原生）", "address": "0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359", "kind": "token"}, {"name": "USDC.e（桥接）", "address": "0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174", "kind": "token"}, {"name": "WBTC 代币", "address": "0x1bfd67037b42cf73acf2047067bd4f2c47d9bfd6", "kind": "token"}, {"name": "WETH 代币", "address": "0x7ceb23fd6bc0add59e62ac25578270cff1b9f619", "kind": "token"}, {"name": "LGNS（OHM）", "address": "0xeb51d9a39ad5eef215dc0bf39a8821ff804a0f01", "kind": "token"}, {"name": "sLGNS（sOHM）", "address": "0x99a57e6c8558bc6689f894e068733adf83c19725", "kind": "token"}, {"name": "A 代币（TUSD B · 供应量0）", "address": "0x7C911C70cf65984B0D266d58c5692361491a3786", "kind": "token"}, {"name": "OPUSD 代币", "address": "0x9aA406479ac454763ABABa01057fa7C46E938f81", "kind": "token"}, {"name": "A 代币（OUSD 合约）", "address": "0x6631eE651DA438Db2BE611B5A44dFE2Ca04590C5", "kind": "token"}]}, {"title": "马蹄链 Polygon · 协议核心", "chain": "polygon", "items": [{"name": "通用根地址", "address": "0xC26522960F9263AF7C4AD94816f6Be6FD642F0F1", "kind": "contract"}, {"name": "PancakeSwap 路由", "address": "0xa5E0829CaCEd8fFDD4De3c43696c57F7D7A678ff", "kind": "contract"}, {"name": "PancakeSwap 工厂", "address": "0x5757371414417b8C6CAad45bAeF941aBc7d3Ab32", "kind": "contract"}, {"name": "ETH 价格源", "address": "0xF9680D99D6C9589e2a93a78A04A279e509205945", "kind": "contract"}, {"name": "BTC 价格源", "address": "0xc907E116054Ad103354f2D350FD2514433D57F6f", "kind": "contract"}, {"name": "OHM/USDT 交易对（LP 底池）", "address": "0x882df4b0fb50a229c3b4124eb18c759911485bfb", "kind": "pair"}, {"name": "债券计算合约", "address": "0x30F7171b298e79db82F690C4a7BcaD053Bf3Ca7C", "kind": "contract"}, {"name": "TURBINE 合约（涡轮逻辑）", "address": "0x07Ff4e06865de4934409Aa6eCea503b08Cc1C78d", "kind": "contract"}, {"name": "国库合约", "address": "0x7B9B7d4F870A38e92c9a181B00f9b33cc8Ef5321", "kind": "treasury"}, {"name": "分配合约", "address": "0x8DEa9182ca68E101C4B351E4601f56044a5Dd611", "kind": "contract"}, {"name": "社区奖励地址", "address": "0xa49aba84930299c6c2d537456A3e681bB4500f15", "kind": "contract"}, {"name": "DAO 池地址", "address": "0x0309Ca717d6989676194b88fD06029a88CEEfee6", "kind": "treasury"}]}, {"title": "马蹄链 Polygon · 质押合约", "chain": "polygon", "items": [{"name": "质押合约（Olympus）", "address": "0x1964Ca90474b11FFD08af387b110ba6C96251Bfc", "kind": "staking"}, {"name": "质押预热合约", "address": "0x81e77A6CeeD59000ba5136Eb735d18Fd9bf5021e", "kind": "contract"}, {"name": "质押辅助合约", "address": "0x78654ed080C1d1c87907646FDb2Ae48Db3635341", "kind": "contract"}, {"name": "赎回辅助合约", "address": "0x43A9fb83AAfc8e36207Db40d57a43b5E074132e3", "kind": "contract"}, {"name": "扩展质押合约 1", "address": "0x9D150752Dae5707CB1E6344d858ec6b8B5937a79", "kind": "staking"}, {"name": "扩展质押合约 2", "address": "0xA0AA450b62929006602e183Abab0Fc516AC08A03", "kind": "staking"}, {"name": "LONG 60天质押", "address": "0xdAd4d3fE850C8C57a2880F1C7D9141F2bCf3B65A", "kind": "staking"}, {"name": "LONG 120天质押", "address": "0xa22ca986cA163ab51f33fb534D559E4E03445c44", "kind": "staking"}, {"name": "LONG 240天质押", "address": "0xED24055c04609500AdB329c4eB82AAE49a478B8f", "kind": "staking"}, {"name": "LONG 360天质押（360天长期质押）", "address": "0x14fcA7bfa779A4172c9b2DE61fd352C005442520", "kind": "staking"}, {"name": "LONG 600天质押（600天长期质押）", "address": "0x8cA97F41d2C81AF050656e8AD0Cf543820a24504", "kind": "staking"}, {"name": "A 120天质押", "address": "0x33b69112FFF18eeA99834ACa7Db4021BebC1E084", "kind": "staking"}, {"name": "A 240天质押", "address": "0x65Ed60E414CEcE532d8afF90c89dA369E44CF883", "kind": "staking"}, {"name": "A 360天质押", "address": "0xDa13C7553A654601667adf9a1A16248bAB584F13", "kind": "staking"}, {"name": "配额360天质押", "address": "0x25a4b842cB200E9148FF5a11BAbF80488c8d8b07", "kind": "staking"}, {"name": "A 360天代币质押", "address": "0x23E2B07d85a8dbc307742C72aadbbdde4E5e2EFB", "kind": "staking"}]}, {"title": "马蹄链 Polygon · 债券合约", "chain": "polygon", "items": [{"name": "DAI 债券", "address": "0x2EC37eAb8C1a3EA0eDa2296495bf7BE6c62e2788", "kind": "contract"}, {"name": "USDT 稳定债券", "address": "0xbE741d070c6d26109b95ddcD7B6da47395272f45", "kind": "contract"}, {"name": "DAI 稳定债券", "address": "0x59A6693CaA6305b1E4F16176D5228C32E24717E5", "kind": "contract"}, {"name": "BTC 债券（WBTC）", "address": "0x4337E95f99d28bE9a013a17306542F835f7e6373", "kind": "contract"}, {"name": "ETH 债券", "address": "0x2EaF2221f4A8234c2a4aF65DCA38Eaf3CCe52DF1", "kind": "contract"}, {"name": "DAI 30天稳定债券", "address": "0x152Ed4367ae89FBB37055780dB228dc178cB4330", "kind": "contract"}, {"name": "DAI 60天稳定债券", "address": "0x5f0c7F5a6f9C31A28b59B51FceE090E1b3f1e160", "kind": "contract"}, {"name": "DAI 120天稳定债券", "address": "0x4116262358c9DcCEDBA558B1BC6Fd01d09C79F9D", "kind": "contract"}, {"name": "DAI 240天稳定债券", "address": "0xDc40a84b1E44e181a215b9B56e70C14e89DD0Fb0", "kind": "contract"}, {"name": "DAI 360天稳定债券", "address": "0xa9c9eFB2AeEc103116B58B85cfeEFBB1b1FD1433", "kind": "contract"}, {"name": "LP 30天债券", "address": "0x579906B27d5c9f88d3a1C21d9150aA5C4544399D", "kind": "contract"}, {"name": "LP 60天债券", "address": "0xfe713fE10D7a06dC0Bf815B76e593a62ED7b70f8", "kind": "contract"}, {"name": "LP 120天债券", "address": "0x418F8bD13AEB1a1B3d89013EAdf5ADfA179a4F59", "kind": "contract"}, {"name": "LP 240天债券", "address": "0x468c0ee3069Fbb8BC9A50f2cFf7004A5d6384026", "kind": "contract"}, {"name": "LP 360天债券（长期流动性债券）", "address": "0x6c0Ac888b075c6b5141cbC1Da6170B6686aFd07D", "kind": "contract"}, {"name": "LP 600天债券", "address": "0x9b081323d11A2A61f43701A4007a4a98357c57A1", "kind": "contract"}, {"name": "存款辅助合约", "address": "0x8e2222C8b1e73E187e5AdA270707C11232E84630", "kind": "contract"}, {"name": "LP 30天存款辅助", "address": "0xE92b2986d1c237A172687D93d5565d3827a66B98", "kind": "contract"}, {"name": "LP 60天存款辅助", "address": "0x15517A9b6D9340b7DE03dD6292f1b33883Ad3ceF", "kind": "contract"}, {"name": "LP 120天存款辅助", "address": "0xc4981352a494e67f7D67B12B080883d48D50Ea04", "kind": "contract"}, {"name": "LP 240天存款辅助", "address": "0xba4510DDbE589619EF18c61e628350A9429f656C", "kind": "contract"}, {"name": "LP 360天存款辅助", "address": "0x183E15f6cA33434BCb1B01a03a3aa58A31E74436", "kind": "contract"}]}, {"title": "马蹄链 Polygon · 高级功能与能量值", "chain": "polygon", "items": [{"name": "空投合约（空投 A 奖励）", "address": "0x4220a8259241644935cEb0b7367B9431cC73D21D", "kind": "contract"}, {"name": "A 奖励分发地址", "address": "0x7DC3d391dD1303894eB359b483C8894A0C1Cf681", "kind": "treasury"}, {"name": "彩票合约", "address": "0x280537D9641c3AA0f7ddEAa00602af1A60811c51", "kind": "contract"}, {"name": "DAO 投票合约", "address": "0xCBae1509597A71a304FA12d4aD9c7F5c6126eBCA", "kind": "contract"}, {"name": "稳定代币兑换", "address": "0x9E0d860C26D2CC5B8eEA532362Ca56B5E615bcA4", "kind": "contract"}, {"name": "配额管理合约（蛛网能量值）", "address": "0xbe2dEf4f85E16D1C7bF83e79899724086Bbc0B8a", "kind": "contract"}, {"name": "配额铸造合约（能量值销毁中转）", "address": "0xA6036c7ae9F7dAE757E9BeE5BF02860A8D5F457e", "kind": "contract"}, {"name": "铸造奖励地址（蛛网奖励分发）", "address": "0x806fdab92b0fc7fbe4bbbe5117a54caa9283d5a4", "kind": "contract"}, {"name": "WebKey NFT 分片", "address": "0xefc8a02d31e8E42430b4A4DfDDD8F51E0C0DBb57", "kind": "contract"}, {"name": "WebKey NFT", "address": "0x6085f1886a801E4c31cbF5D08DCD5A3B4e627F4c", "kind": "contract"}, {"name": "WebKey NFT Artisan", "address": "0x52964611477d734aFA6B39D0Eb1C03125747213C", "kind": "contract"}, {"name": "固定价格销毁网关（P侧）", "address": "0xdE718cD917E6730cd3CA3FfC3ad3D547ac973083", "kind": "contract"}, {"name": "销毁换gLGNS 网关（P侧）", "address": "0x0e2B1AD54dfd25D9BB09B6244B5975D1098cdF24", "kind": "contract"}, {"name": "能量迁移（P侧）", "address": "0xE8Bc8AAA23c719C4Db0aD31f2e02646DD7AC6D2f", "kind": "contract"}]}, {"title": "Anubis 链 · 长期质押", "chain": "anubis", "items": [{"name": "360天长期质押", "address": "0x88ea98af226cd4402a3873400308a4d78784ece6", "kind": "staking"}, {"name": "600天质押", "address": "0x04ed22c6d1d020a9b5e032e93d79ab28293ef72f", "kind": "staking"}, {"name": "360天质押（部署枚举候选，未在 DApp 确认）", "address": "0x5584cdeb1369673c91c6ad7ebea0ce7cb630ce60", "kind": "staking"}, {"name": "质押总额读数器 getStakedAmount", "address": "0xeBd08fa8768c366fcCCd8130AA3c0b35DC50f9a6", "kind": "contract"}]}, {"title": "Anubis 链 · 债券", "chain": "anubis", "items": [{"name": "传世360债券（跨链签名债券）", "address": "0x80283c823e2e5ff842113051bd48e14ff6d82e2e", "kind": "contract"}, {"name": "固定价格销毁债券", "address": "0x6d59827207b1e9ca32ea9b6247270a0e7023d9a9", "kind": "contract"}, {"name": "固定价格销毁债券 · 备选", "address": "0x4d47845750185bc654da1a6a571e5a13e6506929", "kind": "contract"}, {"name": "销毁换gLGNS", "address": "0x96cb0ce58d5a48348e165ac249bec5fec7f41d2f", "kind": "contract"}, {"name": "销毁债券 · 卖出销毁执行器", "address": "0x92b53785090f6fe0717ca3cf5db8f8040d3b070b", "kind": "contract"}, {"name": "销毁债券 · 用户入口", "address": "0xf7a0cacdf0810609ee5618247c4121b799e41664", "kind": "contract"}]}, {"title": "Anubis 链 · 奖励与能量值（候选）", "chain": "anubis", "items": [{"name": "社群奖励 · 候选1", "address": "0x853aa8e3a3c55d7124c0f8bc2cca826645fb0f15", "kind": "contract"}, {"name": "社群奖励 · 候选2", "address": "0x6215316b1acf7980370249ac86d0c0da11d122ec", "kind": "contract"}, {"name": "能量值 · 候选", "address": "0x72ffea367fa40c10e18199e5db0e0d1848a6503f", "kind": "contract"}]}, {"title": "马蹄链 Polygon · 管理与费用地址", "chain": "polygon", "items": [{"name": "国库流动性管理", "address": "0xEEeaBf5304a7eD876e7a28Ec016bb57aE6e89F26", "kind": "contract"}, {"name": "国库流动性管理 2（底池销毁）", "address": "0x1D6A7F2cB262aFbb1204bbFCBb3db642662b15c3", "kind": "contract"}, {"name": "比率操作员 / 债券策略 / 质押策略", "address": "0x9dA64DF74565861708781B9Ad2e559b7328b97c4", "kind": "contract"}, {"name": "DAO 池提现账户 / 多签国库", "address": "0xBc7269B1aE5d419a661cB4E4B54401159B2DC012", "kind": "wallet"}, {"name": "新所有者地址", "address": "0x8d9283460e2589f6A600A980772fF91134486127", "kind": "wallet"}, {"name": "买入手续费接收", "address": "0x465eA4cD10dB67707953fbc41D24692a48313EdC", "kind": "wallet"}, {"name": "LAMP 基金接收（Polygon 曙光基金）", "address": "0x21814346C967D751b4164BDB813f02884b497A0C", "kind": "treasury"}, {"name": "DISCIPLE 基金接收", "address": "0x16409e5515C8028f446b78d4691A29C3690c04Ac", "kind": "treasury"}, {"name": "投资接收地址", "address": "0x5BdA574d916982BCa0BAB3dFe5C32E219d2c717E", "kind": "wallet"}, {"name": "市场接收地址", "address": "0x9a11640C07553C071c025bFb049BeE980E277f9d", "kind": "wallet"}, {"name": "稳定币基金接收（2.1% 手续费）", "address": "0x91F1D2c2165B17a1eD2dC3B73Ae77224E6e1410E", "kind": "treasury"}, {"name": "手续费接收地址", "address": "0xA304823C775d13fc851379C75e2b6f300E223234", "kind": "treasury"}, {"name": "黑洞地址", "address": "0x0000000000000000000000000000000000000000", "kind": "burn"}]}, {"title": "Anubis 链 · 核心代币", "chain": "anubis", "items": [{"name": "DAI（gas 币）", "address": "0x83fd06F0846d9D90B3016bF670Efe2E0B11cDe14", "kind": "token"}, {"name": "LGNS", "address": "0x4D1D808a081FdAc440703b3765FC61f8028C06B8", "kind": "token"}, {"name": "SLGNS", "address": "0x2243aE29F73137d678197b61B0621AE942845B8C", "kind": "token"}, {"name": "gLGNS", "address": "0xf140a92C156e76F5A1d3D6f96284b250330F8F4c", "kind": "token"}]}, {"title": "Anubis 链 · 底池 / 质押 / 金库", "chain": "anubis", "items": [{"name": "LGNS LP 底池", "address": "0x32A4586797E3f561F41C0F47CA57eD08D64f3dC0", "kind": "pair"}, {"name": "GLGNS 底池", "address": "0x8c4Ea5dAC01E2E8Fb67F50201Aa2e10A6949C58D", "kind": "pair"}, {"name": "2.1% 手续费底池", "address": "0xC6255250D3BCb9D9662532E43Fb2cC4E110C87E1", "kind": "treasury"}, {"name": "冲锋池底池", "address": "0xDfD5B753b3C690c24F31Edc942624Bb443Ed0cf8", "kind": "treasury"}, {"name": "NFT 卡牌合约", "address": "0x58839f46bd0E3F4494E2BEB8ca93Da9352208615", "kind": "contract"}, {"name": "黑洞", "address": "0x000000000000000000000000000000000000dEaD", "kind": "burn"}, {"name": "激励池", "address": "0x5E7850a87058822f20A5C658595C59a052844F0b", "kind": "treasury"}, {"name": "质押池", "address": "0x7a2E3fA6eA60437F0441b8eb5e60674B80339228", "kind": "staking"}, {"name": "国库合约", "address": "0x9d46cb414e76237d3b83e2a1630481038368f217", "kind": "treasury"}, {"name": "新生态涡轮 2X 主合约", "address": "0x0664F1369209677FEcb279F5EC3Df1E53a22212e", "kind": "contract"}, {"name": "4X 主合约", "address": "0x229e0aA54ebcFD887a1c06bc649AD1AFcA87486A", "kind": "contract"}, {"name": "新生态涡轮 · 实例1（06-22 新机制）", "address": "0x11b10c9827c5b7071e96fcaa143b4e6e86b17c69", "kind": "contract"}, {"name": "新生态涡轮 · 实例2", "address": "0x3f403751975e1eb06d95901f7ff246513444e71f", "kind": "contract"}, {"name": "新生态涡轮 · 实例3", "address": "0x78d5ab2a4a1a928232b2ef8cf5bd68a2d3852a50", "kind": "contract"}, {"name": "NFT 卡牌铸造入口", "address": "0xa3007b26b64f0f43b56c8c67a12917faab02fc42", "kind": "contract"}, {"name": "活期质押合约", "address": "0xf7788F5A5CbBaFAc4120c63C79dcd9F1931c7824", "kind": "staking"}, {"name": "SWAP 买卖执行器", "address": "0x7ff96a03f9e7d1583d52824e119ff90639509e5e", "kind": "contract"}]}, {"title": "AiLGNS 生态 · 代币", "chain": "anubis", "items": [{"name": "AiLGNS 代币", "address": "0x256EdB652db43E721EC6A12B6b51b6967D3bb8cB", "kind": "token"}, {"name": "DAI（ERC-20）", "address": "0x83fd06F0846d9D90B3016bF670Efe2E0B11cDe14", "kind": "token"}, {"name": "USDT（跨链）", "address": "0xdFb6a28BC6DC51fed17c27C880F2c66cDd040A3e", "kind": "token"}, {"name": "A（跨链稳定币）", "address": "0xA921267c56B3a57696d6Fd7949c9FaD0A8E0c177", "kind": "token"}]}, {"title": "AILGNS流动性池", "chain": "anubis", "items": [{"name": "AiLGNS / DAI ⭐主池", "address": "0x0a1Cce65d995C6C5100e6F5bA3c388Ef34CEcaf0", "kind": "pair"}, {"name": "AiLGNS / LGNS", "address": "0xc5029d6e80D2FDCE321B2b51010E9Ce3b1eDf1a2", "kind": "pair"}, {"name": "AiLGNS / gLGNS", "address": "0xbfAaE809C1803eC4ae73A506309b3036c48D65A8", "kind": "pair"}, {"name": "AiLGNS / USDT", "address": "0x8A36A456E95Cd55eA8cbd79CcC798fd1f716db68", "kind": "pair"}, {"name": "AiLGNS / A", "address": "0x39BA6313F3C59CaC5611b8CF308D084551E9D60F", "kind": "pair"}]}, {"title": "AiLGNS 生态 · 核心合约", "chain": "anubis", "items": [{"name": "社区关系", "address": "0xc9f9a8a2dBf8188AD6610e0239105CAbE67c4993", "kind": "contract"}, {"name": "veAiLGNS 锁仓", "address": "0x52D7f7745D4Ba3dE6C3A0B503815878aeE7eDf14", "kind": "contract"}, {"name": "排放金库", "address": "0x3DEea5f638cA0dFb03A0873CF4c0b90BA50E1aA2", "kind": "treasury"}, {"name": "排放预算", "address": "0x6aab661e1a99b20d1dae581ab0e1250e6f753a19", "kind": "contract"}, {"name": "生产权 NFT", "address": "0x77E6ab1C5557FD456b0656304E0e5c02a6d7DcCA", "kind": "contract"}, {"name": "Gauge 登记", "address": "0x8B52B9e85f7CE788c2C141Cc2eB98965C705ABB0", "kind": "contract"}, {"name": "Gauge 投票", "address": "0x81a42A20f754dBeCF7aEe69685D844a880deA618", "kind": "contract"}, {"name": "风险控制", "address": "0xB16325F0565A2d83031735a7aC6495B5Bc72E422", "kind": "contract"}, {"name": "交易对工厂", "address": "0xaf6F4e641C86A25518509BC840051A8652Af598A", "kind": "contract"}, {"name": "NFT 工厂", "address": "0xB39d8759d59592363395E4c66a3d4E4ACc9bc09D", "kind": "contract"}]}, {"title": "AiLGNS 生态 · 协议级合约", "chain": "anubis", "items": [{"name": "协议储备（钱都进这里）", "address": "0x27Cb55eE75E777fF972B74B6E68782D12Bd4ec46", "kind": "treasury"}, {"name": "算力账本（存 DAI 换算力）", "address": "0x9E68F61E2615cc1D2C4a2D0026bFc1EBFdf68C1b", "kind": "contract"}, {"name": "价格保护资金", "address": "0x85fF1E15CaBCa867F244B9c2465227477f251972", "kind": "treasury"}, {"name": "涡轮 Turbine（激活排放）", "address": "0xe884a336550a4482ca6a17a3f93aa30ed4ed9bad", "kind": "contract"}, {"name": "保险金库（风控储备）", "address": "0x22841307af7e663f8ce784230c8f8e10a46888cf", "kind": "treasury"}, {"name": "Gauge 排放金库", "address": "0xDb752f219a79C8d9D6F6674e5ea295c2C5431d1F", "kind": "treasury"}, {"name": "POL 金库", "address": "0x825d1B92d9cB744c9583999B6F57893E96d9B9c7", "kind": "treasury"}, {"name": "LFEO", "address": "0xA4e362201f74A9ea4f227B941026Ce6C9397C196", "kind": "contract"}, {"name": "HELIX 路由（官方卖出通道）", "address": "0x0527935979d10685B8571Fa02A8DEDbd6f3024E3", "kind": "contract"}, {"name": "每日结算（算力兑付）", "address": "0x2e0d9d461a1b567112a9b824d939fb583853daa7", "kind": "contract"}, {"name": "价格平衡执行器（套利）", "address": "0x2c36beFf699bA473d7Bb0eB829d1Fe723EEED963", "kind": "contract"}, {"name": "部署者地址（2.1亿）", "address": "0xcC95906Da4b92B3a5c4B187553050df0f90eaE08", "kind": "wallet"}, {"name": "社区基金（卖出手续费1%）", "address": "0x616799578b7A9FCfF46B6519C2460d07fba8cfD3", "kind": "treasury"}, {"name": "生态储备（卖出手续费1%）", "address": "0x0645460f6f485153775154451Fe1322fDbB2233c", "kind": "treasury"}, {"name": "手续费归集（卖出费1%）", "address": "0x7088e192b9b7f41A07bB3f79378e13454D8a80D5", "kind": "treasury"}, {"name": "运营 / 管理钱包", "address": "0x9120720b1Bfd3E06Fd5295fA2B4182859d178E30", "kind": "wallet"}]}, {"title": "白皮书 · 左螺旋 HELIX-P（协议协调）", "chain": "anubis", "monitor": false, "items": [{"name": "协议储备 Reserve", "address": "0x27Cb55eE75E777fF972B74B6E68782D12Bd4ec46", "kind": "treasury"}, {"name": "算力账本（Power）", "address": "0x9E68F61E2615cc1D2C4a2D0026bFc1EBFdf68C1b", "kind": "contract"}, {"name": "生产权 NFT（Power）", "address": "0x77E6ab1C5557FD456b0656304E0e5c02a6d7DcCA", "kind": "contract"}, {"name": "排放金库 Emission", "address": "0x3DEea5f638cA0dFb03A0873CF4c0b90BA50E1aA2", "kind": "treasury"}, {"name": "排放预算 Emission", "address": "0x6aab661e1a99b20d1dae581ab0e1250e6f753a19", "kind": "contract"}, {"name": "涡轮 Turbine", "address": "0xe884a336550a4482ca6a17a3f93aa30ed4ed9bad", "kind": "contract"}, {"name": "价格保护资金", "address": "0x85fF1E15CaBCa867F244B9c2465227477f251972", "kind": "treasury"}, {"name": "每日结算（算力兑付）", "address": "0x2e0d9d461a1b567112a9b824d939fb583853daa7", "kind": "contract"}, {"name": "价格平衡执行器（套利）", "address": "0x2c36beFf699bA473d7Bb0eB829d1Fe723EEED963", "kind": "contract"}, {"name": "保险金库（风控储备）", "address": "0x22841307af7e663f8ce784230c8f8e10a46888cf", "kind": "treasury"}, {"name": "POL 金库", "address": "0x825d1B92d9cB744c9583999B6F57893E96d9B9c7", "kind": "treasury"}, {"name": "风险控制", "address": "0xB16325F0565A2d83031735a7aC6495B5Bc72E422", "kind": "contract"}, {"name": "LFEO（排放参与权）", "address": "0xA4e362201f74A9ea4f227B941026Ce6C9397C196", "kind": "contract"}, {"name": "部署者地址", "address": "0xcC95906Da4b92B3a5c4B187553050df0f90eaE08", "kind": "wallet"}, {"name": "运营 / 管理钱包", "address": "0x9120720b1Bfd3E06Fd5295fA2B4182859d178E30", "kind": "wallet"}]}, {"title": "白皮书 · 右螺旋 HELIX-M（市场自治）", "chain": "anubis", "monitor": false, "items": [{"name": "AiLGNS 代币", "address": "0x256EdB652db43E721EC6A12B6b51b6967D3bb8cB", "kind": "token"}, {"name": "veAiLGNS 锁仓", "address": "0x52D7f7745D4Ba3dE6C3A0B503815878aeE7eDf14", "kind": "contract"}, {"name": "Gauge 登记", "address": "0x8B52B9e85f7CE788c2C141Cc2eB98965C705ABB0", "kind": "contract"}, {"name": "Gauge 投票", "address": "0x81a42A20f754dBeCF7aEe69685D844a880deA618", "kind": "contract"}, {"name": "Gauge 排放金库", "address": "0xDb752f219a79C8d9D6F6674e5ea295c2C5431d1F", "kind": "treasury"}, {"name": "交易对工厂", "address": "0xaf6F4e641C86A25518509BC840051A8652Af598A", "kind": "contract"}, {"name": "NFT 工厂", "address": "0xB39d8759d59592363395E4c66a3d4E4ACc9bc09D", "kind": "contract"}, {"name": "社区关系", "address": "0xc9f9a8a2dBf8188AD6610e0239105CAbE67c4993", "kind": "contract"}, {"name": "HELIX 路由（卖出通道）", "address": "0x0527935979d10685B8571Fa02A8DEDbd6f3024E3", "kind": "contract"}, {"name": "AiLGNS / DAI ⭐主池", "address": "0x0a1Cce65d995C6C5100e6F5bA3c388Ef34CEcaf0", "kind": "pair"}, {"name": "AiLGNS / LGNS", "address": "0xc5029d6e80D2FDCE321B2b51010E9Ce3b1eDf1a2", "kind": "pair"}, {"name": "AiLGNS / gLGNS", "address": "0xbfAaE809C1803eC4ae73A506309b3036c48D65A8", "kind": "pair"}, {"name": "AiLGNS / USDT", "address": "0x8A36A456E95Cd55eA8cbd79CcC798fd1f716db68", "kind": "pair"}, {"name": "AiLGNS / A", "address": "0x39BA6313F3C59CaC5611b8CF308D084551E9D60F", "kind": "pair"}, {"name": "社区基金（卖出费1%）", "address": "0x616799578b7A9FCfF46B6519C2460d07fba8cfD3", "kind": "treasury"}, {"name": "生态储备（卖出费1%）", "address": "0x0645460f6f485153775154451Fe1322fDbB2233c", "kind": "treasury"}, {"name": "手续费归集（卖出费1%）", "address": "0x7088e192b9b7f41A07bB3f79378e13454D8a80D5", "kind": "treasury"}]}], "knownTokens": {"anubis": [{"name": "DAI", "address": "0x83fd06F0846d9D90B3016bF670Efe2E0B11cDe14"}, {"name": "LGNS", "address": "0x4D1D808a081FdAc440703b3765FC61f8028C06B8"}, {"name": "SLGNS", "address": "0x2243aE29F73137d678197b61B0621AE942845B8C"}, {"name": "gLGNS", "address": "0xf140a92C156e76F5A1d3D6f96284b250330F8F4c"}, {"name": "AiLGNS", "address": "0x256EdB652db43E721EC6A12B6b51b6967D3bb8cB"}, {"name": "USDT", "address": "0xdFb6a28BC6DC51fed17c27C880F2c66cDd040A3e"}, {"name": "A", "address": "0xA921267c56B3a57696d6Fd7949c9FaD0A8E0c177"}, {"name": "fLGNS", "address": "0xffffbE730e2Cde54d8928D36F547e41Deb66aaAa"}], "polygon": [{"name": "LGNS", "address": "0xeb51d9a39ad5eef215dc0bf39a8821ff804a0f01"}, {"name": "sLGNS", "address": "0x99a57e6c8558bc6689f894e068733adf83c19725"}, {"name": "DAI", "address": "0x8f3cf7ad23cd3cadbd9735aff958023239c6a063"}, {"name": "USDT", "address": "0xc2132D05D31c914a87C6611C10748AEb04B58e8F"}, {"name": "USDC", "address": "0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359"}, {"name": "USDC.e", "address": "0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174"}, {"name": "WBTC", "address": "0x1bfd67037b42cf73acf2047067bd4f2c47d9bfd6"}, {"name": "WETH", "address": "0x7ceb23fd6bc0add59e62ac25578270cff1b9f619"}, {"name": "A (TUSD B)", "address": "0x7C911C70cf65984B0D266d58c5692361491a3786"}, {"name": "OPUSD", "address": "0x9aA406479ac454763ABABa01057fa7C46E938f81"}, {"name": "OUSD", "address": "0x6631eE651DA438Db2BE611B5A44dFE2Ca04590C5"}]}, "nftContracts": {"anubis": [{"name": "NFT 卡牌", "address": "0x58839f46bd0E3F4494E2BEB8ca93Da9352208615"}, {"name": "生产权 NFT", "address": "0x77E6ab1C5557FD456b0656304E0e5c02a6d7DcCA"}], "polygon": []}, "positionContracts": {"anubis": [{"name": "360天长期质押", "address": "0x88ea98af226cd4402a3873400308a4d78784ece6", "pkind": "txcalc", "dec": 9}, {"name": "600天质押", "address": "0x04ed22c6d1d020a9b5e032e93d79ab28293ef72f", "pkind": "txcalc", "dec": 9}, {"name": "A链质押合计（备用）", "address": "0xeBd08fa8768c366fcCCd8130AA3c0b35DC50f9a6", "pkind": "reader", "dec": 9}], "polygon": [{"name": "质押合约（Olympus）", "address": "0x1964Ca90474b11FFD08af387b110ba6C96251Bfc", "pkind": "staking", "dec": 9}, {"name": "扩展质押 1", "address": "0x9D150752Dae5707CB1E6344d858ec6b8B5937a79", "pkind": "staking", "dec": 9}, {"name": "扩展质押 2", "address": "0xA0AA450b62929006602e183Abab0Fc516AC08A03", "pkind": "staking", "dec": 9}, {"name": "LONG 60天质押", "address": "0xdAd4d3fE850C8C57a2880F1C7D9141F2bCf3B65A", "pkind": "staking", "dec": 9}, {"name": "LONG 120天质押", "address": "0xa22ca986cA163ab51f33fb534D559E4E03445c44", "pkind": "staking", "dec": 9}, {"name": "LONG 240天质押", "address": "0xED24055c04609500AdB329c4eB82AAE49a478B8f", "pkind": "staking", "dec": 9}, {"name": "LONG 360天质押", "address": "0x14fcA7bfa779A4172c9b2DE61fd352C005442520", "pkind": "staking", "dec": 9}, {"name": "LONG 600天质押", "address": "0x8cA97F41d2C81AF050656e8AD0Cf543820a24504", "pkind": "staking", "dec": 9}, {"name": "A 120天质押", "address": "0x33b69112FFF18eeA99834ACa7Db4021BebC1E084", "pkind": "staking", "dec": 9}, {"name": "A 240天质押", "address": "0x65Ed60E414CEcE532d8afF90c89dA369E44CF883", "pkind": "staking", "dec": 9}, {"name": "A 360天质押", "address": "0xDa13C7553A654601667adf9a1A16248bAB584F13", "pkind": "staking", "dec": 9}, {"name": "配额360天质押", "address": "0x25a4b842cB200E9148FF5a11BAbF80488c8d8b07", "pkind": "staking", "dec": 9}, {"name": "A 360天代币质押", "address": "0x23E2B07d85a8dbc307742C72aadbbdde4E5e2EFB", "pkind": "staking", "dec": 9}, {"name": "DAI 债券", "address": "0x2EC37eAb8C1a3EA0eDa2296495bf7BE6c62e2788", "pkind": "bond", "dec": 18}, {"name": "USDT 稳定债券", "address": "0xbE741d070c6d26109b95ddcD7B6da47395272f45", "pkind": "bond", "dec": 18}, {"name": "DAI 稳定债券", "address": "0x59A6693CaA6305b1E4F16176D5228C32E24717E5", "pkind": "bond", "dec": 18}, {"name": "BTC 债券", "address": "0x4337E95f99d28bE9a013a17306542F835f7e6373", "pkind": "bond", "dec": 18}, {"name": "ETH 债券", "address": "0x2EaF2221f4A8234c2a4aF65DCA38Eaf3CCe52DF1", "pkind": "bond", "dec": 18}, {"name": "DAI 30天稳定债券", "address": "0x152Ed4367ae89FBB37055780dB228dc178cB4330", "pkind": "bond", "dec": 18}, {"name": "DAI 60天稳定债券", "address": "0x5f0c7F5a6f9C31A28b59B51FceE090E1b3f1e160", "pkind": "bond", "dec": 18}, {"name": "DAI 120天稳定债券", "address": "0x4116262358c9DcCEDBA558B1BC6Fd01d09C79F9D", "pkind": "bond", "dec": 18}, {"name": "DAI 240天稳定债券", "address": "0xDc40a84b1E44e181a215b9B56e70C14e89DD0Fb0", "pkind": "bond", "dec": 18}, {"name": "DAI 360天稳定债券", "address": "0xa9c9eFB2AeEc103116B58B85cfeEFBB1b1FD1433", "pkind": "bond", "dec": 18}, {"name": "LP 30天债券", "address": "0x579906B27d5c9f88d3a1C21d9150aA5C4544399D", "pkind": "bond", "dec": 18}, {"name": "LP 60天债券", "address": "0xfe713fE10D7a06dC0Bf815B76e593a62ED7b70f8", "pkind": "bond", "dec": 18}, {"name": "LP 120天债券", "address": "0x418F8bD13AEB1a1B3d89013EAdf5ADfA179a4F59", "pkind": "bond", "dec": 18}, {"name": "LP 240天债券", "address": "0x468c0ee3069Fbb8BC9A50f2cFf7004A5d6384026", "pkind": "bond", "dec": 18}, {"name": "LP 360天债券", "address": "0x6c0Ac888b075c6b5141cbC1Da6170B6686aFd07D", "pkind": "bond", "dec": 18}]}, "ailgnsPools": {"anubis": [{"name": "AiLGNS/DAI ⭐主池", "address": "0x0a1Cce65d995C6C5100e6F5bA3c388Ef34CEcaf0"}, {"name": "AiLGNS/LGNS", "address": "0xc5029d6e80D2FDCE321B2b51010E9Ce3b1eDf1a2"}, {"name": "AiLGNS/gLGNS", "address": "0xbfAaE809C1803eC4ae73A506309b3036c48D65A8"}, {"name": "AiLGNS/USDT", "address": "0x8A36A456E95Cd55eA8cbd79CcC798fd1f716db68"}, {"name": "AiLGNS/A", "address": "0x39BA6313F3C59CaC5611b8CF308D084551E9D60F"}], "polygon": []}, "monitorGroups": ["马蹄链 Polygon · 核心资产", "马蹄链 Polygon · 协议核心", "马蹄链 Polygon · 质押合约", "马蹄链 Polygon · 债券合约", "马蹄链 Polygon · 高级功能与能量值", "马蹄链 Polygon · 管理与费用地址", "Anubis 链 · 核心代币", "Anubis 链 · 底池 / 质押 / 金库", "Anubis 链 · 长期质押", "Anubis 链 · 债券", "Anubis 链 · 奖励与能量值（候选）", "AiLGNS 生态 · 代币", "AILGNS流动性池", "AiLGNS 生态 · 核心合约", "AiLGNS 生态 · 协议级合约"], "obs": {"clock": "0x6C5352E15A8327C3F44898FE220100Edc2989C58", "lens": "0xa69a60b8d97D43031C00F16742Eb6989553796fc", "power": "0x9E68F61E2615cc1D2C4a2D0026bFc1EBFdf68C1b", "vault": "0x3DEea5f638cA0dFb03A0873CF4c0b90BA50E1aA2", "ailgns": "0x256EdB652db43E721EC6A12B6b51b6967D3bb8cB", "dai": "0x83fd06F0846d9D90B3016bF670Efe2E0B11cDe14", "pool": "0x0a1Cce65d995C6C5100e6F5bA3c388Ef34CEcaf0", "turbine": "0xe884a336550a4482ca6a17a3f93aa30ed4ed9bad", "insurance": "0x22841307af7e663f8ce784230c8f8e10a46888cf", "evt_root": "0xce1281bbe035883e4d8e329a4e92ce777c42ec0f072558a5868bd845baa45d99", "evt_settled": "0x91dfa08597fd3a8af82de15a379094239ef672f8a7db3d481834c8060b63975b", "evt_static_claimed": "0x4c80b813621f984c5d34c5126aabaccd262b9ca81236927656681e7303356164", "evt_dynamic_claimed": "0x834a7928c8b068a81465dbd0b4c6a4f2c3a479186557589352b852ed6c7fe4f8", "evt_dai_queued": "0x41fd86243836b698405554ae311d223dec7e355200f05fd658fb3adffe567668", "evt_lgns_queued": "0x16b309670cfc6e855d1def7ee55e395827e8a8694f4c701ffe0adbc7b75121cc", "funds": [["协议储备", "0x27Cb55eE75E777fF972B74B6E68782D12Bd4ec46", "买算力的钱全部进入这里"], ["AiLGNS/DAI 主池", "0x0a1Cce65d995C6C5100e6F5bA3c388Ef34CEcaf0", "主池内的 DAI 储备"], ["涡轮 Turbine", "0xe884a336550a4482ca6a17a3f93aa30ed4ed9bad", "激活排放收到的 DAI"], ["手续费归集", "0x7088e192b9b7f41A07bB3f79378e13454D8a80D5", "卖出费里的 1%"], ["价格保护资金", "0x85fF1E15CaBCa867F244B9c2465227477f251972", "资金钱包 · 价格保护与资金调度"], ["算力账本", "0x9E68F61E2615cc1D2C4a2D0026bFc1EBFdf68C1b", "中转站，收到就转走"]], "params": [["协议第 N 天", "clock", "currentDay()", 0], ["当前 epoch", "clock", "currentEpoch()", 0], ["全网有效算力", "power", "activePower()", 1e+18], ["记账算力", "power", "recordedPower()", 1e+18], ["算力倍率", "power", "powerRateBps()", 10000], ["排队算力", "power", "queuedDaiPower()", 1e+18], ["每日 DAI 存入上限", "power", "dailyDaiDepositCap()", 1e+18], ["公开买入", "power", "depositsOpen()", 0], ["AiLGNS 总供应", "ailgns", "totalSupply()", 1e+18], ["排放金库 AiLGNS", "ailgns", "balanceOf(vault)", 1e+18], ["保险金库 AiLGNS", "ailgns", "balanceOf(insurance)", 1e+18], ["协议价格（DAI/AiLGNS）", "turbine", "quote(1e18)", 1e+18], ["卖出手续费", "ailgns", "sellFeeBps()", 100], ["动态手续费", "ailgns", "dynamicFeeBps()", 100], ["主池 DAI 储备", "pool", "reserve_dai", 1e+18], ["主池 AiLGNS 储备", "pool", "reserve_ailgns", 1e+18]], "block_sec": 1.57, "chunk": 4000}, "obsApi": {"emission": "https://awakehelix.io/api/v1/emission", "level": "https://awakehelix.io/api/v1/level", "wallet_level": "https://awakehelix.io/api/v1/level/{addr}", "wallet_community": "https://awakehelix.io/api/v1/community/{addr}"}};
+const $ = id => document.getElementById(id);
+const fmt = (n, d = 2) => {
+  if (n == null || !isFinite(n)) return '—';
+  return Number(n).toLocaleString('zh-CN', { minimumFractionDigits: d, maximumFractionDigits: d });
+};
+const fmtInt = n => (n == null || !isFinite(n)) ? '—' : Math.round(n).toLocaleString('zh-CN');
+const num = id => { const v = parseFloat(($(id) || {}).value); return isFinite(v) ? v : 0; };
+
+// ---------- 头部 ----------
+$('hActive').textContent = fmt(S.official.totalActivePowerOfficial, 0);
+$('hActual').textContent = fmt(S.official.lastSettled.actual, 2);
+$('hPrice').textContent = fmt(S.official.priceLive, 0);
+
+// 天数 / 纪元 / 纪元内 7 天方块（实心 = 已过天数）
+function renderEpochBlocks(day) {
+  const el = $('epochBlocks');
+  if (!el) return;
+  const inEpoch = ((day - 1) % 7) + 1;   // 本纪元第几天（1..7）
+  let html = '';
+  for (let i = 1; i <= 7; i++) {
+    html += i <= inEpoch
+      ? '<i style="width:9px;height:9px;border-radius:2px;background:var(--cy);box-shadow:0 0 5px #6D4AFFaa"></i>'
+      : '<i style="width:9px;height:9px;border-radius:2px;border:1px solid #C9B6F0;background:transparent"></i>';
+  }
+  el.innerHTML = html;
+}
+function syncDayBadge(day) {
+  day = Math.max(1, Number(day) || 1);
+  $('dayBadge').textContent = day;
+  $('epochBadge').textContent = Math.ceil(day / 7);
+  renderEpochBlocks(day);
+}
+syncDayBadge(S.meta.day);
+
+// ---------- 顶部刷新实时数据 ----------
+async function refreshTop(silent) {
+  const st = $('refreshStatus');
+  if (!silent) st.textContent = '正在刷新…';
+  try {
+    const [em, pw, ov] = await Promise.all([
+      fetch(API + 'emission').then(r => r.json()),
+      fetch(API + 'power').then(r => r.json()),
+      fetch(API + 'overview').then(r => r.json())
+    ]);
+    const parts = [];
+    if (pw && pw.totalActivePower != null) {
+      S.official.totalActivePowerOfficial = Number(pw.totalActivePower);
+      const el = $('inActive'); if (el) el.value = Math.round(Number(pw.totalActivePower));
+      parts.push('全网算力 ' + fmt(Number(pw.totalActivePower), 0));
+    }
+    if (ov && ov.price != null) {
+      S.official.priceLive = Number(ov.price);
+      const ip = $('inPrice'); if (ip) ip.value = Math.round(Number(ov.price));
+      parts.push('参考价 ' + fmt(Number(ov.price), 2));
+    }
+    if (em) {
+      if (em.clock && em.clock.currentDay != null) syncDayBadge(Number(em.clock.currentDay));
+      if (em.factor) {
+        S.official.factorToday = em.factor;
+        if ($('f57')) $('f57').textContent = (Number(em.factor.factorBps) / 100).toFixed(1) + '%';
+      }
+      if (em.community && em.community.lastSettledDay != null) {
+        const row = (em.recentDays || []).find(x => Number(x.day) === Number(em.community.lastSettledDay));
+        if (row && row.communityActual != null) {
+          S.official.lastSettled.actual = Number(row.communityActual);
+          S.official.lastSettled.day = Number(em.community.lastSettledDay);
+          parts.push('D' + em.community.lastSettledDay + ' 实际排放 ' + fmt(Number(row.communityActual), 2));
+        }
+        if (em.community.releasedCum != null) {
+          S.official.releasedCum = Number(em.community.releasedCum);
+          S.official.suppressedCum = Number(em.community.suppressedCum);
+        }
+      }
+    }
+    $('hActive').textContent = fmt(S.official.totalActivePowerOfficial, 0);
+    $('hActual').textContent = fmt(S.official.lastSettled.actual, 2);
+    $('hPrice').textContent = fmt(S.official.priceLive, 0);
+    calcMain();
+    st.textContent = '✓ 已刷新：' + parts.join(' · ') + '（' + new Date().toLocaleTimeString('zh-CN') + '）';
+  } catch (e) {
+    st.textContent = '刷新失败（浏览器跨域或网络限制），继续使用内置数据';
+  }
+}
+if ($('btnTopRefresh')) $('btnTopRefresh').onclick = () => refreshTop(false);
+// 自动刷新：打开页面即拉一次；之后每 10 分钟一次；切回标签页时（超过 5 分钟）补拉
+let lastRefreshAt = 0;
+const origRefresh = refreshTop;
+refreshTop = async function (silent) { const r = await origRefresh(silent); lastRefreshAt = Date.now(); return r; };
+setTimeout(() => { refreshTop(true); }, 300);
+setInterval(() => { if (!document.hidden) refreshTop(true); }, 10 * 60 * 1000);
+document.addEventListener('visibilitychange', () => {
+  if (!document.hidden && Date.now() - lastRefreshAt > 5 * 60 * 1000) refreshTop(true);
+});
+
+// ---------- 电脑版 / 手机竖屏版 切换 ----------
+function applyViewMode(mode) {
+  const mobile = mode === 'mobile';
+  document.body.classList.toggle('mobile-view', mobile);
+  const b = $('btnViewMode');
+  if (b) b.textContent = mobile ? '💻 电脑版' : '📱 手机版预览';
+}
+const savedView = localStorage.getItem('helixView') || 'desktop';
+applyViewMode(savedView);
+if ($('btnViewMode')) $('btnViewMode').onclick = () => {
+  const next = document.body.classList.contains('mobile-view') ? 'desktop' : 'mobile';
+  localStorage.setItem('helixView', next);
+  applyViewMode(next);
+};
+// ---------- Tab 切换 ----------
+document.querySelectorAll('.tab').forEach(t => {
+  t.onclick = () => {
+    document.querySelectorAll('.tab').forEach(x => x.classList.remove('on'));
+    document.querySelectorAll('.panel').forEach(x => x.classList.remove('on'));
+    t.classList.add('on');
+    $(t.dataset.p).classList.add('on');
+    if (t.dataset.p === 'p3') drawSettleChart();
+    if (t.dataset.p === 'p5') calcRoi();
+    if (t.dataset.p === 'p6' && $('r6Addr') && $('r6Addr').value.trim()) queryRight();
+    if (t.dataset.p === 'p7') c7build();
+    if (t.dataset.p === 'p9') c9build();
+    if (t.dataset.p === 'p10') obsRefresh();
+    if (t.dataset.p === 'p11') c11init();
+    if (t.dataset.p === 'p13') p13init();
+  };
+});
+
+// ---------- TAB1 左螺旋收益（0.7% / 0.28% 模型）----------
+// 实测基准：26,300 DAI → 65,750 Power；首日 0.21098 枚 ≈ 183.8 DAI（本金 0.7%）；算力 −183.73（0.2795%）
+// 规则：每日收益 = 当日算力 × 0.28%；算力每天扣当天值的 0.2795%（×0.997205，D57–D59 实盘验证）
+const YIELD = 0.0028;          // 每日收益系数（实测 0.28%）
+const DECAY = 0.002795;        // 算力日衰减（实测 0.2795%，3 天实盘验证）
+function calcMain() {
+  const dai = Math.max(0, num('inDai'));
+  const lgns = Math.max(0, num('inLgns'));
+  const price = Math.max(1e-9, num('inPrice'));
+  const days = Math.max(1, num('inDays'));
+  const feePct = Math.min(30, Math.max(0, num('inFee'))) / 100;
+  const reinvest = $('inReinvest') && $('inReinvest').checked;
+  const reDays = Math.max(1, Math.round(num('inReDays')) || 30);
+  // 复投模式下：先复投 N 天，再从复投结束那天起算「持有天数」→ 总周期 = N + D
+  const totalDays = reinvest ? reDays + days : days;
+
+  const power = dai * S.power.daiMultiplier + lgns * S.power.lgnsMultiplier;
+  const day1Dai = power * YIELD;
+  const day1Tok = day1Dai / price;
+
+  // 逐日模拟：不复投基线（按持有天数）
+  let curPower = power, cumDai = 0, cumTok = 0;
+  for (let d = 1; d <= days; d++) {
+    const e = curPower * YIELD;
+    cumDai += e; cumTok += e / price;
+    curPower = curPower * (1 - DECAY);
+  }
+  // 复投线：前 reDays 天复投，之后 days 天持有（现金）
+  let pRe = power, cumDaiRe = 0, cumTokRe = 0, injected = 0, cash = 0, pAtN = 0;
+  for (let d = 1; d <= totalDays; d++) {
+    const e2 = pRe * YIELD;
+    cumDaiRe += e2; cumTokRe += e2 / price;
+    const net = e2 * (1 - feePct);
+    if (d <= reDays) {
+      injected += net;
+      pRe = pRe * (1 - DECAY) + net * S.power.daiMultiplier;
+    } else {
+      cash += net;
+      pRe = pRe * (1 - DECAY);
+    }
+    if (d === reDays) pAtN = pRe;
+  }
+  const netN = cumDai * (1 - feePct);
+  const remain = power * Math.pow(1 - DECAY, days);
+
+  // 固定行（两种模式共用）
+  $('outPower').textContent = fmt(power, 2);
+  $('outRate').textContent = dai > 0 ? (day1Dai / dai * 100).toFixed(4) + '% / 天' : '—';
+  $('outDai').textContent = fmt(day1Dai, 2) + ' DAI';
+  $('outToday').textContent = fmt(day1Tok, 6) + ' 枚';
+  $('lblDays').textContent = reinvest ? totalDays : days;
+
+  $('reBox').style.display = reinvest ? '' : 'none';
+
+  if (!reinvest) {
+    $('lblNet').textContent = '实际得到';
+    $('outTokN').textContent = fmt(cumTok, 4) + ' 枚';
+    $('outValN').textContent = fmt(cumDai, 2) + ' DAI';
+    $('outNet').textContent = fmt(netN, 2) + ' DAI';
+    $('outPct').textContent = dai > 0 ? (netN / dai * 100).toFixed(2) + '%' : '—';
+    $('outLife').textContent = fmt(remain, 2) + ' / ' + fmt(power, 2) + '（上限 = 初始算力 = 250% 本金）';
+    $('fml').textContent =
+      'Power     = ' + fmt(dai, 0) + ' × 2.5' + (lgns > 0 ? ' + ' + fmt(lgns, 0) + ' × 2.0' : '') + ' = ' + fmt(power, 2) + '\n' +
+      '每日收益  = 当日算力 × 0.28% = ' + fmt(day1Dai, 2) + ' DAI（首日 = 本金 × 0.7%）\n' +
+      '算力衰减  = 每天扣当天值 × 0.2795%：' + fmt(power, 2) + ' → ' + fmt(power * (1 - DECAY), 2) + ' → …\n' +
+      '当日币数  = ' + fmt(day1Dai, 2) + ' ÷ ' + fmt(price, 0) + ' = ' + fmt(day1Tok, 6) + ' 枚\n' +
+      '持有 ' + days + ' 天累计 = ' + fmt(cumDai, 2) + ' DAI（' + fmt(cumTok, 4) + ' 枚）\n' +
+      '净到手    = ' + fmt(cumDai, 2) + ' × (1 − ' + (feePct * 100).toFixed(1) + '%) = ' + fmt(netN, 2) + ' DAI';
+  } else {
+    // 复投模式：只算到期卖出所得现金，不折算期末算力
+    $('lblNet').textContent = '实际得到';
+    $('outTokN').textContent = fmt(cumTokRe, 4) + ' 枚（累计卖出）';
+    $('outValN').textContent = fmt(cumDaiRe, 2) + ' DAI（累计产出，未扣费）';
+    $('outNet').textContent = fmt(cash, 2) + ' DAI';
+    $('outPct').textContent = dai > 0 ? (cash / dai * 100).toFixed(2) + '%' : '—';
+    $('outLife').textContent = '期末算力 ' + fmt(pRe, 0) + '（参考，不计入收益）';
+    $('reLblN').textContent = reDays;
+    $('rePowerN').textContent = fmt(pAtN, 2);
+    $('reInjected').textContent = fmt(injected, 2) + ' DAI';
+    $('reCash').textContent = fmt(cash, 2) + ' DAI';
+    $('rePowerEnd').textContent = fmt(pRe, 2);
+    $('fml').textContent =
+      '复投模式：先复投 ' + reDays + ' 天，再从复投结束那天起算持有 ' + days + ' 天（总周期 ' + totalDays + ' 天）\n' +
+      '前 ' + reDays + ' 天：每天收益卖出（扣 ' + (feePct * 100).toFixed(1) + '%）后按 1 DAI → 2.5 算力复投（无现金）\n' +
+      '之后 ' + days + ' 天：每天领到的币全部卖出，累计现金\n' +
+      '到期卖出所得 = Σ(当日算力 × 0.28% × ' + ((1 - feePct) * 100).toFixed(1) + '%) = ' + fmt(cash, 2) + ' DAI（' + fmt(cash / price, 4) + ' 枚等值）\n' +
+      '复投注资累计 = ' + fmt(injected, 2) + ' DAI　｜　期末算力 = ' + fmt(pRe, 2) + '（参考，不计入收益）';
+  }
+}
+['inDai','inLgns','inPrice','inDays','inFee','inReDays'].forEach(id => {
+  $(id).addEventListener('input', calcMain);
+});
+if ($('inReinvest')) $('inReinvest').addEventListener('change', calcMain);
+
+// ---------- TAB2 图表 ----------
+function drawSettleChart() {
+  const H = S.history;
+  const W = 1000, HT = 300, PL = 52, PR = 16, PT = 20, PB = 34;
+  const iw = W - PL - PR, ih = HT - PT - PB;
+  const maxY = 34000;
+  const x = i => PL + (i / (H.length - 1)) * iw;
+  const y = v => PT + ih - (v / maxY) * ih;
+  const ptsA = H.map((r, i) => `${x(i).toFixed(1)},${y(r[2]).toFixed(1)}`).join(' ');
+  const area = `M ${x(0).toFixed(1)},${PT+ih} L ${H.map((r,i)=>`${x(i).toFixed(1)},${y(r[2]).toFixed(1)}`).join(' L ')} L ${x(H.length-1).toFixed(1)},${PT+ih} Z`;
+  const grid = [0, 10000, 20000, 30000].map(v =>
+    `<line x1="${PL}" x2="${W-PR}" y1="${y(v)}" y2="${y(v)}" stroke="#D9CBF5" stroke-dasharray="3 5"/>
+     <text x="${PL-8}" y="${y(v)+4}" text-anchor="end" fill="#A79BC4" font-size="10">${fmtInt(v)}</text>`).join('');
+  const ticks = [0, 10, 20, 30, 40, 55].filter(i => i < H.length).map(i =>
+    `<text x="${x(i)}" y="${PT+ih+18}" text-anchor="middle" fill="#A79BC4" font-size="10">D${H[i][0]}</text>`).join('');
+  $('chartSettle').innerHTML = `<svg viewBox="0 0 ${W} ${HT}" class="chart">
+    <defs><linearGradient id="ga" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#6D4AFF" stop-opacity=".4"/><stop offset="1" stop-color="#6D4AFF" stop-opacity="0"/>
+    </linearGradient></defs>
+    ${grid}
+    <line x1="${PL}" x2="${W-PR}" y1="${y(31500)}" y2="${y(31500)}" stroke="#C08A00" stroke-width="1.5" stroke-dasharray="6 4" opacity=".85"/>
+    <path d="${area}" fill="url(#ga)"/>
+    <polyline points="${ptsA}" fill="none" stroke="#6D4AFF" stroke-width="2.2"/>
+    ${ticks}
+  </svg>`;
+}
+
+// ---------- TAB3 等级 ----------
+const LV_NAMES = ['P1','P2','P3','P4','P5','P6','P7'];
+function calcLevel() {
+  const zones = [num('z1'), num('z2'), num('z3')].sort((a,b) => b - a);
+  const lockQty = Math.max(0, num('veLock'));
+  const lockValue = lockQty * S.live.priceDAI;
+  const c5 = num('c5'), c6 = num('c6');
+  const th = S.levels;
+  let reached = -1;
+  const detail = [];
+
+  for (let i = 0; i < 7; i++) {
+    let zoneOk = true, veOk = lockValue >= th.veUsd[i], childOk = true, need = '';
+    if (i < 5) {
+      const needZone = th.zoneUsd[i];
+      const minZone = Math.min(num('z1'), num('z2'), num('z3'));
+      zoneOk = minZone >= needZone;
+      need = '每区 ' + fmtInt(needZone) + ' DAI ／ 锁 ' + fmtInt(th.veUsd[i]) + ' DAI 等值';
+    } else if (i === 5) {
+      zoneOk = true;
+      childOk = Math.min(c5, 3) >= 3;
+      need = '三区各 1 名 P5';
+    } else {
+      zoneOk = true;
+      childOk = Math.min(c6, 3) >= 3;
+      need = '三区各 1 名 P6';
+    }
+    const ok = zoneOk && veOk && childOk;
+    if (ok) reached = i;
+
+    const minZone = Math.min(num('z1'), num('z2'), num('z3'));
+    let prog = 0;
+    if (i < 5) {
+      prog = Math.min(1, minZone / th.zoneUsd[i]) * 0.6 + Math.min(1, lockValue / th.veUsd[i]) * 0.4;
+    } else {
+      prog = Math.min(1, Math.min(c5, 3) / 3);
+      if (i === 6) prog = Math.min(1, Math.min(c6, 3) / 3);
+    }
+    detail.push({ i, ok, need, prog });
+  }
+
+  $('lvNow').textContent = reached >= 0 ? LV_NAMES[reached] : '未达标';
+  if (reached >= 0 && reached < 6) {
+    $('lvNext').textContent = '下一级 ' + LV_NAMES[reached + 1] + '：' + detail[reached + 1].need;
+  } else if (reached === 6) {
+    $('lvNext').textContent = '已达最高等级 P7';
+  } else {
+    $('lvNext').textContent = '距 P1：' + detail[0].need;
+  }
+
+  $('ladder').innerHTML = detail.map(d => `
+    <div class="lv ${d.ok ? 'ok' : ''}">
+      <div class="tag">${LV_NAMES[d.i]}</div>
+      <div class="need">${d.need}</div>
+      <div class="fill"><i style="width:${(d.prog*100).toFixed(1)}%"></i></div>
+      <div class="pc">${(d.prog*100).toFixed(0)}%</div>
+    </div>`).join('');
+
+  const minZone = Math.min(num('z1'), num('z2'), num('z3'));
+  const gaps = [];
+  for (let i = 0; i < 5; i++) {
+    const gz = th.zoneUsd[i] - minZone;
+    const gv = th.veUsd[i] - lockValue;
+    if (gz <= 0 && gv <= 0) continue;
+    gaps.push(`<li><b>${LV_NAMES[i]}</b>：` +
+      (gz > 0 ? `最弱的那一区还差 <b class="gd">${fmtInt(gz)}</b> DAI ` : '') +
+      (gv > 0 ? `锁仓还差 <b class="gd">${fmt(gv, 0)}</b> DAI（约 ${fmt(gv / S.live.priceDAI, 2)} 枚）` : '') +
+      `</li>`);
+  }
+  if (reached >= 5) gaps.push('<li>P6/P7 已按下线条件判断。</li>');
+  $('gapBox').innerHTML = gaps.length
+    ? '<ul style="margin:0;padding-left:18px;line-height:2">' + gaps.slice(0, 3).join('') + '</ul>'
+    : '<span class="gn">你已满足 P5 全部条件（不代表官方认定，请以官方 DApp 为准）</span>';
+}
+['z1','z2','z3','veLock','c5','c6'].forEach(id => $(id).addEventListener('input', calcLevel));
+document.querySelectorAll('.chip[data-lock]').forEach(c => {
+  c.onclick = () => { $('veLock').value = c.dataset.lock; calcLevel(); };
+});
+
+// ---------- TAB4 回本（0.7% / 0.28% 模型）----------
+function calcRoi() {
+  const inDai = Math.max(1, num('rIn'));
+  const price = Math.max(1e-9, num('rPrice'));
+  const fee = Math.min(30, Math.max(0, num('rFee'))) / 100;
+
+  const power = inDai * S.power.daiMultiplier;
+  const day1 = power * YIELD;                       // 首日毛收益（DAI）
+  const day1Net = day1 * (1 - fee);
+
+  let curPower = power, cum = 0, be = Infinity, day30 = 0, day90 = 0, day180 = 0, day365 = 0;
+  for (let d = 1; d <= 3650; d++) {
+    cum += curPower * YIELD * (1 - fee);
+    if (be === Infinity && cum >= inDai) be = d;
+    if (d === 30) day30 = cum;
+    if (d === 90) day90 = cum;
+    if (d === 180) day180 = cum;
+    if (d === 365) day365 = cum;
+    curPower = curPower * (1 - DECAY);
+  }
+
+  $('rBe').textContent = isFinite(be) ? fmtInt(be) + ' 天' : '无法回本';
+  $('rDay1').textContent = fmt(day1Net, 2) + ' DAI（毛 ' + fmt(day1, 2) + '）';
+  $('rM1').textContent = fmt(day30, 0) + ' DAI';
+  $('rM3').textContent = fmt(day90, 0) + ' DAI';
+  $('rM6').textContent = fmt(day180, 0) + ' DAI';
+  $('rM12').textContent = fmt(day365, 0) + ' DAI';
+
+  const pts = [];
+  let c = 0, p = power;
+  for (let d = 1; d <= 365; d += 5) {
+    for (let k = 0; k < 5; k++) { c += p * YIELD * (1 - fee); p = p * (1 - DECAY); }
+    pts.push(c);
+  }
+  const W = 460, HT = 130, PL = 4, PT = 6, PB = 16;
+  const iw = W - PL - 4, ih = HT - PT - PB;
+  const maxV = Math.max(inDai, ...pts);
+  const x = i => PL + (i / (pts.length - 1)) * iw;
+  const y = v => PT + ih - Math.min(v / maxV, 1) * ih;
+  const line = pts.map((v, i) => `${x(i).toFixed(1)},${y(v).toFixed(1)}`).join(' ');
+  const beY = y(inDai);
+  $('chartRoi').innerHTML = `<svg viewBox="0 0 ${W} ${HT}" class="chart">
+    <line x1="${PL}" x2="${W-4}" y1="${beY}" y2="${beY}" stroke="#C08A00" stroke-dasharray="4 3" stroke-width="1"/>
+    <text x="${W-6}" y="${beY-4}" text-anchor="end" fill="#C08A00" font-size="9">本金线</text>
+    <polyline points="${line}" fill="none" stroke="#6D4AFF" stroke-width="2"/>
+    <text x="${PL}" y="${HT-4}" fill="#A79BC4" font-size="9">0</text>
+    <text x="${W-4}" y="${HT-4}" text-anchor="end" fill="#A79BC4" font-size="9">365 天</text>
+  </svg>`;
+
+  // ---- 复投回本对比：不复投 / 先复投 30 天 / 先复投 60 天 ----
+  function simReinvest(reDays) {
+    let p = inDai * S.power.daiMultiplier, cash = 0, be = Infinity, pAtBe = 0;
+    for (let d = 1; d <= 3650 + reDays; d++) {
+      const net = p * YIELD * (1 - fee);
+      if (d <= reDays) {
+        p = p * (1 - DECAY) + net * S.power.daiMultiplier;
+      } else {
+        cash += net;
+        p = p * (1 - DECAY);
+        if (be === Infinity && cash >= inDai) { be = d; pAtBe = p; break; }
+      }
+    }
+    return { be, pAtBe };
+  }
+  $('rBeIn').textContent = fmtInt(inDai);
+  const rows = [
+    ['不复投', 0],
+    ['先复投 30 天', 30],
+    ['先复投 60 天', 60],
+    ['先复投 90 天', 90],
+    ['先复投 180 天', 180],
+    ['先复投 270 天', 270],
+    ['先复投 360 天', 360]
+  ].map(([label, n]) => {
+    if (n === 0) {
+      return `<tr><td>${label}</td><td class="num">—</td><td class="num gd">${isFinite(be) ? fmtInt(be) + ' 天' : '无法回本'}</td><td class="num">${fmt(power * Math.pow(1 - DECAY, Math.max(0, Math.min(be, 3650) - 1)), 0)}</td></tr>`;
+    }
+    const r = simReinvest(n);
+    return `<tr><td>${label}</td><td class="num">${n} 天</td><td class="num gd">${isFinite(r.be) ? fmtInt(r.be) + ' 天' : '无法回本'}</td><td class="num">${isFinite(r.be) ? fmt(r.pAtBe, 0) : '—'}</td></tr>`;
+  }).join('');
+  $('rBeTable').innerHTML = rows;
+}
+['rIn','rPrice','rFee'].forEach(id => $(id).addEventListener('input', calcRoi));
+
+// ---------- TAB5 阶段表 ----------
+$('phaseTbl').innerHTML = S.emissionPhases.map(p => `
+  <tr><td>${p.name}</td><td class="num">${p.epochs}</td>
+  <td class="num">${fmtInt(p.perEpochCap)}</td><td class="num">${fmtInt(p.perEpochCap/7)}</td><td class="num">${(p.pct*100).toFixed(0)}%</td></tr>`).join('');
+
+// ---------- TAB6 右螺旋（按地址查询）----------
+const TIER_PCT = [0.05, 0.08, 0.12, 0.15, 0.18, 0.20, 0.22];      // 共识池等级比例（仅供参考）
+const LEVEL_COEF = [1, 0.5, 0.25, 0.125, 0.0625, 0.03125, 0.015625]; // 网络权重等级系数（仅供参考）
+async function queryRight() {
+  const addr = $('r6Addr').value.trim();
+  if (!/^0x[0-9a-fA-F]{40}$/.test(addr)) {
+    $('r6Result').innerHTML = '<span class="rd">地址格式不对（需要 0x + 40 位十六进制）</span>';
+    return;
+  }
+  $('r6Result').innerHTML = '查询中…';
+  try {
+    const [lv, cm, pw, em, ov] = await Promise.all([
+      fetch(API + 'level/' + addr).then(r => r.json()),
+      fetch(API + 'community/' + addr).then(r => r.json()),
+      fetch(API + 'power').then(r => r.json()),
+      fetch(API + 'emission').then(r => r.json()),
+      fetch(API + 'overview').then(r => r.json()).catch(() => null)
+    ]);
+    const price = ov && ov.price ? Number(ov.price) : S.official.priceLive;
+    const curDay = em.clock ? Number(em.clock.currentDay) : S.meta.day;
+    const factorBps = em.factor ? Number(em.factor.factorBps) : S.official.factorToday.factorBps;
+    const totalActive = Number(pw.totalActivePower || S.official.totalActivePowerOfficial);
+    const budget = 31500 * factorBps / 10000;
+    const dynamic = budget * 0.5;
+    const pools = { g: dynamic * 0.30, n: dynamic * 0.40, c: dynamic * 0.30 };
+    const selfPower = lv && lv.selfPower != null ? Number(lv.selfPower) : 0;
+    const teamPower = cm && cm.teamActivePower != null ? Number(cm.teamActivePower) : 0;
+    const pct = v => totalActive > 0 ? (v / totalActive * 100).toFixed(6) + '%' : '—';
+    const last = cm && cm.latest ? cm.latest : null;
+    const lastDay = last ? Number(last.day) : null;
+    const rg = last ? Number(last.rewardGrowth) : 0;
+    const rn = last ? Number(last.rewardNetwork) : 0;
+    const rc = last ? Number(last.rewardConsensus) : 0;
+    const isToday = lastDay != null && (lastDay === curDay || lastDay === curDay - 1);
+    const todayRight = isToday ? (rg + rn + rc) : 0;
+
+    // 若最新记录不是今天：按「该日池预算 → 今日池预算」等比推算（仅当有记录时）
+    let scaleNote = '';
+    if (last && lastDay && em.recentDays) {
+      const dayRow = em.recentDays.find(x => Number(x.day) === lastDay);
+      if (dayRow && Number(dayRow.communityBase) > 0) {
+        const dayDyn = Number(dayRow.communityBase) * Number(dayRow.factorBps) / 10000 * 0.5;
+        if (dayDyn > 0) {
+          const est = rg * (pools.g / (dayDyn * 0.30)) + rn * (pools.n / (dayDyn * 0.40)) + rc * (pools.c / (dayDyn * 0.30));
+          if (est > 0) scaleNote = `<div class="kv"><span class="k">若权重不变、按今日池预算等比推算</span><span class="v gd">${fmt(est, 6)} 枚</span></div>`;
+        }
+      }
+    }
+
+    $('r6Result').innerHTML = `
+      <div class="grid">
+        <div class="card" style="background:#FFFFFF">
+          <h3 style="margin-top:0">今日盘面 · D${curDay}</h3>
+          <div class="kv"><span class="k">全网活跃算力（官方）</span><span class="v cy">${fmt(totalActive, 0)}</span></div>
+          <div class="kv"><span class="k">当日执行系数</span><span class="v">${(factorBps / 100).toFixed(1)}%（${em.factor ? em.factor.method : ''}）</span></div>
+          <div class="kv"><span class="k">执行预算 = 31,500 × 系数</span><span class="v">${fmt(budget, 2)} 枚</span></div>
+          <div class="kv"><span class="k">动态池 = 执行预算 × 50%</span><span class="v pp">${fmt(dynamic, 2)} 枚</span></div>
+          <div class="bar3">
+            <div style="width:30%;background:#C08A00">增长 30%</div>
+            <div style="width:40%;background:#6D4AFF">网络 40%</div>
+            <div style="width:30%;background:#A855F7">共识 30%</div>
+          </div>
+          <div style="font-size:17px;color:var(--mt);margin-top:6px">
+            增长池 ${fmt(pools.g, 2)} 枚 ｜ 网络池 ${fmt(pools.n, 2)} 枚 ｜ 共识池 ${fmt(pools.c, 2)} 枚（预算上限）
+          </div>
+          <div style="font-size:17px;color:var(--dm);margin-top:6px">参考价 ${fmt(price, 2)} DAI/枚</div>
+        </div>
+        <div class="card" style="background:#FFFFFF">
+          <h3 style="margin-top:0">该钱包</h3>
+          <div class="kv"><span class="k">个人算力 selfPower（左螺旋）</span><span class="v cy">${fmt(selfPower, 2)} · 占 ${pct(selfPower)}</span></div>
+          <div class="kv"><span class="k">网络算力 teamActivePower（右螺旋）</span><span class="v pp">${fmt(teamPower, 2)} · 占 ${pct(teamPower)}</span></div>
+          <div class="kv"><span class="k">个人 + 网络合计</span><span class="v">${fmt(selfPower + teamPower, 2)}</span></div>
+          <div class="kv"><span class="k">P 等级（D${lv && lv.day != null ? lv.day : '—'} 评估）</span><span class="v">${lv && lv.level != null ? 'P' + lv.level : '—'}</span></div>
+          <div class="kv"><span class="k">直推 / 团队</span><span class="v">${cm ? (cm.direct || 0) : '—'} 人 / ${cm ? (cm.team || 0) : '—'} 人</span></div>
+          <div class="kv"><span class="k">推荐绑定</span><span class="v" style="font-size:16px">${cm && cm.bound ? '已绑定（' + (cm.boundAt || '').slice(0, 10) + '）' : '未绑定'}</span></div>
+        </div>
+      </div>
+      <div class="card" style="background:#FFFFFF;margin-top:14px">
+        <h3 style="margin-top:0">动态奖励记录（官方，增长 / 网络 / 共识）</h3>
+        ${last ? `
+          <div class="kv"><span class="k">最新结算日</span><span class="v">第 ${lastDay} 天（${last.status}）</span></div>
+          <div class="kv"><span class="k">增长池 · 权重算力 / 奖励</span><span class="v">${fmt(Number(last.growthPower), 2)} / <b class="gd">${fmt(rg, 8)}</b> 枚</span></div>
+          <div class="kv"><span class="k">网络池 · 权重算力 / 奖励</span><span class="v">${fmt(Number(last.networkPower), 2)} / <b class="cy">${fmt(rn, 8)}</b> 枚</span></div>
+          <div class="kv"><span class="k">共识池 · 权重算力 / 奖励</span><span class="v">${fmt(Number(last.consensusPower), 2)} / <b class="pp">${fmt(rc, 8)}</b> 枚</span></div>
+          <div class="kv"><span class="k">该记录日右螺旋合计</span><span class="v">${fmt(rg + rn + rc, 8)} 枚</span></div>
+          ${scaleNote}
+        ` : '<div style="color:var(--dm);padding:6px 0">该地址暂无动态奖励记录（未参与增长/网络/共识池，或尚无结算记录）。</div>'}
+        <div class="kv" style="color:#E53935"><span class="k" style="font-size:17px;color:#E53935;font-weight:700">累计动态奖励（增长 / 网络 / 共识）</span><span class="v" style="font-size:17.5px;color:#E53935">${cm && cm.rewardsCum ? fmt(Number(cm.rewardsCum.growth), 6) + ' / ' + fmt(Number(cm.rewardsCum.network), 6) + ' / ' + fmt(Number(cm.rewardsCum.consensus), 6) : '—'} 枚</span></div>
+      </div>
+      <div class="card hl" style="margin-top:14px">
+        <div class="kv"><span class="k" style="font-size:16px">今日右螺旋收益 · D${curDay}</span><span class="v pp big" style="font-size:30px">${isToday ? fmt(todayRight, 8) + ' 枚' : '0 枚'}</span></div>
+        <div style="font-size:17px;color:var(--dm);margin-top:4px">
+          官方动态奖励按日结算并 T+1 公示${lastDay != null ? '（最近记录：第 ' + lastDay + ' 天）' : ''}。今日 D${curDay} 的奖励通常次日才出；
+          ${last && !isToday ? '最新记录不是今日，因此今日记为 0，上表为该地址最近一次实测数据。' : ''}
+          ${!last ? '该地址目前没有动态奖励记录，今日右螺旋收益为 0。' : ''}
+        </div>
+      </div>
+      <div class="note w" style="margin-top:10px">
+        数据来源：官方 /api/v1/level（个人算力）、/api/v1/community（网络算力、动态奖励记录）、/api/v1/power（全网算力）、/api/v1/emission（当日系数与执行预算）。
+        三池比例为预算上限（增长 30%/网络 40%/共识 30%），实际批准量以官方根为准；右螺旋收益不构成固定收益承诺。
+      </div>`;
+  } catch (e) {
+    $('r6Result').innerHTML = '<span class="rd">查询失败（浏览器跨域限制或网络不可达）。请直接在官方 DApp 查，或稍后重试。</span>';
+  }
+}
+$('btnRight').onclick = queryRight;
+
+// ---------- P 级成员名单（链上扫描数据，jsDelivr 动态加载）----------
+const P_LEVELS_URL = 'https://cdn.jsdelivr.net/gh/dixonwei/ailgns-monitor@main/p-levels.json';
+let P_DATA = null, pCurLevel = 'P1';
+async function loadPLevels(force) {
+  const st = $('pStatus');
+  if (P_DATA && !force) { renderPList(); return; }
+  st.textContent = '名单加载中…';
+  $('pMemberBody').innerHTML = '<tr><td colspan="11" style="color:var(--dm)">名单加载中…</td></tr>';
+  try {
+    const r = await fetch(P_LEVELS_URL + (force ? '?t=' + Date.now() : ''), { cache: 'no-store' });
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    P_DATA = await r.json();
+    const c = P_DATA.counts || {};
+    $('pCounts').textContent = '链上扫描：P1 ' + (c.P1 || 0) + ' · P2 ' + (c.P2 || 0) + ' · P3 ' + (c.P3 || 0) + ' · P4 ' + (c.P4 || 0) + ' 人';
+    st.textContent = '已加载 · 生成时间 ' + String(P_DATA.generatedAt || '').slice(0, 16).replace('T', ' ') + ' UTC';
+    renderPList();
+  } catch (e) {
+    st.textContent = '加载失败';
+    $('pMemberBody').innerHTML = '<tr><td colspan="11" style="color:var(--rd)">名单数据加载失败（浏览器跨域或网络限制）。点「重新加载名单」重试，或直接打开数据源：https://cdn.jsdelivr.net/gh/dixonwei/ailgns-monitor@main/p-levels.json</td></tr>';
+  }
+}
+function pLevelList(lv) {
+  if (!P_DATA || !P_DATA.levels) return [];
+  const obj = P_DATA.levels.find(x => x.level === lv);
+  return obj && obj.list ? obj.list.slice().sort((a, b) => (Number(b.lockValueDai) || 0) - (Number(a.lockValueDai) || 0)) : [];
+}
+function renderPList() {
+  const q = ($('pSearch').value || '').trim().toLowerCase();
+  const list = pLevelList(pCurLevel).filter(x => !q || String(x.address || '').toLowerCase().includes(q));
+  if (!list.length) {
+    $('pMemberBody').innerHTML = '<tr><td colspan="11" style="color:var(--dm)">无数据</td></tr>';
+    return;
+  }
+  $('pMemberBody').innerHTML = list.map((x, i) => `
+    <tr>
+      <td>${i + 1}</td>
+      <td style="font-size:16px"><a href="#" data-addr="${x.address}" style="color:var(--cy);text-decoration:none">${x.address.slice(0, 6)}…${x.address.slice(-4)}</a><button class="mini" data-copy="${x.address}" title="复制完整地址">复制</button></td>
+      <td class="num">${fmt(Number(x.lockValueDai) || 0, 0)}</td>
+      <td class="num">${fmt(Number(x.zone1) || 0, 0)}</td>
+      <td class="num">${fmt(Number(x.zone2) || 0, 0)}</td>
+      <td class="num">${fmt(Number(x.zone3) || 0, 0)}</td>
+      <td class="num">${x.directChildren != null ? x.directChildren : '—'}</td>
+      <td class="num">${fmt(Number(x.teamDai) || 0, 0)}</td>
+      <td class="num dyn" data-dyn="g">—</td>
+      <td class="num dyn" data-dyn="n">—</td>
+      <td class="num dyn" data-dyn="r">—</td>
+    </tr>`).join('');
+  document.querySelectorAll('#pMemberBody a[data-addr]').forEach(a => {
+    a.onclick = async (ev) => {
+      ev.preventDefault();
+      const tr = a.closest('tr');
+      const addr = a.dataset.addr;
+      tr.querySelectorAll('.dyn').forEach(td => td.textContent = '…');
+      try {
+        const cm = await fetch(API + 'community/' + addr).then(r => r.json());
+        const g = cm && cm.latest ? fmt(Number(cm.latest.growthPower), 0) : '—';
+        const n = cm && cm.teamActivePower != null ? fmt(Number(cm.teamActivePower), 0) : '—';
+        const rw = cm && cm.rewardsCum
+          ? fmt(Number(cm.rewardsCum.growth) + Number(cm.rewardsCum.network) + Number(cm.rewardsCum.consensus), 4)
+          : '—';
+        tr.querySelector('[data-dyn="g"]').textContent = g;
+        tr.querySelector('[data-dyn="n"]').textContent = n;
+        tr.querySelector('[data-dyn="r"]').textContent = rw;
+      } catch (e) {
+        tr.querySelectorAll('.dyn').forEach(td => td.textContent = '失败');
+      }
+    };
+  });
+  document.querySelectorAll('#pMemberBody button[data-copy]').forEach(b => {
+    b.onclick = async (ev) => {
+      ev.preventDefault();
+      ev.stopPropagation();
+      const addr = b.dataset.copy;
+      const done = () => { b.textContent = '已复制'; setTimeout(() => { b.textContent = '复制'; }, 1200); };
+      try {
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          await navigator.clipboard.writeText(addr);
+          done();
+        } else { throw new Error('no clipboard'); }
+      } catch (e) {
+        try {
+          const ta = document.createElement('textarea');
+          ta.value = addr;
+          ta.style.position = 'fixed';
+          ta.style.opacity = '0';
+          document.body.appendChild(ta);
+          ta.select();
+          document.execCommand('copy');
+          document.body.removeChild(ta);
+          done();
+        } catch (e2) {
+          b.textContent = '失败';
+          setTimeout(() => { b.textContent = '复制'; }, 1200);
+        }
+      }
+    };
+  });
+}
+document.querySelectorAll('#pLevelTabs .chip').forEach(c => {
+  c.onclick = () => {
+    document.querySelectorAll('#pLevelTabs .chip').forEach(x => x.classList.remove('on'));
+    c.classList.add('on');
+    pCurLevel = c.dataset.lv;
+    renderPList();
+  };
+});
+if ($('pSearch')) $('pSearch').addEventListener('input', renderPList);
+if ($('btnPReload')) $('btnPReload').onclick = () => loadPLevels(true);
+if ($('pMemberBody')) loadPLevels(false);
+
+// ---------- 官方 API 查询 ----------
+const API = 'https://awakehelix.io/api/v1/';
+async function queryAddress() {
+  const addr = $('qAddr').value.trim();
+  if (!/^0x[0-9a-fA-F]{40}$/.test(addr)) {
+    $('qResult').innerHTML = '<span class="rd">地址格式不对（需要 0x + 40 位十六进制）</span>';
+    return;
+  }
+  $('qResult').innerHTML = '查询中…';
+  try {
+    const [lv, cm] = await Promise.all([
+      fetch(API + 'level/' + addr).then(r => r.json()),
+      fetch(API + 'community/' + addr).then(r => r.json())
+    ]);
+    const selfPower = lv && lv.selfPower != null ? Number(lv.selfPower) : null;
+    const teamPower = cm && cm.teamActivePower != null ? Number(cm.teamActivePower) : null;
+    const totalActive = Number(S.official.totalActivePowerOfficial || S.live.activePower);
+    const todayEarn = selfPower != null
+      ? Number(S.official.lastSettled.actual) * selfPower / totalActive
+      : null;
+    const pct = v => (v != null && totalActive > 0) ? (v / totalActive * 100).toFixed(6) + '%' : '—';
+    $('qResult').innerHTML = `
+      <div style="background:#FFFFFF;border:1px solid #D9CBF5;border-radius:12px;padding:12px 16px;margin-top:10px">
+        <div class="kv"><span class="k">地址</span><span class="v" style="font-size:16px">${addr}</span></div>
+        <div class="kv"><span class="k">个人算力 selfPower（左螺旋）</span><span class="v cy">${selfPower != null ? fmt(selfPower, 2) : '—'} · 占全网 ${pct(selfPower)}</span></div>
+        <div class="kv"><span class="k">网络算力 teamActivePower（右螺旋）</span><span class="v pp">${teamPower != null ? fmt(teamPower, 2) : '—'} · 占全网 ${pct(teamPower)}</span></div>
+        <div class="kv"><span class="k">个人 + 网络合计</span><span class="v">${(selfPower != null || teamPower != null) ? fmt((selfPower || 0) + (teamPower || 0), 2) : '—'}</span></div>
+        <div class="kv"><span class="k">全网活跃算力（官方）</span><span class="v">${fmt(totalActive, 0)}</span></div>
+        <div class="kv"><span class="k">官方 P 等级评估（D${lv && lv.day != null ? lv.day : '—'}）</span><span class="v pp">${lv && lv.level != null ? 'P' + lv.level : '—'}${lv && lv.reason ? '（' + lv.reason + '）' : ''}</span></div>
+        <div class="kv"><span class="k">ve 锁仓价值</span><span class="v">${lv && lv.veUsd ? fmt(Number(lv.veUsd), 0) : '0'} DAI</span></div>
+        <div class="kv"><span class="k">推荐绑定</span><span class="v">${cm && cm.bound ? '是（' + (cm.boundAt || '').slice(0, 10) + '）' : '否'}</span></div>
+        <div class="kv"><span class="k">直推人数 / 团队业绩</span><span class="v">${cm ? (cm.direct || 0) : '—'} / ${cm ? fmt(Number(cm.team || 0), 0) : '—'} DAI</span></div>
+        <div class="kv"><span class="k">累计动态奖励（增长/网络/共识）</span><span class="v">${cm && cm.rewardsCum ? fmt(Number(cm.rewardsCum.growth), 2) + ' / ' + fmt(Number(cm.rewardsCum.network), 2) + ' / ' + fmt(Number(cm.rewardsCum.consensus), 2) : '—'}</span></div>
+        ${todayEarn != null ? `<div class="kv"><span class="k">按左螺旋公式的今日所得（实际排放 × 占比）</span><span class="v gd">${fmt(todayEarn, 8)} 枚</span></div>` : ''}
+      </div>
+      <div style="font-size:17px;color:var(--dm);margin-top:6px">
+        注：①「个人算力」取官方 level API 的 selfPower（含算力生命周期结算，可能与你按「买入 DAI × 2.5」口算的值不同）；
+        ②「网络算力」取 community API 的 teamActivePower（团队生效算力）；
+        ③ 左螺旋用个人算力占比，右螺旋（社区动态池）用网络算力/等级/小区算力权重计算，见「② 右螺旋收益」页。
+      </div>`;
+  } catch (e) {
+    $('qResult').innerHTML = '<span class="rd">查询失败（浏览器跨域限制或网络不可达）。请直接在官方 DApp 查，或保持内置快照数据。</span>';
+  }
+}
+$('btnQuery').onclick = queryAddress;
+
+async function refreshOfficial() {
+  $('qResult').innerHTML = '刷新官方数据中…';
+  try {
+    const [em, pw, ov] = await Promise.all([
+      fetch(API + 'emission').then(r => r.json()),
+      fetch(API + 'power').then(r => r.json()),
+      fetch(API + 'overview').then(r => r.json())
+    ]);
+    let notes = [];
+    if (em && em.factor && em.factor.factorBps != null) {
+      S.official.factorToday = em.factor;
+      $('f57').textContent = (em.factor.factorBps / 100).toFixed(1) + '%';
+      notes.push(`D${em.factor.day} 执行系数 ${(em.factor.factorBps / 100).toFixed(1)}%（${em.factor.method}）`);
+    }
+    if (em && em.community) {
+      S.official.lastSettled = Object.assign({}, S.official.lastSettled, {
+        day: em.community.lastSettledDay,
+        actual: Number(em.community.releasedCum == null ? S.official.lastSettled.actual : S.official.lastSettled.actual)
+      });
+      if (em.community.releasedCum != null) {
+        S.official.releasedCum = Number(em.community.releasedCum);
+        S.official.suppressedCum = Number(em.community.suppressedCum);
+        notes.push(`累计实际排放 ${fmt(S.official.releasedCum, 1)} / 压制量 ${fmt(S.official.suppressedCum, 1)}`);
+      }
+    }
+    if (pw && pw.totalActivePower) {
+      S.official.totalActivePowerOfficial = Number(pw.totalActivePower);
+      S.official.todayNewPower = pw.today ? Number(pw.today.newPower) : S.official.todayNewPower;
+      notes.push(`官方全网活跃算力 ${fmt(S.official.totalActivePowerOfficial, 0)}`);
+    }
+    if (ov && ov.price) {
+      S.official.priceLive = Number(ov.price);
+      notes.push(`官方实时价 ${fmt(S.official.priceLive, 2)} DAI`);
+    }
+    $('qResult').innerHTML = '<span class="gn">✓ 官方数据已刷新：</span>' + notes.join(' · ') +
+      '<div style="font-size:17px;color:var(--dm);margin-top:6px">提示：①页输入框里手动填最新「当日实际排放」与「全网活跃算力」即可按最新数据重算。</div>';
+  } catch (e) {
+    $('qResult').innerHTML = '<span class="rd">刷新失败：浏览器跨域限制或网络不可达，仍显示内置快照（2026-11-23 核对）。</span>';
+  }
+}
+$('btnRefresh').onclick = refreshOfficial;
+
+// ---------- ⑦-⑪ 工具页（移植自「一天查八次」桌面版） ----------
+const RPCS = {
+  anubis: ['https://rpc.anubispace.org', 'https://browser.anubispace.org/api/eth-rpc', 'https://rpc2.anubispace.org'],
+  polygon: ['https://polygon-bor-rpc.publicnode.com', 'https://1rpc.io/matic', 'https://polygon.drpc.org']
+};
+async function fetchJson(url, timeoutMs) {
+  const ctrl = new AbortController();
+  const tid = setTimeout(() => ctrl.abort(), timeoutMs || 6000);
+  try {
+    const r = await fetch(url, { signal: ctrl.signal, cache: 'no-store' });
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    return await r.json();
+  } finally { clearTimeout(tid); }
+}
+async function rpcCall(chain, method, params) {
+  let lastErr = null;
+  for (const url of (RPCS[chain] || [])) {
+    try {
+      const ctrl = new AbortController();
+      const tid = setTimeout(() => ctrl.abort(), 5000);
+      let r;
+      try {
+        r = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ jsonrpc: '2.0', id: 1, method: method, params: params }), signal: ctrl.signal });
+      } finally { clearTimeout(tid); }
+      const j = await r.json();
+      if (j && j.error) { lastErr = new Error(j.error.message || 'rpc error'); continue; }
+      if (j && j.result !== undefined) return j.result;
+    } catch (e) { lastErr = e; }
+  }
+  throw lastErr || new Error('RPC 无响应');
+}
+const hexBig = h => { try { return h ? BigInt(h) : 0n; } catch (e) { return 0n; } };
+const pad32 = s => '0x' + String(s).replace(/^0x/, '').toLowerCase().padStart(64, '0');
+const ethCall = async (chain, to, data) => rpcCall(chain, 'eth_call', [{ to: to, data: data }, 'latest']);
+async function tokenBalance(chain, token, owner) { try { return hexBig(await ethCall(chain, token, '0x70a08231' + pad32(owner))); } catch (e) { return 0n; } }
+function fmtUnits(v, dec) {
+  try {
+    const d = 10n ** BigInt(dec); const i = v / d; const fr = v % d;
+    let s = fr.toString().padStart(dec, '0').replace(/0+$/, '');
+    return i.toString() + (s ? '.' + s : '');
+  } catch (e) { return '—'; }
+}
+function hex2utf8(hex) {
+  try { const bytes = hex.match(/.{2}/g) || []; return decodeURIComponent(bytes.map(b => '%' + b).join('')); } catch (e) { return null; }
+}
+async function readStr(chain, to, sel) {
+  try {
+    const h = await ethCall(chain, to, sel);
+    if (!h || h === '0x' || h.length < 130) return null;
+    const body = h.slice(2);
+    const len = parseInt(body.slice(64, 128), 16);
+    if (!isFinite(len) || len === 0 || len > 200) return null;
+    return hex2utf8(body.slice(128, 128 + len * 2));
+  } catch (e) { return null; }
+}
+const KIND_CN = { token: '代币', pair: 'LP池', treasury: '金库', staking: '质押', contract: '合约', wallet: '钱包', burn: '销毁' };
+const CHAIN_CN = c => c === 'anubis' ? 'A链' : '马蹄链';
+const EXPLORER = { anubis: 'https://browser.anubispace.org/address/', polygon: 'https://polygonscan.com/address/' };
+
+// —— ⑦ 合约查询 ——
+function c7build() {
+  const g = $('c7g');
+  if (g && !g.dataset.done) {
+    const groups = (CHAIN_DATA && CHAIN_DATA.groups) || [];
+    g.innerHTML = '<option value="">全部分组（' + groups.reduce((s, x) => s + x.items.length, 0) + '）</option>' +
+      groups.map((gr, i) => '<option value="' + i + '">' + gr.title + '（' + gr.items.length + '）</option>').join('');
+    g.dataset.done = '1';
+  }
+  c7filter();
+}
+function c7filter() {
+  const q = (($('c7q') || {}).value || '').trim().toLowerCase();
+  const gi = ($('c7g') || {}).value || '';
+  const rows = [];
+  ((CHAIN_DATA && CHAIN_DATA.groups) || []).forEach((gr, i) => {
+    if (gi !== '' && String(i) !== gi) return;
+    gr.items.forEach(it => {
+      if (q && !(String(it.name).toLowerCase().includes(q) || String(it.address).toLowerCase().includes(q))) return;
+      rows.push({ name: it.name, address: it.address, kind: it.kind, chain: gr.chain });
+    });
+  });
+  $('c7list').innerHTML = rows.map((r, i) => '<tr data-i="' + i + '" style="cursor:pointer"><td>' + r.name + '</td><td style="font-size:16px">' + r.address + '</td><td>' + (KIND_CN[r.kind] || r.kind) + '</td><td>' + CHAIN_CN(r.chain) + '</td></tr>').join('');
+  document.querySelectorAll('#c7list tr').forEach(tr => {
+    tr.onclick = () => { const r = rows[+tr.dataset.i]; c7query(r.chain, r.address, r.name); };
+  });
+}
+async function c7query(chain, addr, name) {
+  const out = $('c7res');
+  out.innerHTML = '查询中…（' + (name || addr) + '）';
+  try {
+    const parts = [];
+    const nm = await readStr(chain, addr, '0x06fdde03');
+    const sym = await readStr(chain, addr, '0x95d89b41');
+    let dec = null; try { const d = await ethCall(chain, addr, '0x313ce567'); if (d && d !== '0x') dec = Number(BigInt(d)); } catch (e) {}
+    let ts = null; try { const s = await ethCall(chain, addr, '0x18160ddd'); if (s && s !== '0x') ts = BigInt(s); } catch (e) {}
+    if (nm || sym) parts.push('名称：<b>' + (nm || '—') + '</b> ｜ 符号：<b>' + (sym || '—') + '</b> ｜ 精度：<b>' + (dec != null ? dec : '—') + '</b>');
+    if (ts != null) parts.push('总量：<b>' + (dec != null ? fmtUnits(ts, dec) : ts.toString()) + '</b>');
+    try { const t0 = await ethCall(chain, addr, '0x0dfe1681'); if (t0 && t0 !== '0x') parts.push('类型：LP 池 ｜ token0：<code>0x' + t0.slice(-40) + '</code>'); } catch (e) {}
+    parts.push('链：<b>' + CHAIN_CN(chain) + '</b> ｜ 地址：<code>' + addr + '</code>');
+    out.innerHTML = '<div style="line-height:2.1">' + parts.join('<br/>') + '<br/><a href="' + EXPLORER[chain] + addr + '" target="_blank" rel="noopener" style="color:var(--cy);font-weight:700">↗ 在区块浏览器打开</a></div>';
+  } catch (e) {
+    out.innerHTML = '<span class="rd">查询失败：' + e.message + '</span>';
+  }
+}
+if ($('c7q')) $('c7q').addEventListener('input', c7filter);
+if ($('c7g')) $('c7g').addEventListener('change', c7filter);
+if ($('c7go')) $('c7go').onclick = () => {
+  const a = ($('c7addr').value || '').trim();
+  if (!/^0x[0-9a-fA-F]{40}$/.test(a)) { $('c7res').innerHTML = '<span class="rd">地址格式不对</span>'; return; }
+  c7query($('c7chain').value, a);
+};
+
+// —— ⑧ 钱包资产 ——
+// —— ⑧ 钱包资产（区块浏览器 API，GET 跨域友好）——
+const C8_BS = { anubis: 'https://browser.anubispace.org/api/v2/addresses/', polygon: 'https://polygon.blockscout.com/api/v2/addresses/' };
+const C8_BSAPI = { anubis: 'https://browser.anubispace.org/api', polygon: 'https://polygon.blockscout.com/api' };
+// 关注代币（固定显示，余额 0 也列出；地址均已链上核实）
+const C8_WATCH = {
+  anubis: [
+    { sym: 'DAI', name: 'Dai Stablecoin', dec: 18, addr: '0x83fd06F0846d9D90B3016bF670Efe2E0B11cDe14' },
+    { sym: 'AiLGNS', name: 'AiLGNS', dec: 18, addr: '0x256EdB652db43E721EC6A12B6b51b6967D3bb8cB' },
+    { sym: 'sLGNS', name: 'Staked Longinus', dec: 9, addr: '0x2243aE29F73137d678197b61B0621AE942845B8C' },
+    { sym: 'LGNS', name: 'Longinus', dec: 9, addr: '0x4D1D808a081FdAc440703b3765FC61f8028C06B8' },
+    { sym: 'gLGNS', name: 'Governance LGNS', dec: 18, addr: '0xf140a92C156e76F5A1d3D6f96284b250330F8F4c' },
+    { sym: 'USDT', name: 'Bridged USDT', dec: 6, addr: '0xDfb6a28BC6DC51fed17c27C880F2c66cDd040A3e' },
+    { sym: 'A', name: 'Bridged A', dec: 18, addr: '0xA921267c56B3a57696d6Fd7949c9FaD0A8E0c177' },
+    { sym: 'fLGNS', name: 'Fun Longinus', dec: 18, addr: '0xffFfBe730E2CdE54D8928D36F547e41DEb66Aaaa' }
+  ],
+  polygon: [
+    { sym: 'DAI', name: 'Dai (P链)', dec: 18, addr: '0x8f3cf7ad23cd3cadbd9735aff958023239c6a063' },
+    { sym: 'USDT', name: 'Tether', dec: 6, addr: '0xc2132D05D31c914a87C6611C10748AEb04B58e8F' },
+    { sym: 'USDC', name: 'USD Coin', dec: 6, addr: '0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359' },
+    { sym: 'WBTC', name: 'Wrapped BTC', dec: 8, addr: '0x1bfd67037b42cf73acf2047067bd4f2c47d9bfd6' },
+    { sym: 'WETH', name: 'Wrapped ETH', dec: 18, addr: '0x7ceb23fd6bc0add59e62ac25578270cff1b9f619' },
+    { sym: 'LGNS', name: 'LGNS (P链)', dec: 18, addr: '0xeb51d9a39ad5eef215dc0bf39a8821ff804a0f01' },
+    { sym: 'sLGNS', name: 'sLGNS (P链)', dec: 18, addr: '0x99a57e6c8558bc6689f894e068733adf83c19725' }
+  ]
+};
+async function c8tokenBalance(chain, token, addr) {
+  const u = C8_BSAPI[chain] + '?module=account&action=tokenbalance&contractaddress=' + token + '&address=' + addr;
+  const j = await fetchJson(u, 8000);
+  if (!j || String(j.status) !== '1' || j.result == null) throw new Error('余额查询失败');
+  return BigInt(j.result);
+}
+async function c8chainRows(chain, addr) {
+  const base = C8_BS[chain] + addr;
+  const rows = [];
+  const notes = [];
+  const nativeSym = chain === 'anubis' ? 'DAI (gas)' : 'POL';
+  let info = null, toks = null;
+  try { info = await fetchJson(base, 8000); } catch (e) { notes.push('原生币查询失败'); }
+  try { toks = await fetchJson(base + '/token-balances', 12000); } catch (e) { toks = null; }
+  let native = 0n; try { native = BigInt((info && info.coin_balance) || '0'); } catch (e) {}
+  rows.push([CHAIN_CN(chain), '原生币', nativeSym, info ? fmtUnits(native, 18) : '—', '']);
+  const map = {};
+  if (Array.isArray(toks)) {
+    toks.forEach(function (x) {
+      const tk = x.token || {};
+      const a = (tk.address_hash || '').toLowerCase();
+      if (!a) return;
+      const dec = Number(tk.decimals || 18);
+      let v = 0n; try { v = BigInt(x.value || '0'); } catch (e) {}
+      map[a] = { sym: tk.symbol || '?', name: tk.name || '', dec: dec, v: v };
+    });
+  }
+  // 关注代币：固定显示（余额 0 也列）
+  const watch = C8_WATCH[chain] || [];
+  const watchRes = await Promise.all(watch.map(async function (w) {
+    const key = w.addr.toLowerCase();
+    if (map[key]) { const m = map[key]; delete map[key]; return { w: w, v: m.v, dec: m.dec }; }
+    try { const v = await c8tokenBalance(chain, w.addr, addr); return { w: w, v: v, dec: w.dec }; }
+    catch (e) { return { w: w, v: null, dec: w.dec }; }
+  }));
+  watchRes.forEach(function (r) {
+    rows.push([CHAIN_CN(chain), '代币', r.w.sym + ' · ' + r.w.name, r.v === null ? '查询失败' : fmtUnits(r.v, r.dec), r.w.addr]);
+  });
+  // 其他代币（非关注，仅余额 > 0）
+  const rest = Object.keys(map).map(function (k) {
+    const m = map[k];
+    return { addr: k, sym: m.sym, v: m.v, dec: m.dec };
+  }).filter(function (x) { return x.v > 0n; });
+  rest.sort(function (a, b) { return a.v > b.v ? -1 : (a.v < b.v ? 1 : 0); });
+  rest.slice(0, 30).forEach(function (x) {
+    rows.push([CHAIN_CN(chain), /LP/i.test(x.sym) ? 'LP 份额' : '代币', x.sym, fmtUnits(x.v, x.dec), x.addr]);
+  });
+  if (rest.length > 30) rows.push([CHAIN_CN(chain), '—', '…其余 ' + (rest.length - 30) + ' 个有余额代币省略', '', '']);
+  return { rows: rows, notes: notes };
+}
+async function c8query() {
+  const addr = ($('c8addr') ? $('c8addr').value : '').trim();
+  const out = $('c8res');
+  if (!/^0x[0-9a-fA-F]{40}$/.test(addr)) { out.innerHTML = '<span class="rd">地址格式不对（0x + 40 位十六进制）</span>'; return; }
+  out.innerHTML = '查询中…（区块浏览器 API，约 3~12 秒）';
+  const rows = [], notes = [];
+  for (const chain of ['anubis', 'polygon']) {
+    try {
+      const r = await c8chainRows(chain, addr);
+      rows.push.apply(rows, r.rows);
+      if (r.notes.length) notes.push(CHAIN_CN(chain) + '：' + r.notes.join('、'));
+    } catch (e) {
+      const msg = (e && e.name === 'AbortError') ? '请求超时' : (e && e.message ? e.message : '查询失败');
+      notes.push(CHAIN_CN(chain) + '：' + msg);
+      rows.push([CHAIN_CN(chain), '—', '查询失败（' + msg + '）', '—', '']);
+    }
+  }
+  let html = '<div class="tablewrap"><table style="min-width:820px"><tr><th>链</th><th>类型</th><th>资产</th><th class="num">余额</th><th>合约</th></tr>' +
+    rows.map(function (r) {
+      return '<tr><td>' + r[0] + '</td><td>' + r[1] + '</td><td>' + r[2] + '</td><td class="num">' + r[3] + '</td><td style="font-size:14px">' + (r[4] || '') + '</td></tr>';
+    }).join('') + '</table></div>';
+  if (notes.length) html += '<div class="note w" style="margin-top:10px">部分数据失败：' + notes.join('；') + '</div>';
+  html += '<div style="font-size:13px;color:var(--dm);margin-top:8px">数据来源：Blockscout API。前 8 行是「关注代币」（余额 0 也显示），后面是有余额的其他代币（最多 30 个）。</div>';
+  out.innerHTML = html;
+}
+if ($('c8go')) $('c8go').onclick = c8query;
+// —— ⑨ 资金监控台 ——
+function c9build() {
+  const box = $('c9groups');
+  if (!box || box.dataset.done) return;
+  const titles = (CHAIN_DATA && CHAIN_DATA.monitorGroups) || [];
+  box.innerHTML = titles.map((t, i) => '<button class="chip' + (i < 4 ? ' on' : '') + '" data-i="' + i + '">' + t.replace('马蹄链 Polygon · ', '').replace('Anubis · ', '') + '</button>').join('');
+  document.querySelectorAll('#c9groups .chip').forEach(c => { c.onclick = () => c.classList.toggle('on'); });
+  box.dataset.done = '1';
+}
+async function c9scan() {
+  c9build();
+  const picked = [...document.querySelectorAll('#c9groups .chip.on')].map(c => +c.dataset.i);
+  const titles = (CHAIN_DATA && CHAIN_DATA.monitorGroups) || [];
+  const groups = (CHAIN_DATA && CHAIN_DATA.groups) || [];
+  const targets = [];
+  titles.forEach((t, i) => {
+    if (!picked.includes(i)) return;
+    const g = groups.find(x => x.title === t);
+    if (g) targets.push({ title: t, chain: g.chain, items: g.items });
+  });
+  const total = targets.reduce((s, x) => s + x.items.length, 0);
+  const out = $('c9res'), st = $('c9status');
+  let done = 0;
+  const blocks = [];
+  for (const t of targets) {
+    const rows = [];
+    for (const it of t.items) {
+      let bal = '—';
+      try { bal = fmtUnits(hexBig(await rpcCall(t.chain, 'eth_getBalance', [it.address, 'latest'])), 18); } catch (e) { bal = '失败'; }
+      rows.push('<tr><td>' + it.name + '</td><td style="font-size:16px">' + it.address + '</td><td class="num">' + bal + '</td></tr>');
+      done++; if (st) st.textContent = '巡检中 ' + done + '/' + total;
+    }
+    blocks.push('<h3 style="margin:16px 0 6px">' + t.title + '</h3><div style="overflow:auto"><table><tr><th>名称</th><th>地址</th><th class="num">原生余额</th></tr>' + rows.join('') + '</table></div>');
+  }
+  out.innerHTML = blocks.join('') || '<span class="rd">没有可巡检的分组</span>';
+  if (st) st.textContent = '完成，共 ' + total + ' 个地址';
+}
+if ($('c9go')) $('c9go').onclick = c9scan;
+
+// —— ⑩ AiLGNS 观测台 ——
+async function obsRefresh() {
+  const out = $('c10res'), st = $('c10status');
+  if (st) st.textContent = '加载中…';
+  try {
+    const [em, pw, ov, lv, pd] = await Promise.all([
+      fetch(API + 'emission').then(r => r.json()),
+      fetch(API + 'power').then(r => r.json()),
+      fetch(API + 'overview').then(r => r.json()),
+      fetch(API + 'level').then(r => r.json()),
+      fetch(API + 'pools').then(r => r.json()).catch(() => null)
+    ]);
+    const dist = (lv.distribution || []).filter(x => x.level > 0).map(x => 'P' + x.level + ' ' + x.members).join(' · ');
+
+    // 流动性池（官方 /api/v1/pools）
+    const POOL_NAME = {
+      AILGNS_DAI_PAIR: 'AiLGNS / DAI 主池',
+      AILGNS_LGNS_PAIR: 'AiLGNS / LGNS',
+      AILGNS_GLGNS_PAIR: 'AiLGNS / gLGNS',
+      AILGNS_USDT_PAIR: 'AiLGNS / USDT',
+      AILGNS_A_PAIR: 'AiLGNS / A'
+    };
+    const pools = (pd && pd.pools) || [];
+    const totalTvl = pools.reduce((s, p) => s + Number(p.tvlUsd || 0), 0);
+    let poolHtml = '';
+    if (pools.length) {
+      poolHtml =
+        '<div class="card" style="box-shadow:none;margin-top:14px"><h3 style="margin-top:0">流动性池（官方 /liquidity · 5 个池子）</h3>' +
+        '<div class="kv"><span class="k">总 TVL</span><span class="v cy">' + fmt(totalTvl, 0) + ' USD</span></div>' +
+        '<div style="overflow:auto"><table style="min-width:860px"><tr><th>池子</th><th class="num">TVL (USD)</th><th class="num">24h 成交量</th><th class="num">24h 手续费</th><th class="num">价格</th><th class="num">健康度</th><th class="num">权重</th></tr>' +
+        pools.map(p => '<tr><td>' + (POOL_NAME[p.key] || p.key) + '</td><td class="num">' + fmt(Number(p.tvlUsd), 0) + '</td><td class="num">' + fmt(Number(p.volume24hUsd), 0) + '</td><td class="num">' + fmt(Number(p.fees24hUsd), 2) + '</td><td class="num">' + (p.price ? fmt(Number(p.price), 2) : '—') + '</td><td class="num">' + fmtInt(p.healthScore) + '</td><td class="num">' + (p.weightBps ? (Number(p.weightBps) / 100).toFixed(1) + '%' : '—') + '</td></tr>').join('') +
+        '</table></div>' +
+        '<div style="font-size:17px;color:var(--dm);margin-top:8px">数据来源：awakehelix.io/api/v1/pools（官方流动性页）· 健康度/权重为合约状态机字段<br/><b style="color:var(--rd)">注意：目前只有 2 个池开放交易（主池 AiLGNS/DAI + AiLGNS/LGNS），其余 3 池尚未开放</b></div></div>';
+    }
+    out.innerHTML =
+      '<div class="grid">' +
+      '<div class="card" style="box-shadow:none"><h3 style="margin-top:0">今日结算</h3>' +
+      '<div class="kv"><span class="k">第几天 / 纪元</span><span class="v">D' + em.clock.currentDay + ' · 第 ' + em.clock.currentEpoch + ' 纪元</span></div>' +
+      '<div class="kv"><span class="k">执行系数</span><span class="v">' + (em.factor.factorBps / 100).toFixed(1) + '%</span></div>' +
+      '<div class="kv"><span class="k">累计实际排放</span><span class="v">' + fmt(Number(em.community.releasedCum), 1) + ' 枚</span></div>' +
+      '<div class="kv"><span class="k">累计压制量</span><span class="v">' + fmt(Number(em.community.suppressedCum), 0) + ' 枚</span></div>' +
+      '</div>' +
+      '<div class="card" style="box-shadow:none"><h3 style="margin-top:0">实时算力参与</h3>' +
+      '<div class="kv"><span class="k">全网活跃算力</span><span class="v cy">' + fmt(Number(pw.totalActivePower), 0) + '</span></div>' +
+      '<div class="kv"><span class="k">参与地址数</span><span class="v">' + fmtInt(pw.participants) + '</span></div>' +
+      '<div class="kv"><span class="k">今日新增算力</span><span class="v">' + fmt(Number(pw.today.newPower), 0) + '</span></div>' +
+      '<div class="kv"><span class="k">今日新增人数</span><span class="v">' + fmtInt(pw.today.newParticipants) + '</span></div>' +
+      '</div></div>' +
+      '<div class="card" style="box-shadow:none;margin-top:14px"><h3 style="margin-top:0">P 等级分布（今日评估）</h3>' +
+      '<div class="kv"><span class="k">评估地址</span><span class="v">' + fmtInt(lv.evaluated) + '</span></div>' +
+      '<div class="kv"><span class="k">分布</span><span class="v">' + (dist || '—') + '</span></div></div>' +
+      '<div class="card" style="box-shadow:none;margin-top:14px"><h3 style="margin-top:0">资金位置 / 协议参数</h3>' +
+      '<div class="kv"><span class="k">协议储备 DAI</span><span class="v">' + fmt(Number(ov.latest.reserve_dai_balance), 0) + '</span></div>' +
+      '<div class="kv"><span class="k">主池 DAI</span><span class="v">' + fmt(Number(ov.latest.pol_usd), 0) + '（POL 计价）</span></div>' +
+      '<div class="kv"><span class="k">参考价</span><span class="v">' + fmt(Number(ov.price), 2) + ' DAI/枚</span></div></div>' + poolHtml;
+    if (st) st.textContent = '已刷新 ' + new Date().toLocaleTimeString('zh-CN');
+  } catch (e) {
+    out.innerHTML = '<span class="rd">刷新失败（网络/跨域限制）</span>';
+    if (st) st.textContent = '';
+  }
+}
+if ($('c10go')) $('c10go').onclick = obsRefresh;
+
+// —— ⑪ 小工具 ——
+const C11_LINKS = [
+  ['A链浏览器', 'https://browser.anubispace.org'], ['A链 DAPP', 'https://anubis.origindefi.io/'],
+  ['AiLGNS DAPP', 'https://awakehelix.io/#/overview'], ['马蹄链浏览器', 'https://polygonscan.com/'],
+  ['Anubis 官网', 'https://anubischain.ai/'], ['Anubis 白皮书', 'https://anubis-network.gitbook.io/anubis-network'],
+  ['AWAKE HELIX 白皮书', 'https://awake-helix.gitbook.io/whitepaper-cn'], ['起源白皮书·无畏契约', 'https://origin-3.gitbook.io/origin-fearless-contract/table-of-contents'],
+  ['起源白皮书·永恒协议', 'https://origin-3.gitbook.io/origin-eternal-protocol/'], ['Origin 官网', 'https://originworld.org'],
+  ['Origin Rocket', 'https://rocket.origindefi.io/'], ['QuickSwap', 'https://quickswap.exchange/#/'],
+  ['AVE 合约查询', 'https://ave.ai/home'], ['DEXTools', 'https://www.dextools.io/app/hot-pairs'],
+  ['CoinGecko', 'https://www.coingecko.com/'], ['CoinMarketCap', 'https://coinmarketcap.com/'],
+  ['OKLink DeFi 榜', 'https://www.oklink.com/zh-hant/defi/list'], ['RootData 投融资', 'https://cn.rootdata.com/'],
+  ['LGNS 工具站', 'https://lgns.tech/'], ['AiLGNS 监控', 'https://dixonwei.github.io/ailgns-monitor/'],
+  ['NFT 销毁统计', 'https://dixonwei.github.io/ailgns/nft-burn-stats.html']
+];
+function c11calc() {
+  const v = parseFloat($('c11v').value) || 0;
+  const n = +$('c11n').value;
+  const r = v * Math.pow(10, n);
+  $('c11out').textContent = v + ' × 10^' + n + ' = ' + (Math.abs(r) < 1e21 ? r.toLocaleString('zh-CN', { maximumFractionDigits: 6 }) : r.toExponential(6));
+}
+function c11hex() {
+  const s = ($('c11h').value || '').trim();
+  let out = '—';
+  try {
+    if (/^0x[0-9a-fA-F]+$/.test(s)) out = '十进制：' + BigInt(s).toString();
+    else if (/^[0-9]+$/.test(s)) out = '十六进制：0x' + BigInt(s).toString(16);
+  } catch (e) { out = '格式不对'; }
+  $('c11hout').textContent = out;
+}
+function c11init() {
+  const sel = $('c11n');
+  if (sel && !sel.dataset.done) {
+    sel.innerHTML = Array.from({ length: 19 }, (_, i) => '<option value="' + i + '"' + (i === 18 ? ' selected' : '') + '>10^' + i + '</option>').join('');
+    sel.dataset.done = '1';
+  }
+  if ($('c11links') && !$('c11links').dataset.done) {
+    $('c11links').innerHTML = C11_LINKS.map(l => '<a class="chip" href="' + l[1] + '" target="_blank" rel="noopener" style="text-decoration:none">' + l[0] + '</a>').join('');
+    $('c11links').dataset.done = '1';
+  }
+  c11calc(); c11hex();
+}
+if ($('c11v')) $('c11v').addEventListener('input', c11calc);
+if ($('c11n')) $('c11n').addEventListener('change', c11calc);
+if ($('c11h')) $('c11h').addEventListener('input', c11hex);
+
+// —— ⑬ 卖出冲击（链上储备 + 报价侧深度 + 多池勾选 + 六层拆解） ——
+const P13_PAIRS = [
+  { key: 'AILGNS_DAI_PAIR', pair: '0x0a1Cce65d995C6C5100e6F5bA3c388Ef34CEcaf0', quote: 'DAI' },
+  { key: 'AILGNS_LGNS_PAIR', pair: '0xc5029d6e80D2FDCE321B2b51010E9Ce3b1eDf1a2', quote: 'LGNS' },
+  { key: 'AILGNS_GLGNS_PAIR', pair: '0xbfAaE809C1803eC4ae73A506309b3036c48D65A8', quote: 'GLGNS' },
+  { key: 'AILGNS_USDT_PAIR', pair: '0x8A36A456E95Cd55eA8cbd79CcC798fd1f716db68', quote: 'USDT' },
+  { key: 'AILGNS_A_PAIR', pair: '0x39BA6313F3C59CaC5611b8CF308D084551E9D60F', quote: 'A' }
+];
+const P13_AILGNS = '0x256Edb652db43E721EC6A12B6b51b6967D3bb8cB';
+const P13_QTOK = {
+  DAI: '0x83fd06F0846d9D90B3016bF670Efe2E0B11cDe14',
+  LGNS: '0x4D1D808a081FdAc440703b3765FC61f8028C06B8',
+  GLGNS: '0xf140a92C156e76F5A1d3D6f96284b250330F8F4c',
+  USDT: '0xDfb6a28BC6DC51fed17c27C880F2c66cDd040A3e',
+  A: '0xA921267c56B3a57696d6Fd7949c9FaD0A8E0c177'
+};
+const P13_QDEC = { DAI: 18, LGNS: 9, GLGNS: 18, USDT: 6, A: 18 };
+const P13_QPRICE = { DAI: 1, USDT: 1, LGNS: 0.1236, GLGNS: 0, A: 0 };   // 报价币 → DAI 价（0 = 无法估价）
+const P13_POOL_LABELS = {
+  AILGNS_DAI_PAIR: '主池 AiLGNS/DAI',
+  AILGNS_LGNS_PAIR: 'AiLGNS/LGNS',
+  AILGNS_GLGNS_PAIR: 'AiLGNS/gLGNS',
+  AILGNS_USDT_PAIR: 'AiLGNS/USDT',
+  AILGNS_A_PAIR: 'AiLGNS/A'
+};
+let P13A = 37219, P13D = 32585898;
+let P13POOL = {};   // { key: { A, Q, V, implied } }
+function p13poolState() {
+  const main = P13POOL['AILGNS_DAI_PAIR'] || {};
+  const mainP = main.A > 0 ? (main.V / main.A) : Math.max(1e-6, num('p13price'));
+  const rows = [];
+  document.querySelectorAll('#p13pools input[data-pool]').forEach(cb => {
+    const key = cb.dataset.pool;
+    const rec = P13POOL[key] || {};
+    const A = rec.A || 0, V = rec.V || 0;
+    const implied = A > 0 ? V / A : 0;
+    let st, ok = false, depth = 0;
+    if (key === 'AILGNS_DAI_PAIR') { ok = true; depth = V; st = '计入（主池）'; }
+    else if (!A || A <= 0 || !rec.Q || rec.Q <= 0) { st = '报价侧为空 · 不计入'; }
+    else if (!V || V <= 0) { st = '报价币无法估价 · 不计入'; }
+    else if (implied > 0 && Math.abs(implied / mainP - 1) > 0.30) { st = '严重失衡 · 不计入'; }
+    else if (V < A * mainP * 0.5) { st = '报价侧不足 · 不计入'; }
+    else if (!cb.checked) { st = '未勾选'; }
+    else { ok = true; depth = Math.min(V, A * mainP); st = '计入'; }
+    rows.push({ key: key, label: P13_POOL_LABELS[key] || key, A: A, V: V, P: rec.Q || 0, implied: implied, st: st, ok: ok, depth: depth });
+  });
+  const mainOn = rows.find(r => r.key === 'AILGNS_DAI_PAIR');
+  const mainDepth = mainOn && mainOn.V > 0 ? mainOn.V : (mainP * P13A);
+  let sumDepth = 0;
+  rows.forEach(r => { if (r.ok) sumDepth += r.depth; });
+  return { rows: rows, scale: (mainDepth > 0 && sumDepth > 0) ? sumDepth / mainDepth : 1 };
+}
+function p13poolTable(st) {
+  const t = $('p13pooltbl');
+  if (!t) return;
+  t.innerHTML = '<tr><th>池子</th><th class="num">AiLGNS 储备</th><th class="num">报价侧(DAI 折算)</th><th class="num">反推价</th><th>状态</th></tr>' +
+    st.rows.map(r => '<tr><td>' + r.label + '</td><td class="num">' + (r.A ? fmt(r.A, 0) : '—') + '</td><td class="num">' + (r.V ? fmt(r.V, 0) : '—') + '</td><td class="num">' + (r.implied ? r.implied.toFixed(2) : '—') + '</td><td class="' + (r.ok ? 'gn' : 'dm') + '">' + r.st + '</td></tr>').join('') +
+    '<tr><td><b>有效深度合计</b></td><td></td><td class="num"><b>' + fmt(st.rows.filter(r => r.ok).reduce((s, r) => s + r.depth, 0), 0) + '</b></td><td></td><td class="gn"><b>×' + st.scale.toFixed(2) + ' 主池</b></td></tr>';
+}
+function p13calc() {
+  const qty = Math.max(0, num('p13qty'));
+  const price = Math.max(1e-6, num('p13price'));
+  const fee = Math.min(30, Math.max(0, num('p13fee'))) / 100;
+  const n = Math.max(1, Math.round(num('p13days')));
+  const B = Math.max(0, num('p13buy'));
+  const A0 = P13A, D0 = price * A0;
+  const st = p13poolState();
+  const scale = st.scale;
+  p13poolTable(st);
+  const sell = (a, d, amt) => { const dx = amt * (1 - fee) * 0.997; const got = d * dx / (a + dx); return { A: a + dx, D: d - got, got: got }; };
+  const buy = (a, d, dy) => { if (dy <= 0) return { A: a, D: d }; const ai = a * dy / (d + dy); return { A: a - ai, D: d + dy }; };
+
+  const r1 = sell(A0, D0, qty);
+  const p1 = r1.D / r1.A, chg1 = (p1 / price - 1) * 100;
+  let A2 = A0 * scale, D2 = D0 * scale, got2 = 0;
+  for (let i = 0; i < n; i++) {
+    const r = sell(A2, D2, qty / n); got2 += r.got; A2 = r.A; D2 = r.D;
+    const b = buy(A2, D2, B); A2 = b.A; D2 = b.D;
+  }
+  const p2 = D2 / A2, chg2 = (p2 / price - 1) * 100;
+  const rd = sell(A0, D0, qty / n);
+  const chgDay = (rd.D / rd.A / price - 1) * 100;
+
+  const kv = (k, v, cls) => '<div class="kv" style="border:0;padding:5px 0"><span class="k">' + k + '</span><span class="v ' + (cls || '') + '">' + v + '</span></div>';
+  const card = (title, sub, big, rowsHtml, extra) =>
+    '<div class="card hl" style="box-shadow:none;margin:0;padding:18px 20px">' +
+    '<div style="font-size:17px;color:var(--mt);font-weight:700">' + title + '</div>' +
+    '<div class="big" style="font-size:34px;margin:4px 0">' + big + '</div>' +
+    '<div style="font-size:16px;color:var(--dm);margin-bottom:6px">' + sub + '</div>' +
+    rowsHtml + '<div style="font-size:16px;color:var(--dm);margin-top:6px">' + extra + '</div></div>';
+
+  if ($('p13out')) $('p13out').innerHTML =
+    card('直接砸进主池（理论最坏）', '一次性全卖 · 只走主池',
+      p1.toFixed(2),
+      kv('价格变化', (chg1 >= 0 ? '+' : '') + chg1.toFixed(2) + '%', chg1 < 0 ? 'rd' : 'gn') +
+      kv('到手 DAI', fmt(r1.got, 0)),
+      '名义价值 ' + fmt(qty * price, 0) + ' DAI') +
+    card('LSP 分批释放（' + n + ' 天 · 深度 ×' + scale.toFixed(2) + '）', '每天只卖 ' + fmt(qty / n, 2) + ' 枚',
+      p2.toFixed(2),
+      kv('单日冲击（第一批）', (chgDay >= 0 ? '+' : '') + chgDay.toFixed(2) + '%', chgDay < 0 ? 'rd' : 'gn') +
+      kv('累计价格变化', (chg2 >= 0 ? '+' : '') + chg2.toFixed(2) + '%', chg2 < 0 ? 'rd' : 'gn') +
+      kv('到手 DAI', fmt(got2, 0)),
+      B > 0 ? '含额外净买盘 ' + fmt(B, 0) + ' DAI/天' : '净买盘 0：分批不改变总冲击（AMM 路径无关），但避免一次性砸盘、给滑点刹车留时间');
+  if ($('p13qlbl')) $('p13qlbl').textContent = fmt(qty, 0);
+
+  const used = st.rows.filter(r => r.ok);
+  const dxFee = qty * (1 - fee) * 0.997;
+  const noFee = Math.pow(A0 / (A0 + qty * 0.997), 2);
+  const feeImp = Math.pow(A0 / (A0 + dxFee), 2);
+  const poolImp = Math.pow(A0 / (A0 + dxFee / scale), 2);
+  const dayImp = Math.pow(A0 / (A0 + (qty / n) * (1 - fee) * 0.997), 2) - 1;
+  if ($('p13why')) $('p13why').innerHTML =
+    '<div style="line-height:2.15">' +
+    '1️⃣ <b>卖出费 ' + (fee * 100).toFixed(1) + '%</b>：进池的只有 <b>' + fmt(dxFee, 2) + '</b> 枚（不是 ' + fmt(qty, 2) + ' 枚），冲击从 ' + ((noFee - 1) * 100).toFixed(2) + '% 降到 <b>' + ((feeImp - 1) * 100).toFixed(2) + '%</b>；<br/>' +
+    '2️⃣ <b>主池深度</b>：主池 ' + fmt(A0, 0) + ' 枚 ↔ ' + fmt(D0, 0) + ' DAI，卖 ' + fmt(qty, 0) + ' 枚 = 池子的 ' + (qty / A0 * 100).toFixed(2) + '%，恒定乘积滑点 <b>' + ((feeImp - 1) * 100).toFixed(2) + '%</b>；<br/>' +
+    '3️⃣ <b>多池分流（有效 ' + used.length + ' 池，深度 ×' + scale.toFixed(2) + '）</b>：' + (used.map(r => r.label).join(' + ') || '无') + ' → 冲击从 ' + ((feeImp - 1) * 100).toFixed(2) + '% 降到 <b>' + ((poolImp - 1) * 100).toFixed(2) + '%</b>；<br/>' +
+    '4️⃣ <b>LSP 分批</b>：分 ' + n + ' 天卖，单日只卖 <b>' + fmt(qty / n, 2) + '</b> 枚，单日冲击仅 <b>' + (dayImp * 100).toFixed(2) + '%</b>；<br/>' +
+    '5️⃣ <b>日常买盘对冲</b>：每天约 40 万 DAI 的 Turbine/自然买盘主要用于对冲日常排放卖压，不会额外拉升你的卖价（想要乐观情形可在上面填额外净买盘）；<br/>' +
+    '6️⃣ <b>滑点刹车</b>：超过协议安全范围就降低/暂停/延后（可延至 48 小时、未成交顺延）——大单<b>不会被一次性成交</b>，而是被拆到很多天。' +
+    '</div>' +
+    '<div style="margin-top:8px;font-size:17.5px">结论：卖 <b>' + fmt(qty, 0) + '</b> 枚，一次性砸主池是 <b>' + chg1.toFixed(2) + '%</b>；分批后单日只有 <b>' + (dayImp * 100).toFixed(2) + '%</b>，累计 ' + n + ' 天后总冲击 <b>' + (chg2 >= 0 ? '+' : '') + chg2.toFixed(2) + '%</b>。</div>';
+}
+async function loadP13Data() {
+  const res = await Promise.all(P13_PAIRS.map(async p => {
+    let A = 0, Q = 0;
+    try {
+      const r = await fetch('https://browser.anubispace.org/api/v2/addresses/' + p.pair + '/token-balances');
+      if (!r.ok) return null;
+      const arr = await r.json();
+      const qdec = P13_QDEC[p.quote];
+      arr.forEach(x => {
+        const tok = ((x.token && x.token.address_hash) || '').toLowerCase();
+        const raw = Number(x.value);
+        if (!isFinite(raw) || raw <= 0) return;
+        if (tok === P13_AILGNS.toLowerCase()) A = raw / 1e18;
+        else if (tok === P13_QTOK[p.quote].toLowerCase()) Q = raw / Math.pow(10, qdec);
+      });
+    } catch (e) { return null; }
+    return { key: p.key, A: A, Q: Q };
+  }));
+  P13POOL = {};
+  res.forEach(r => {
+    if (!r) return;
+    const qp = P13_QPRICE[P13_PAIRS.find(p => p.key === r.key).quote] || 0;
+    P13POOL[r.key] = { A: r.A, Q: r.Q, V: r.Q * qp };
+  });
+  let pools = [];
+  try { const pd = await fetch(API + 'pools').then(r => r.json()); pools = pd.pools || []; } catch (e) {}
+  const mainBase = P13POOL['AILGNS_DAI_PAIR'];
+  if (mainBase && mainBase.A > 0) {
+    P13A = mainBase.A; P13D = mainBase.V;
+    if ($('p13price')) $('p13price').value = (mainBase.V / mainBase.A).toFixed(2);
+  } else {
+    const main = pools.find(p => p.key === 'AILGNS_DAI_PAIR');
+    if (main && main.price && main.tvlUsd) {
+      P13A = Number(main.tvlUsd) / 2 / Number(main.price);
+      P13D = Number(main.tvlUsd) / 2;
+      if ($('p13price')) $('p13price').value = Number(main.price).toFixed(2);
+    }
+    P13POOL['AILGNS_DAI_PAIR'] = { A: P13A, Q: P13D, V: P13D };
+  }
+}
+function p13init() {
+  ['p13qty', 'p13price', 'p13fee', 'p13days', 'p13buy'].forEach(id => { const el = $(id); if (el) el.oninput = p13calc; });
+  document.querySelectorAll('#p13pools input[data-pool]').forEach(cb => { cb.onchange = p13calc; });
+  if ($('p13out') && !$('p13out').dataset.loaded) {
+    $('p13out').dataset.loaded = '1';
+    loadP13Data().then(p13calc).catch(p13calc);
+  } else { p13calc(); }
+}
+// 表格防溢出：自动包一层横向滚动容器
+document.querySelectorAll('.main table').forEach(function (tb) {
+  if (tb.parentElement && tb.parentElement.classList.contains('tablewrap')) return;
+  var w = document.createElement('div'); w.className = 'tablewrap';
+  tb.parentNode.insertBefore(w, tb); w.appendChild(tb);
+});
+// ---------- ④ P 等级页：按地址查区线 ----------
+async function p3QueryZones() {
+  const addrEl = $('p3Addr'), resEl = $('p3Res');
+  const addr = (addrEl && addrEl.value || '').trim();
+  if (!/^0x[0-9a-fA-F]{40}$/.test(addr)) { resEl.innerHTML = '<span class="rd">地址格式不对（0x + 40 位十六进制）</span>'; return; }
+  resEl.innerHTML = '查询中…';
+  try {
+    const [lv, cm] = await Promise.all([
+      fetch(API + 'level/' + addr).then(r => r.json()),
+      fetch(API + 'community/' + addr).then(r => r.json())
+    ]);
+    const zones = (lv && lv.zones ? lv.zones.map(Number) : []).filter(v => isFinite(v) && v > 0).sort((a, b) => b - a);
+    const directs = (cm && cm.directs) || [];
+    const lines = directs.map(d => ({ addr: d.address, p: Number(d.activePower) || 0 })).sort((a, b) => b.p - a.p);
+    const top3 = zones.slice(0, 3);
+    const restZoneVal = zones.slice(3);
+    const sizeList = [160, 132, 112];
+    const grad = ['linear-gradient(135deg,#6D4AFF,#A78BFA)', 'linear-gradient(135deg,#8B5CF6,#C084FC)', 'linear-gradient(135deg,#A855F7,#D8B4FE)'];
+    let html = '';
+    // 概览
+    html += '<div style="display:flex;gap:18px;flex-wrap:wrap;margin-bottom:14px;font-size:15.5px">' +
+      '<span>直推线：<b class="pp">' + (cm && cm.direct != null ? cm.direct : directs.length) + '</b> 条</span>' +
+      '<span>团队人数：<b>' + (cm && cm.team != null ? fmtInt(cm.team) : '—') + '</b></span>' +
+      '<span>团队算力：<b class="cy">' + (cm && cm.teamActivePower ? fmt(Number(cm.teamActivePower), 0) + ' DAI' : '—') + '</b></span>' +
+      '<span>P 等级：<b class="gd">' + (lv && lv.level != null ? 'P' + lv.level : '未评估') + '</b></span>' +
+      (lv && lv.veUsd ? '<span>ve 锁仓：<b>' + fmt(Number(lv.veUsd), 0) + ' DAI</b></span>' : '') +
+      '</div>';
+    // 3 大气泡
+    if (top3.length) {
+      html += '<div style="display:flex;gap:18px;flex-wrap:wrap;align-items:flex-end;margin-bottom:14px">';
+      top3.forEach(function (v, i) {
+        const sz = sizeList[i] || 112;
+        html += '<div style="width:' + sz + 'px;height:' + sz + 'px;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fff;background:' + grad[i] + ';box-shadow:0 8px 24px rgba(109,74,255,.28)">' +
+          '<div style="font-size:12.5px;opacity:.9">第 ' + (i + 1) + ' 大区</div>' +
+          '<div style="font-size:' + (sz > 140 ? 22 : 19) + 'px;font-weight:800;font-family:ui-monospace,monospace;line-height:1.2">' + fmt(v, 0) + '</div>' +
+          '<div style="font-size:11.5px;opacity:.9">DAI</div>' +
+          '</div>';
+      });
+      html += '</div>';
+      html += '<div style="font-size:13px;color:var(--mt);margin-bottom:10px">前 3 大区合计：<b>' + fmt(top3.reduce((s, v) => s + v, 0), 0) + ' DAI</b>' +
+        (restZoneVal.length ? '（另有 ' + restZoneVal.length + ' 个大区：' + restZoneVal.map(v => fmt(v, 0)).join(' · ') + ' DAI）' : '') + '</div>';
+    } else {
+      html += '<div class="note w" style="margin:0 0 12px">官方 level 接口没有返回这个地址的区业绩（可能未评估 / 不是 P 级账号）——下面用直推线列表展示。</div>';
+    }
+    // 其余直推线（小号）
+    if (lines.length) {
+      html += '<div style="font-size:13.5px;color:var(--mt)">其余直推线（' + lines.length + ' 条，括号内为个人算力 DAI）：<br/>' +
+        lines.map(function (l, i) {
+          return '<span style="display:inline-block;margin:3px 10px 3px 0;font-size:13px;color:var(--dm)">' +
+            (i + 1) + '. ' + l.addr.slice(0, 6) + '…' + l.addr.slice(-4) + '（<b style="color:' + (l.p > 0 ? 'var(--cy)' : 'var(--dm)') + '">' + fmt(l.p, 0) + '</b>）</span>';
+        }).join('') + '</div>';
+    } else {
+      html += '<div style="font-size:13.5px;color:var(--dm)">没有直推线（这个地址下面没有人绑定）。</div>';
+    }
+    html += '<div style="font-size:12.5px;color:var(--dm);margin-top:10px">说明：官方只公开「前三大区业绩」；其余直推线展示的是其个人算力（团队深层业绩需扫描链上事件，本页不展开）。</div>';
+    resEl.innerHTML = html;
+  } catch (e) {
+    resEl.innerHTML = '<span class="rd">查询失败（浏览器跨域或网络限制）</span>';
+  }
+}
+if ($('p3Query')) $('p3Query').onclick = p3QueryZones;
+if ($('p3Addr')) $('p3Addr').addEventListener('keydown', e => { if (e.key === 'Enter') p3QueryZones(); });
+
+// ---------- 初始化 ----------
+calcMain();
+calcLevel();
+calcRoi();
+drawSettleChart();
+})();
+</script>
+</body>
+</html>
